@@ -1,0 +1,7654 @@
+{
+ "bake": "/home/user/t183c2/episodes/e912_paper_boat/shots/s020_t183/build/runs/cand2/bake.json",
+ "frames": [
+  1,
+  208
+ ],
+ "characters": {
+  "white": {
+   "master": "/home/user/t183c2/episodes/e912_paper_boat/shots/s020_t183/build/masters/white_0b2631b2c5e56e95/girl_white_hair_blue_dress_master.blend",
+   "baked_bones": 236,
+   "facial_controls": 32,
+   "unmapped_morphs": [],
+   "bones_left_to_drivers": [
+    "DEF-jaw"
+   ],
+   "max_bone_error_mm": 0.0027,
+   "max_bone_error_deg": 0.0,
+   "eye_objects": [],
+   "eye_socket_max_mm": null,
+   "eye_socket_worst_frame": null
+  },
+  "auburn": {
+   "master": "/home/user/t183c2/episodes/e912_paper_boat/shots/s020_t183/build/masters/auburn_f88b1c4a299f62e7/girl_auburn_bun_glasses_master.blend",
+   "baked_bones": 166,
+   "facial_controls": 32,
+   "unmapped_morphs": [
+    "corrective.reach.L",
+    "corrective.reach.R"
+   ],
+   "bones_left_to_drivers": [
+    "DEF-jaw"
+   ],
+   "max_bone_error_mm": 0.0017,
+   "max_bone_error_deg": 360.0,
+   "eye_objects": [
+    "eye.L.001",
+    "eye.R.001"
+   ],
+   "eye_socket_max_mm": 0.0062,
+   "eye_socket_worst_frame": 134
+  },
+  "boy": {
+   "master": "/home/user/t183c2/assets/characters/boy_yellow_hoodie/versions/2.3.0/boy_yellow_hoodie_master.blend",
+   "baked_bones": 125,
+   "facial_controls": 40,
+   "unmapped_morphs": [],
+   "bones_left_to_drivers": [
+    "DEF-jaw"
+   ],
+   "max_bone_error_mm": 0.0009,
+   "max_bone_error_deg": 0.0,
+   "eye_objects": [
+    "eye.L.002",
+    "eye.R.002"
+   ],
+   "eye_socket_max_mm": 0.0039,
+   "eye_socket_worst_frame": 55
+  }
+ },
+ "not_rendered": [],
+ "world": {
+  "lights": 2,
+  "objects": 12
+ },
+ "props": {
+  "props": {
+   "boat": {
+    "asset": "prop.e912_paper_boat",
+    "primitive": "box",
+    "material_preset": "paper_white",
+    "preset_found": false
+   },
+   "boat_end_a": {
+    "asset": "prop.e912_paper_boat_end",
+    "primitive": "box",
+    "material_preset": "paper_white",
+    "preset_found": false
+   },
+   "boat_end_b": {
+    "asset": "prop.e912_paper_boat_end",
+    "primitive": "box",
+    "material_preset": "paper_white",
+    "preset_found": false
+   },
+   "boat_sail": {
+    "asset": "prop.e912_paper_boat_sail",
+    "primitive": "box",
+    "material_preset": "paper_white",
+    "preset_found": false
+   }
+  },
+  "unknown_material_presets": [
+   "paper_white",
+   "paper_white",
+   "paper_white",
+   "paper_white"
+  ]
+ },
+ "hair_pushout": {
+  "spec": {
+   "margin_m": 0.002,
+   "core_radius_m": 0.012,
+   "vertex_margin_m": 0.0015,
+   "static_reach_m": 0.03,
+   "characters": "all",
+   "stages": [
+    "chains",
+    "vertices"
+   ],
+   "enclosure": true,
+   "exit_test": false,
+   "lock_volume": false,
+   "static_inside": "keep",
+   "static_fade_m": [
+    0.002,
+    0.01
+   ],
+   "keep_outside": "all",
+   "other_skin_fade_m": [
+    0.004,
+    0.012
+   ],
+   "static_move_fade_m": [
+    0.004,
+    0.012
+   ]
+  },
+  "characters": {
+   "white": {
+    "chains": 49,
+    "allowed_root_segments": 0,
+    "vertex_stage": {
+     "objects": 33,
+     "vertices": 134478,
+     "chain_anchors": 47682,
+     "static_anchors": 86796,
+     "anchors_moved_past_rest": 0,
+     "static_outside": 70700,
+     "embedded_at_rest": 16000,
+     "static_in_head": 16000,
+     "static_free": 96
+    },
+    "lock_radius_mm": 43.9,
+    "lock_enclosed_at_rest": 14
+   },
+   "auburn": {
+    "chains": 21,
+    "allowed_root_segments": 0,
+    "vertex_stage": {
+     "objects": 29,
+     "vertices": 160986,
+     "chain_anchors": 66637,
+     "static_anchors": 94349,
+     "anchors_moved_past_rest": 0,
+     "static_outside": 76695,
+     "static_in_head": 17624,
+     "embedded_at_rest": 17681,
+     "static_free": 30
+    },
+    "lock_radius_mm": 31.8,
+    "lock_enclosed_at_rest": 23
+   },
+   "boy": {
+    "chains": 26,
+    "allowed_root_segments": 0,
+    "vertex_stage": {
+     "objects": 10,
+     "vertices": 56904,
+     "chain_anchors": 12426,
+     "static_anchors": 44456,
+     "anchors_moved_past_rest": 22,
+     "static_outside": 37064,
+     "static_in_head": 7108,
+     "embedded_at_rest": 7130,
+     "static_in_cloth": 8,
+     "static_free": 276
+    },
+    "lock_radius_mm": 31.8,
+    "lock_enclosed_at_rest": 11
+   }
+  },
+  "frames": {
+   "1": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "2": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "3": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "4": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "5": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "6": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "7": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "8": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "9": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "10": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "11": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "12": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "13": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "14": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "15": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "16": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "17": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "18": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "19": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "20": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "21": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "22": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "23": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "24": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "25": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "26": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "27": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "28": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "29": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "30": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "31": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "32": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "33": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "34": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "35": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "36": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "37": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "38": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "39": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "40": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "41": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "42": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "43": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "44": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "45": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "46": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "47": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "48": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "49": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "50": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "51": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "52": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "53": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "54": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "55": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "56": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "57": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "58": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "59": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "60": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "61": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "62": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "63": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "64": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "65": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "66": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "67": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "68": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "69": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "70": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "71": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "72": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "73": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "74": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "75": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "76": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "77": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 1,
+     "joints_moved": 2,
+     "hits": 1,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0,
+     "neighbour_faded": 1
+    }
+   },
+   "78": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 1,
+     "joints_moved": 2,
+     "hits": 2,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0,
+     "neighbour_faded": 1
+    }
+   },
+   "79": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 1,
+     "joints_moved": 2,
+     "hits": 2,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0,
+     "neighbour_faded": 1
+    }
+   },
+   "80": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 1,
+     "joints_moved": 2,
+     "hits": 2,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0,
+     "neighbour_faded": 1
+    }
+   },
+   "81": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 1,
+     "joints_moved": 2,
+     "hits": 2,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0,
+     "neighbour_faded": 1
+    }
+   },
+   "82": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "83": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "84": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "85": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "86": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "87": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "88": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "89": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "90": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "91": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "92": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "93": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "94": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "95": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "96": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "97": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "98": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "99": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "100": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "101": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "102": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "103": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "104": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "105": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "106": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "107": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "108": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "109": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "110": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "111": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "112": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "113": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "114": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "115": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "116": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "117": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "118": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "119": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "120": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "121": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "122": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "123": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "124": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "125": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "126": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "127": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "128": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "129": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "130": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "131": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "132": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "133": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "134": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "135": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "136": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "137": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "138": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "139": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "140": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "141": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "142": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "143": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "144": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "145": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "146": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "147": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "148": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "149": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "150": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "151": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "152": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "153": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "154": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "155": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "156": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "157": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "158": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "159": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "160": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "161": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "162": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "163": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "164": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "165": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "166": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "167": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "168": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "169": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "170": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "171": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "172": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "173": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "174": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "175": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "176": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "177": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "178": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "179": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "180": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "181": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "182": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "183": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "184": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "185": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "186": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "187": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "188": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "189": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "190": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "191": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "192": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "193": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "194": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "195": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "196": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "197": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "198": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "199": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "200": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "201": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "202": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "203": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "204": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "205": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "206": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "207": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   },
+   "208": {
+    "white": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "auburn": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    },
+    "boy": {
+     "chains_pushed": 0,
+     "joints_moved": 0,
+     "hits": 0,
+     "enclosed": 0,
+     "enclosed_left": 0,
+     "blocked": 0,
+     "volume": 0,
+     "volume_left": 0,
+     "max_move_mm": 0.0
+    }
+   }
+  },
+  "colliders": {
+   "white": [
+    "body_skin",
+    "ear.L",
+    "ear.R",
+    "garment.boots.cuff.L",
+    "garment.boots.cuff.R",
+    "garment.boots.lining.L",
+    "garment.boots.lining.R",
+    "garment.boots.main.L",
+    "garment.boots.main.R",
+    "garment.boots.sole.L",
+    "garment.boots.sole.R",
+    "garment.boots.stitch.L",
+    "garment.boots.stitch.R",
+    "garment.collider.body_skin",
+    "garment.dress.band.cuff.L",
+    "garment.dress.band.cuff.R",
+    "garment.dress.band.hem_rib",
+    "garment.dress.bodice",
+    "garment.dress.collar",
+    "garment.dress.ribcuff.L",
+    "garment.dress.ribcuff.R",
+    "garment.dress.skirt",
+    "garment.tights.main",
+    "hand.L",
+    "hand.R"
+   ],
+   "auburn": [
+    "body_skin.001",
+    "ear.L.001",
+    "ear.R.001",
+    "garment.blouse.band.cuff.L",
+    "garment.blouse.band.cuff.R",
+    "garment.blouse.button.1",
+    "garment.blouse.button.2",
+    "garment.blouse.button.3",
+    "garment.blouse.button.4",
+    "garment.blouse.collar",
+    "garment.blouse.main",
+    "garment.boots.cuff.L.001",
+    "garment.boots.cuff.R.001",
+    "garment.boots.lining.L.001",
+    "garment.boots.lining.R.001",
+    "garment.boots.main.L.001",
+    "garment.boots.main.R.001",
+    "garment.boots.sole.L.001",
+    "garment.boots.sole.R.001",
+    "garment.collider.body_skin.001",
+    "garment.shorts.band.cuff.L",
+    "garment.shorts.band.cuff.R",
+    "garment.shorts.band.waist",
+    "garment.shorts.button.1",
+    "garment.shorts.button.2",
+    "garment.shorts.button.3",
+    "garment.shorts.gusset",
+    "garment.shorts.main",
+    "garment.vest.button.1",
+    "garment.vest.button.2",
+    "garment.vest.button.3",
+    "garment.vest.button.4",
+    "garment.vest.edge.1",
+    "garment.vest.edge.2",
+    "garment.vest.edge.3",
+    "garment.vest.embroidery",
+    "garment.vest.embroidery_accent",
+    "garment.vest.main",
+    "garment.vest.pocket.L",
+    "garment.vest.pocket.R",
+    "garment.vest.pocket_edge.L",
+    "garment.vest.pocket_edge.R",
+    "hand.L.001",
+    "hand.R.001"
+   ],
+   "boy": [
+    "body_skin.002",
+    "ear.L.002",
+    "ear.R.002",
+    "garment.backpack.buckle",
+    "garment.backpack.flap",
+    "garment.backpack.flap_edge",
+    "garment.backpack.handle",
+    "garment.backpack.main",
+    "garment.backpack.pocket",
+    "garment.backpack.pocket_flap",
+    "garment.backpack.pocket_flap_edge",
+    "garment.backpack.strap.L",
+    "garment.backpack.strap.R",
+    "garment.backpack.tab",
+    "garment.collider.body_skin.002",
+    "garment.hoodie.band.cuff.L",
+    "garment.hoodie.band.cuff.R",
+    "garment.hoodie.band.hem",
+    "garment.hoodie.drawstring.L",
+    "garment.hoodie.drawstring.R",
+    "garment.hoodie.drawstring.tip.L",
+    "garment.hoodie.drawstring.tip.R",
+    "garment.hoodie.hood.bag",
+    "garment.hoodie.hood.edge",
+    "garment.hoodie.hood.rim",
+    "garment.hoodie.main",
+    "garment.hoodie.pocket",
+    "garment.hoodie.pocket.edge.top",
+    "garment.hoodie.pocket.opening.L",
+    "garment.hoodie.pocket.opening.R",
+    "garment.hoodie.rib.cuff.L_1",
+    "garment.hoodie.rib.cuff.L_2",
+    "garment.hoodie.rib.cuff.L_3",
+    "garment.hoodie.rib.cuff.R_1",
+    "garment.hoodie.rib.cuff.R_2",
+    "garment.hoodie.rib.cuff.R_3",
+    "garment.hoodie.rib.hem_1",
+    "garment.hoodie.rib.hem_2",
+    "garment.hoodie.rib.hem_3",
+    "garment.shoes.collar.L",
+    "garment.shoes.collar.R",
+    "garment.shoes.laces.L_1",
+    "garment.shoes.laces.L_2",
+    "garment.shoes.laces.L_3",
+    "garment.shoes.laces.R_1",
+    "garment.shoes.laces.R_2",
+    "garment.shoes.laces.R_3",
+    "garment.shoes.main.L",
+    "garment.shoes.main.R",
+    "garment.shoes.sole.L",
+    "garment.shoes.sole.R",
+    "garment.shoes.stripe.L.i1",
+    "garment.shoes.stripe.L.i2",
+    "garment.shoes.stripe.L.o1",
+    "garment.shoes.stripe.L.o2",
+    "garment.shoes.stripe.R.i1",
+    "garment.shoes.stripe.R.i2",
+    "garment.shoes.stripe.R.o1",
+    "garment.shoes.stripe.R.o2",
+    "garment.shoes.toe_cap.L",
+    "garment.shoes.toe_cap.R",
+    "garment.shoes.tongue.L",
+    "garment.shoes.tongue.R",
+    "garment.trousers.ankle.L",
+    "garment.trousers.ankle.R",
+    "garment.trousers.gusset",
+    "garment.trousers.main",
+    "hand.L.002",
+    "hand.R.002"
+   ],
+   "props": [
+    "boat",
+    "boat_end_a",
+    "boat_end_b",
+    "boat_sail",
+    "prop.floor",
+    "prop.wall",
+    "prop.board",
+    "prop.board_frame",
+    "prop.stool_white",
+    "prop.stool_auburn",
+    "prop.stool_boy",
+    "prop.table_top",
+    "prop.table_leg0",
+    "prop.table_leg1",
+    "prop.table_leg2",
+    "prop.table_leg3"
+   ]
+  },
+  "vertex_stage_installed": true,
+  "timing": {
+   "setup_s": 46.08,
+   "chains_s": 639.88,
+   "install_s": 0.38
+  }
+ },
+ "profile": {
+  "name": "final720",
+  "applied": {
+   "cycles.adaptive_threshold": 0.05,
+   "render.use_persistent_data": true
+  }
+ },
+ "setup_s": 4983.6,
+ "resolution": [
+  640,
+  360
+ ],
+ "samples": 16,
+ "engine": "cycles"
+}
