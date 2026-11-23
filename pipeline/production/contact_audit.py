@@ -42,9 +42,11 @@ T-194 measure did; the other classes use one tree per surface set.
 
 Depth, hair and hand_prop (surfaces may be open shells: garments, paper props): T-183 tools/measure_body.py rules, as
 in T-194 tools/measure_eval.py: exit distance towards / away from the nearest surface, else the second shortest of 26
-fixed directions; "under the face" and "enclosed" rules. Depth, garment_body and body_body (closed solids): behind the
-nearest face = inside, depth = the distance to it (the "enclosed" rule would count a sleeve between a folded forearm
-and the chest, outside both, as 60 mm deep: e912 s020 f29). For hair_own
+fixed directions; "under the face" and "enclosed" rules. Depth, garment_body and body_body (closed solids): inside =
+odd ray parity in a majority of 5 fixed directions (a point in front of a face within 10 mm is outside without rays),
+depth = the distance to the nearest surface (searched within 150 mm, unbounded for a point inside). The "enclosed"
+rule would count a sleeve between a folded forearm and the chest, outside both, as 60 mm deep (e912 s020 f29); the
+nearest face's sign alone reads a skirt over a seated lap as 50 mm inside. For hair_own
 and garment_body, vertices embedded at REST (rest pose, actions off, face controls at 0) count only by what they are
 deeper than at rest, and not at all where they sit at their rest distance from the same part. A vertex counts when
 deeper than --limit-mm.
@@ -84,7 +86,11 @@ GROUPS = {"hair vs own body / garments": ["hair_own"], "hair vs other characters
           "body vs body (staging)": ["body_body"], "garment vs body": ["garment_body"],
           "hands vs props": ["hand_prop"], "characters vs set boxes / floor": ["hair_set", "body_set"],
           "hair vs props": ["hair_prop"]}
-REACH = 0.05     # m: nearest-surface search radius
+REACH = 0.05     # m: nearest-surface search radius (hair, props: the T-183 rules)
+SOLID_REACH = 0.15  # m: the same for closed solids (garment_body, body_body: a 50 mm radius cut deeper cases off)
+PARITY_LEN = 4.0  # m: parity rays must leave the whole solid
+PARITY_DIRS = [np.array(d, dtype=np.float64) / np.linalg.norm(d) for d in
+               ((1, 0.13, 0.07), (-0.11, 1, 0.05), (0.09, -0.06, 1), (-1, -0.08, 0.12), (0.05, 0.1, -1))]
 EPS = 2e-5       # m: ray restart offset of the exit walk (T-183)
 UNDER = 0.7      # "under the face" rule (T-183)
 REST_MATCH = 0.0005
@@ -431,24 +437,46 @@ class Surfaces:
         self.ends = np.array(ends)
         V, T = HP.concat_pieces([(co, tri) for _o, co, tri in pieces])
         self.tree = HP.bvh_of(V, T)
-        self.lo, self.hi = (V.min(0) - REACH, V.max(0) + REACH) if len(V) else (None, None)
+        self.reach = SOLID_REACH if closed else REACH
+        self.lo, self.hi = (V.min(0) - self.reach, V.max(0) + self.reach) if len(V) else (None, None)
 
     def near(self, P):
         if self.tree is None or not len(P):
             return np.zeros(0, dtype=np.int64)
         return np.nonzero(np.all((P > self.lo) & (P < self.hi), axis=1))[0]
 
+    def inside(self, p):
+        """Ray parity in 5 fixed skew directions, majority vote (an opening such as a wrist or neck hole spoils one
+        ray, not three). The nearest face's sign alone is wrong far from a curved body: a skirt over a seated lap,
+        40-50 mm from the thighs, read as inside (e912 s020)."""
+        from mathutils import Vector
+        odd = 0
+        for d in PARITY_DIRS:
+            k, t = 0, 0.0
+            while True:
+                h = self.tree.ray_cast(Vector(p + d * (t + EPS)), Vector(d), PARITY_LEN - t)
+                if h[0] is None:
+                    break
+                k += 1
+                t += EPS + h[3]
+            odd += k % 2
+        return odd >= 3
+
     def depth(self, p):
         """(depth m, label of the nearest face, signed distance to it)."""
         from mathutils import Vector
-        loc, nrm, idx, dist = self.tree.find_nearest(Vector(p), REACH)
+        loc, nrm, idx, dist = self.tree.find_nearest(Vector(p), self.reach)
         if loc is None:
-            return 0.0, None, REACH
+            if not (self.closed and self.inside(p)):
+                return 0.0, None, self.reach
+            loc, nrm, idx, dist = self.tree.find_nearest(Vector(p))  # deeper than the search radius
         loc, nrm = np.array(loc), np.array(nrm)
         sd = dist if (p - loc).dot(nrm) >= 0 else -dist
         lab = self.labels[int(np.searchsorted(self.ends, idx, side="right"))]
-        if self.closed:  # closed solid: inside = behind the nearest face, depth = the distance to it
-            return (dist if sd < 0 else 0.0), lab, sd
+        if self.closed:  # closed solid: inside = odd ray parity (majority of 5), depth = the distance to the surface
+            if sd >= 0 and dist <= 0.01:  # in front of a face it is within 10 mm of: outside (the sign is reliable)
+                return 0.0, lab, sd
+            return (dist if self.inside(p) else 0.0), lab, sd
         return exit_depth(self.tree, p, loc, nrm, dist), lab, sd
 
 
@@ -540,7 +568,7 @@ def rest_depths(bpy, C, names, queries, surfaces_of):
             S = Surfaces([(f"own:{r}:{o.name}", o) for r, o in surfaces_of(c, role)], deps, closed=role == "garment")
             R = []
             for P in points(c[role], deps):
-                r, lab, sd = np.zeros(len(P)), [None] * len(P), np.full(len(P), REACH)
+                r, lab, sd = np.zeros(len(P)), [None] * len(P), np.full(len(P), S.reach)
                 for i in S.near(P):
                     r[i], lab[i], sd[i] = S.depth(P[i])
                 R.append((r, lab, sd))

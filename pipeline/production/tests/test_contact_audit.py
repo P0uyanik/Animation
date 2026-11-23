@@ -30,6 +30,7 @@ import sys
 import tempfile
 
 import bpy
+import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
@@ -257,6 +258,30 @@ if d1:
         check(d3["rows"] == d1["rows"] and d3["sha256"] == d1["sha256"],
               "--jobs 2 = --jobs 1 (rows, vertex moves, sha256)")
         check([r["frame"] for r in d4["rows"]] == [1, 3], "--step 2 measures f1, f3")
+
+# in process: the closed-solid rule (garment_body, body_body) on a deep point and next to a sharp edge
+bpy.ops.wm.read_factory_settings(use_empty=True)
+sc = bpy.context.scene
+big = bpy.data.objects.new("big", box_mesh("big", (0, 0, 0), (0.3, 0.3, 0.3)))
+me = bpy.data.meshes.new("wedge")  # a thin wedge along Y, sharp edge at x = 1.2, half-angle ~7 deg
+me.from_pydata([(1.0, -0.2, -0.025), (1.0, -0.2, 0.025), (1.2, -0.2, 0.0), (1.0, 0.2, -0.025), (1.0, 0.2, 0.025),
+                (1.2, 0.2, 0.0)], [], [(0, 2, 1), (3, 4, 5), (0, 1, 4, 3), (1, 2, 5, 4), (2, 0, 3, 5)])
+me.validate()
+me.update()
+wedge = bpy.data.objects.new("wedge", me)
+for o in (big, wedge):
+    sc.collection.objects.link(o)
+deps = bpy.context.evaluated_depsgraph_get()
+T = CA.Surfaces([("x:body:big", big), ("x:body:wedge", wedge)], deps, closed=True)
+d_deep = T.depth(np.array((0.0, 0.0, 0.22)))[0]
+check(abs(d_deep - 0.08) < 1e-4, f"closed rule: 80 mm deep is 80 mm (no 50 mm search cut-off; {d_deep * 1e3:.1f})")
+check(T.depth(np.array((0.0, 0.0, 0.0)))[0] > 0.29, "closed rule: the centre of a 0.6 m box is 300 mm deep")
+outs = [np.array((1.2 + 0.03 * np.cos(a), 0.0, 0.03 * np.sin(a))) for a in np.radians(np.arange(-80, 81, 10))]
+res = [(T.depth(q)[0], T.depth(q)[2]) for q in outs]
+check(all(r[0] == 0.0 for r in res), "closed rule: points 30 mm beyond a sharp edge are outside")
+check(any(r[1] < 0 for r in res), "precondition: the nearest face's sign says inside for some of them "
+      f"({sorted({round(r[1] * 1e3, 1) for r in res})} mm)")
+check(T.depth(np.array((1.05, 0.0, 0.0)))[0] > 0, "closed rule: a point inside the wedge is inside")
 
 # pure Python: staging, known rules, snaps split
 rows = [{"frame": f, "jump_mm": {}, "sha256": "", "classes": {"hair_other": {"x": {
