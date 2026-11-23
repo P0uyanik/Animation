@@ -56,7 +56,7 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
             "lock_volume": False, "static_inside": "keep",
             "static_fade_m": [0.002, 0.01], "keep_outside": "static",
-            "other_skin_fade_m": [0.004, 0.012], "static_move_fade_m": [0.0, 0.0]}
+            "other_skin_fade_m": [0.004, 0.012], "static_move_fade_m": [0.004, 0.012]}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
 # BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
@@ -69,8 +69,9 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
 # full up to d = a and faded to nothing at d = b (applied d * (b - d) / (b - a) between), so the push-out never moves
 # a vertex by more than b^2 / 4 / (b - a) (4.5 mm with the defaults) for a neighbour: deeper overlaps are staging
 # (heads / bodies inside each other, T-191), left as baked and reported apart; a clamp that lets go when the neighbour
-# leaves would be a pop (boy fringe in the auburn head, s020 f77-83, +44 mm). static_move_fade_m [a, b] (off with
-# [0, 0]): the same move fade for every clamp of a static vertex
+# leaves would be a pop (boy fringe in the auburn head, s020 f77-83, +44 mm). static_move_fade_m [a, b] ([0, 0] = off):
+# the same move fade for every clamp of a static vertex (a static vertex deep in a fold or under cloth that sweeps
+# over the head lets go in one frame: s020 f93-105 / f201-207, +5..13 mm)
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static

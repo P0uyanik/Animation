@@ -185,7 +185,9 @@ def skinned(name, V, F, groups):
 # torso: a closed box far below at rest; the "torso" bone lifts it to z 0.70-0.80 in frame 1
 tv, tf = box((-0.1, -0.1, -0.60), (0.1, 0.1, -0.50))
 torso = skinned("body_torso", tv, tf, {"torso": (range(8), [1.0] * 8)})
-# fold: an open plate behind the cap at rest (x = -0.15); the "fold" bone moves it to x = -0.075 in frame 1
+# fold: an open plate behind the cap at rest (x = -0.15); the "fold" bone moves it to x = -0.067 in frame 1
+# (the cap row x = -0.065 2 mm behind it: pushed out) and to x = -0.08 in frame 7 (rows 15 / 5 mm behind it: a move of
+# 16.5 mm is left as baked, 6.5 mm is faded to 4.47 mm, static_move_fade_m)
 fv = [(-0.15, -0.1, 1.02), (-0.15, 0.1, 1.02), (-0.15, 0.1, 1.12), (-0.15, -0.1, 1.12)]
 fold = skinned("body_fold", fv, [(0, 3, 2, 1)], {"fold": (range(4), [1.0] * 4)})  # normal -x: outwards, like skin
 # rim: a closed box far below at rest; the "rim" bone lifts it in frame 3 over the cap's static anchors (x -0.095 ..
@@ -278,7 +280,7 @@ po = HP.PushOut(sc, HP.load_spec("on"), states, {"cup": cup}, [])
 check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] in po.colliders,
       caps=[c.name for c in po.caps])
 # frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest; frame 3: the rim over the anchors
-for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63, 0.0)),
+for f, (tz, fx, rz, sz) in ((1, (1.30, 0.083, 0.0, 0.0)), (7, (0.0, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63, 0.0)),
                             (4, (0.0, 0.0, 0.0, 1.63)), (5, (0.0, 0.0, 0.0, 0.0)), (6, (0.0, 0.0, 0.0, 0.0))):
     # frame 6: the neighbour's box across the lock chain (x -0.01 .. 0.01, z 0.83 .. 0.91, joint 2 inside: a push of
     # more than 12 mm): stage A leaves the chain as baked (staging)
@@ -296,7 +298,7 @@ for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0
             pb.keyframe_insert(path, frame=f)
 baked = {}
 before = {}
-for f in (1, 2, 3, 4, 5, 6):
+for f in (1, 2, 3, 4, 5, 6, 7):
     sc.frame_set(f)
     dg = bpy.context.evaluated_depsgraph_get()
     e = lock.evaluated_get(dg)
@@ -340,8 +342,14 @@ C1 = eval_points(cap, 1)
 cap_rest = np.array([tuple(v) for v in cv])
 check("B.lock_out_of_torso", inside_box(before[1], TLO, THI) > 0 and inside_box(L1, TLO, THI, -0.0005) == 0,
       before=inside_box(before[1], TLO, THI), after=inside_box(L1, TLO, THI, -0.0005))
-behind = lambda P: int(((P[:, 0] > -0.0805) & (P[:, 0] < -0.06) & (np.abs(P[:, 1]) < 0.1) & (P[:, 2] > 1.02) & (P[:, 2] < 1.12)).sum())  # noqa: E731
+behind = lambda P: int(((P[:, 0] > -0.0675) & (P[:, 0] < -0.06) & (np.abs(P[:, 1]) < 0.1) & (P[:, 2] > 1.02) & (P[:, 2] < 1.12)).sum())  # noqa: E731
 check("B.cap_out_of_fold", behind(cap_rest) > 0 and behind(C1) == 0, before=behind(cap_rest), after=behind(C1))
+C7 = eval_points(cap, 7)
+mv7 = np.linalg.norm(C7 - cap_rest, axis=1)
+r65 = np.abs(cap_rest[:, 0] + 0.065) < 1e-6
+r75b = np.abs(cap_rest[:, 0] + 0.075) < 1e-6
+check("B.deep_fold_faded", mv7[r65].max() < 1e-6 and np.abs(mv7[r75b] - 0.00447).max() < 2e-4
+      and mv7[~(r65 | r75b)].max() < 1e-6, moved_15mm=float(mv7[r65].max()), moved_5mm=float(mv7[r75b].max()))
 C2 = eval_points(cap, 2)
 L2 = eval_points(lock, 2)
 check("B.outside_untouched", np.allclose(C2, cap_rest, atol=1e-6) and np.allclose(L2, before[2], atol=1e-6),
