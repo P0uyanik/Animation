@@ -1,0 +1,343 @@
+{
+ "note": "Fitted-view measures (front, side) still outside the T-204 band after the P2 fit on existing spec scalars. dz per step = finite-difference response of the measure (in tolerance units) to one control step, sign toward the target (positive helps). Input for P3 (Warp/Hook/Lattice / face_generic/4).",
+ "stuck": [
+  {
+   "view": "front",
+   "measure": "cheek_width",
+   "group": "face",
+   "reference": 0.92575,
+   "tolerance": 0.055,
+   "start": 0.82307,
+   "best": 0.8092,
+   "start_z": -1.867,
+   "best_z": -2.119,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.shape.lower_face.cheek_pad_m",
+     "dz": 0.339
+    },
+    {
+     "control": "face.shape.cheek_x",
+     "dz": 0.339
+    },
+    {
+     "control": "face.layout.chin_below_eye_m",
+     "dz": 0.282
+    }
+   ],
+   "p3": "front outline control points (cheek width at eye-mouth band): body.params.head.outline.front / face_generic/4 outline"
+  },
+  {
+   "view": "front",
+   "measure": "eye_to_chin",
+   "group": "face",
+   "reference": 0.31098,
+   "tolerance": 0.025,
+   "start": 0.24525,
+   "best": 0.25079,
+   "start_z": -2.629,
+   "best_z": -2.408,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.214
+    },
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.02
+    },
+    {
+     "control": "face.eyes.scale.1",
+     "dz": 0.005
+    }
+   ],
+   "p3": "chin height: head outline chin_t / lower_half_height (body.params.head); chin_below_eye_m moves the face shape, not the outline chin"
+  },
+  {
+   "view": "front",
+   "measure": "eye_y",
+   "group": "face",
+   "reference": 0.68902,
+   "tolerance": 0.025,
+   "start": 0.75475,
+   "best": 0.74921,
+   "start_z": 2.629,
+   "best_z": 2.408,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.214
+    },
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.02
+    },
+    {
+     "control": "face.eyes.scale.1",
+     "dz": 0.005
+    }
+   ],
+   "p3": "as eye_to_chin (complement)"
+  },
+  {
+   "view": "front",
+   "measure": "forehead_covered",
+   "group": "hair",
+   "reference": 0.8,
+   "tolerance": 0.13,
+   "start": 0.4889,
+   "best": 0.49593,
+   "start_z": -2.393,
+   "best_z": -2.339,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.radius_m",
+     "dz": 0.147
+    },
+    {
+     "control": "face.brows.height",
+     "dz": 0.122
+    },
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.099
+    }
+   ],
+   "p3": "hair group: reported apart, not fitted (hair held fixed)"
+  },
+  {
+   "view": "front",
+   "measure": "fringe_eye",
+   "group": "hair",
+   "reference": 0.288,
+   "tolerance": 0.05,
+   "start": 0.38344,
+   "best": 0.37788,
+   "start_z": 1.909,
+   "best_z": 1.798,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.132
+    },
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.011
+    },
+    {
+     "control": "face.eyes.scale.1",
+     "dz": 0.003
+    }
+   ],
+   "p3": "hair group: reported apart, not fitted (hair held fixed)"
+  },
+  {
+   "view": "front",
+   "measure": "jaw_width",
+   "group": "face",
+   "reference": 0.70318,
+   "tolerance": 0.065,
+   "start": 0.61426,
+   "best": 0.58447,
+   "start_z": -1.368,
+   "best_z": -1.826,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.shape.outline_exponent",
+     "dz": 0.431
+    },
+    {
+     "control": "face.shape.lower_face.jaw_x",
+     "dz": 0.343
+    },
+    {
+     "control": "face.shape.lower_face.jaw_round_m",
+     "dz": 0.144
+    }
+   ],
+   "p3": "front outline control points below the mouth (face_generic/4 outline); jaw_x trades it against side cheek_bulge"
+  },
+  {
+   "view": "side",
+   "measure": "cheek_advance",
+   "group": "face",
+   "reference": 0.0081,
+   "tolerance": 0.02,
+   "start": 0.05264,
+   "best": 0.05301,
+   "start_z": 2.227,
+   "best_z": 2.245,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.scale.2",
+     "dz": 0.35
+    },
+    {
+     "control": "face.shape.cheek_x",
+     "dz": 0.175
+    },
+    {
+     "control": "face.eyes.radius_m",
+     "dz": 0.175
+    }
+   ],
+   "p3": "profile outline control points at eye level (face_generic/4 side outline)"
+  },
+  {
+   "view": "side",
+   "measure": "exposed_cheek",
+   "group": "hair",
+   "reference": 0.32389,
+   "tolerance": 0.035,
+   "start": 0.08771,
+   "best": 0.08833,
+   "start_z": -6.748,
+   "best_z": -6.73,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.lids.lower_edge_deg",
+     "dz": 0.2
+    },
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.137
+    },
+    {
+     "control": "face.shape.lower_face.cheek_pad_m",
+     "dz": 0.1
+    }
+   ],
+   "p3": "hair group: reported apart, not fitted (hair held fixed)"
+  },
+  {
+   "view": "side",
+   "measure": "eye_to_chin",
+   "group": "face",
+   "reference": 0.30364,
+   "tolerance": 0.025,
+   "start": 0.23686,
+   "best": 0.25441,
+   "start_z": -2.671,
+   "best_z": -1.969,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.lids.upper_edge_deg",
+     "dz": 0.21
+    },
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.14
+    },
+    {
+     "control": "face.shape.outline_exponent",
+     "dz": 0.106
+    }
+   ],
+   "p3": "chin height: head outline chin_t / lower_half_height (body.params.head); chin_below_eye_m moves the face shape, not the outline chin"
+  },
+  {
+   "view": "side",
+   "measure": "eye_width",
+   "group": "face",
+   "reference": 0.08097,
+   "tolerance": 0.02,
+   "start": 0.03508,
+   "best": 0.04591,
+   "start_z": -2.295,
+   "best_z": -1.753,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.351
+    },
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.203
+    },
+    {
+     "control": "face.eyes.protrusion_m",
+     "dz": 0.178
+    }
+   ],
+   "p3": "side eye-opening shape: eye-opening superellipse + lid droop (face_generic/4); RIM/lens occlusion in profile"
+  },
+  {
+   "view": "side",
+   "measure": "eye_y",
+   "group": "face",
+   "reference": 0.69636,
+   "tolerance": 0.025,
+   "start": 0.76314,
+   "best": 0.74559,
+   "start_z": 2.671,
+   "best_z": 1.969,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.lids.upper_edge_deg",
+     "dz": 0.21
+    },
+    {
+     "control": "face.eyes.yaw_deg",
+     "dz": 0.14
+    },
+    {
+     "control": "face.shape.outline_exponent",
+     "dz": 0.106
+    }
+   ],
+   "p3": "as eye_to_chin (complement)"
+  },
+  {
+   "view": "side",
+   "measure": "opening_h_w",
+   "group": "face",
+   "reference": 1.9,
+   "tolerance": 0.15,
+   "start": 2.98848,
+   "best": 3.14778,
+   "start_z": 7.257,
+   "best_z": 8.319,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.protrusion_m",
+     "dz": 2.435
+    },
+    {
+     "control": "face.shape.face_width_below_eye_m",
+     "dz": 2.415
+    },
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 2.376
+    }
+   ],
+   "p3": "side eye-opening superellipse (face_generic/4); ratio over ~13 px (noisy)"
+  },
+  {
+   "view": "side",
+   "measure": "profile_depth",
+   "group": "hair",
+   "reference": 1.04453,
+   "tolerance": 0.045,
+   "start": 0.78595,
+   "best": 0.79502,
+   "start_z": -5.746,
+   "best_z": -5.545,
+   "best_helping_controls_dz_per_step": [
+    {
+     "control": "face.eyes.offset_z_m",
+     "dz": 0.328
+    },
+    {
+     "control": "face.shape.lower_face.jaw_x",
+     "dz": 0.186
+    },
+    {
+     "control": "face.mouth.jaw_open_deg",
+     "dz": 0.123
+    }
+   ],
+   "p3": "hair group: reported apart, not fitted (hair held fixed)"
+  }
+ ]
+}
