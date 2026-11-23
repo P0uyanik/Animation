@@ -1131,5 +1131,8 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   versions (CURRENT changes): each one comes to the owner as a sheet for approval before it goes CURRENT. Bundling with
   the face releases is the Supervisor's call (not a priority for the owner). Fix the girl's forehead stair-step with H2
   as planned.
+  Supervisor note (R8, ledger only, no new approval): T-219 publishes these as CANDIDATES
+  girl_auburn_bun_glasses **0.15.0** and girl_white_hair_blue_dress **0.2.0** (opt-ins hair_flock, cap_contour); CURRENT
+  only after the owner approves their sheets.
 - **T-199 compositor:** **plush_soft becomes the DEFAULT final profile** (owner approves the final-render default
   change); previews unchanged.
