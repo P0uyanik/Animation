@@ -14,4 +14,4 @@ Owner decision 2026-11-23: the T-199 compositor look `plush_soft` is the default
 Pass `--profile final720` (`shot_render.py`, `run_shot.py`, `tools/pc/render_package.py`).
 
 ## Note
-Output folders of `render_package.py` for the default are now `<pkg>_render_final720_look`.
+
