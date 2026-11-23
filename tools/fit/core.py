@@ -106,3 +106,171 @@ def search(start, bounds, seed, budget, evaluate):
         if all(lo == hi for lo, hi in bounds.values()):
             break
     return best_index, best
+
+
+# ---------------------------------------------------------------------------------------------- T-215 (phase P2)
+# Band-fit helpers for T-204 measures: z = gap / tolerance, so |z| <= 1 is inside the tolerance band.
+HINGE_CAP = 4.0      # |z| beyond 1 + HINGE_CAP adds nothing more: one far outlier cannot outweigh the band count
+UNSCORED_LOSS = 0.5 + 0.5 * HINGE_CAP  # a measure that was scored at the start and turns unscored: worst outside
+
+
+def band_loss(z):
+    """Count-oriented band loss (pass rule D3 counts measures within tolerance): 0.5 for being outside the band, plus
+    0.5 per tolerance beyond it (capped), plus a weak pull to the band centre so ties inside the band still move."""
+    if z is None:
+        return UNSCORED_LOSS
+    a = abs(z)
+    h = max(0.0, a - 1.0)
+    return (0.5 if h > 0 else 0.0) + 0.5 * min(h, HINGE_CAP) + 0.02 * min(a, 1.0) ** 2
+
+
+def view_cost(zs_by_view, keys_by_view):
+    """Equal view weights (owner D2): mean band loss per view, then the mean over views. keys_by_view fixes the
+    measure set (the start's scored rows), so a measure cannot leave the objective by turning unscored."""
+    per = {}
+    for view, keys in sorted(keys_by_view.items()):
+        zs = zs_by_view.get(view, {})
+        per[view] = sum(band_loss(zs.get(k)) for k in keys) / max(1, len(keys))
+    return sum(per.values()) / max(1, len(per)), per
+
+
+def edit_penalty(values, start, scales, weight):
+    """Large edits cost: weight x sum of squared steps, each in units of its control's scale."""
+    return weight * sum(((values[k] - start[k]) / scales[k]) ** 2 for k in start)
+
+
+def fd_step(start, bounds, step):
+    """Forward step inside the bounds; backward where the forward step would leave them."""
+    lo, hi = bounds
+    if start + step <= hi:
+        return step
+    if start - step >= lo:
+        return -step
+    raise ValueError(f"step {step} does not fit inside {bounds} from {start}")
+
+
+def sensitivity(z0, trials, steps):
+    """Finite-difference columns in z per control step: {control: {measure: dz}}. A measure unscored on either side
+    is left out of that column."""
+    cols = {}
+    for name, z in trials.items():
+        cols[name] = {k: (z[k] - z0[k]) * (1.0 if steps[name] > 0 else -1.0)
+                      for k in z0 if z0.get(k) is not None and z.get(k) is not None}
+    return cols
+
+
+def _cos(a, b):
+    keys = sorted(set(a) & set(b))
+    na = math.sqrt(sum(a[k] ** 2 for k in keys))
+    nb = math.sqrt(sum(b[k] ** 2 for k in keys))
+    return 0.0 if not na or not nb else sum(a[k] * b[k] for k in keys) / (na * nb)
+
+
+def select_controls(cols, measures, min_effect=0.25, max_cos=0.95, noisy=(), coupled=()):
+    """Drop controls whose largest |dz| over the fitted measures stays under min_effect (no reach), then drop the
+    weaker of every pair whose columns point the same way within max_cos (redundant). `noisy` measures (a ratio over a
+    few pixels) still count in the objective but not here. `coupled` = [(measure subset, max_cos)]: the same pair test
+    on one trace family, e.g. the front and profile cheek/jaw contours (T-212: coupled cheek and jaw knobs).
+    Returns (kept, dropped) with a reason per dropped control."""
+    measures = [k for k in measures if k not in set(noisy)]
+    norm = {n: math.sqrt(sum(c.get(k, 0.0) ** 2 for k in measures)) for n, c in cols.items()}
+    reach = {n: max([abs(c.get(k, 0.0)) for k in measures] or [0.0]) for n, c in cols.items()}
+    dropped = {n: f"max |dz| {reach[n]:.3f} < {min_effect}" for n in cols if reach[n] < min_effect}
+    live = sorted((n for n in cols if n not in dropped), key=lambda n: (-norm[n], n))
+    kept = []
+    for subset, limit, label in [(measures, max_cos, "redundant with")] + [(list(m), c, "coupled on " + ",".join(m)
+                                                                             + " with") for m, c in coupled]:
+        kept = []
+        acts = {n for n in live if max(abs(cols[n].get(k, 0.0)) for k in subset) >= min_effect}
+        for n in live:  # a control that barely moves this family is not tested on it
+            sub = {k: cols[n].get(k, 0.0) for k in subset}
+            twin = None if n not in acts else next(
+                (m for m in kept if m in acts and abs(_cos(sub, {k: cols[m].get(k, 0.0) for k in subset})) > limit),
+                None)
+            if twin:
+                c = _cos(sub, {k: cols[twin].get(k, 0.0) for k in subset})
+                dropped[n] = f"{label} {twin} (cos {c:+.3f})"
+            else:
+                kept.append(n)
+        live = kept
+    return sorted(kept), dropped
+
+
+def linear_z(z0, cols, start, steps, values):
+    """First-order prediction of every z at values from the finite-difference columns of the controls in values."""
+    z = dict(z0)
+    for name in sorted(values):
+        col = cols[name]
+        t = (values[name] - start[name]) / abs(steps[name])
+        for k, dz in col.items():
+            if z.get(k) is not None:
+                z[k] += dz * t
+    return z
+
+
+def cmaes(start, bounds, seed, budget, evaluate_many, sigma=0.2, popsize=6, mean=None):
+    """Seeded separable CMA-ES (diagonal covariance) in bounds-normalised coordinates [0, 1] per control. Candidates
+    are clipped to the bounds. evaluate_many(list of (index, values)) returns one cost per candidate (lower is
+    better). The first generation evaluates the mean itself plus popsize - 1 samples. Ties keep the earlier trial.
+    Returns (best index, best values, best cost)."""
+    keys = sorted(bounds)
+    n = len(keys)
+    rng = random.Random(seed)
+    span = {k: (bounds[k][1] - bounds[k][0]) or 1.0 for k in keys}
+
+    def to_unit(v):
+        return [(v[k] - bounds[k][0]) / span[k] for k in keys]
+
+    def from_unit(u):
+        return {k: min(bounds[k][1], max(bounds[k][0], bounds[k][0] + u[i] * span[k])) for i, k in enumerate(keys)}
+    m = to_unit(mean or start)
+    mu = max(1, popsize // 2)
+    w = [math.log(mu + 0.5) - math.log(i + 1) for i in range(mu)]
+    w = [x / sum(w) for x in w]
+    mueff = 1.0 / sum(x * x for x in w)
+    cs = (mueff + 2) / (n + mueff + 5)
+    ds = 1 + 2 * max(0.0, math.sqrt((mueff - 1) / (n + 1)) - 1) + cs
+    cc = (4 + mueff / n) / (n + 4 + 2 * mueff / n)
+    c1 = 2 / ((n + 1.3) ** 2 + mueff) * (n + 2) / 3  # separable learning rate (Ros & Hansen 2008)
+    cmu = min(1 - c1, 2 * (mueff - 2 + 1 / mueff) / ((n + 2) ** 2 + mueff) * (n + 2) / 3)
+    chi = math.sqrt(n) * (1 - 1 / (4 * n) + 1 / (21 * n * n))
+    diag = [1.0] * n
+    ps, pc = [0.0] * n, [0.0] * n
+    best = (math.inf, -1, None)
+    done = 0
+    gen = 0
+    while done < budget:
+        lam = min(popsize, budget - done)
+        zs, us = [], []
+        for j in range(lam):
+            if gen == 0 and j == 0:
+                z = [0.0] * n
+            else:
+                z = [rng.gauss(0, 1) for _ in range(n)]
+            zs.append(z)
+            us.append([m[i] + sigma * math.sqrt(diag[i]) * z[i] for i in range(n)])
+        cands = [from_unit(u) for u in us]
+        costs = list(evaluate_many([(done + j, c) for j, c in enumerate(cands)]))
+        if len(costs) != lam or not all(math.isfinite(c) for c in costs):
+            raise ValueError("non-finite candidate cost")
+        for j, c in enumerate(costs):
+            if c < best[0]:
+                best = (c, done + j, cands[j])
+        done += lam
+        gen += 1
+        if lam < 2:
+            continue
+        order = sorted(range(lam), key=lambda j: (costs[j], j))[:min(mu, lam)]
+        ww = w[:len(order)]
+        ww = [x / sum(ww) for x in ww]
+        # selection on the clipped points: steps re-derived from the clipped unit coordinates
+        y = [[(to_unit(cands[j])[i] - m[i]) / sigma for i in range(n)] for j in order]
+        yw = [sum(ww[r] * y[r][i] for r in range(len(order))) for i in range(n)]
+        m = [m[i] + sigma * yw[i] for i in range(n)]
+        ps = [(1 - cs) * ps[i] + math.sqrt(cs * (2 - cs) * mueff) * yw[i] / math.sqrt(diag[i]) for i in range(n)]
+        pc = [(1 - cc) * pc[i] + math.sqrt(cc * (2 - cc) * mueff) * yw[i] for i in range(n)]
+        diag = [max(1e-6, (1 - c1 - cmu) * diag[i] + c1 * pc[i] ** 2 +
+                    cmu * sum(ww[r] * y[r][i] ** 2 for r in range(len(order)))) for i in range(n)]
+        sigma *= math.exp((cs / ds) * (math.sqrt(sum(x * x for x in ps)) / chi - 1))
+        sigma = min(sigma, 0.5)
+    return best[1], best[2], best[0]

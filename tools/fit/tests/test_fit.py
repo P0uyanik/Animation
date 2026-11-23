@@ -164,5 +164,75 @@ class FitTests(unittest.TestCase):
                 fresh_output(out)
 
 
+class T204FitTests(unittest.TestCase):
+    """T-215 band fit: loss, finite differences, control selection, seeded CMA-ES (plain Python)."""
+
+    def test_band_loss_and_equal_view_weights(self):
+        from core import UNSCORED_LOSS, band_loss, view_cost
+        self.assertEqual(band_loss(0), 0)
+        self.assertAlmostEqual(band_loss(1), 0.02)
+        self.assertAlmostEqual(band_loss(-3), 0.5 + 1.0 + 0.02)
+        self.assertAlmostEqual(band_loss(1.01) - band_loss(0.99), 0.5, delta=0.01)  # crossing the band edge costs
+        self.assertEqual(band_loss(50), band_loss(-6))  # capped: one far outlier cannot dominate
+        self.assertEqual(band_loss(None), UNSCORED_LOSS)
+        cost, per = view_cost({"a": {"x": 3, "y": 0}, "b": {"x": 0}}, {"a": ["x", "y"], "b": ["x"]})
+        self.assertAlmostEqual(per["a"], 1.52 / 2)
+        self.assertAlmostEqual(cost, per["a"] / 2)  # one measure in b weighs as much as two in a
+        cost2, _ = view_cost({"a": {"x": 3}, "b": {}}, {"a": ["x", "y"], "b": ["x"]})
+        self.assertGreater(cost2, cost)  # measures that turn unscored are penalised, not dropped
+
+    def test_finite_differences_and_selection(self):
+        from core import fd_step, linear_z, select_controls, sensitivity
+        self.assertEqual(fd_step(1.0, [0, 2], 0.5), 0.5)
+        self.assertEqual(fd_step(1.8, [0, 2], 0.5), -0.5)
+        with self.assertRaises(ValueError):
+            fd_step(0.5, [0, 1], 2)
+        z0 = {"m1": 2.0, "m2": -1.0, "m3": None}
+        trials = {"a": {"m1": 1.0, "m2": -1.0, "m3": 0.5}, "b": {"m1": 1.5, "m2": -1.0, "m3": None},
+                  "c": {"m1": 2.01, "m2": -1.02, "m3": None}, "d": {"m1": 2.0, "m2": 0.0, "m3": None}}
+        steps = {"a": 1.0, "b": -2.0, "c": 1.0, "d": 1.0}
+        cols = sensitivity(z0, trials, steps)
+        self.assertEqual(cols["a"], {"m1": -1.0, "m2": 0.0})  # unscored at the start: left out
+        self.assertEqual(cols["b"], {"m1": 0.5, "m2": 0.0})   # a backward step flips the sign
+        kept, dropped = select_controls(cols, ["m1", "m2"], min_effect=0.25, max_cos=0.95)
+        self.assertEqual(kept, ["a", "d"])
+        self.assertIn("redundant with a", dropped["b"])
+        self.assertIn("max |dz|", dropped["c"])
+        # noisy measures do not drive selection; a coupled trace family drops the weaker of a parallel pair
+        cols2 = {"j": {"cw": 0.5, "jw": 0.6, "x": 0.0, "n": 3.0}, "k": {"cw": 0.4, "jw": 0.5, "x": 0.9, "n": 0.0},
+                 "e": {"cw": 0.01, "jw": 0.02, "x": -0.8, "n": 0.0}}
+        kept, dropped = select_controls(cols2, ["cw", "jw", "x", "n"], 0.25, 0.95, noisy=["n"],
+                                        coupled=[(["cw", "jw"], 0.85)])
+        self.assertEqual(kept, ["e", "k"])
+        self.assertIn("coupled on cw,jw with k", dropped["j"])
+        z = linear_z(z0, cols, {"a": 0.0, "d": 0.0}, steps, {"a": 0.5, "d": 1.0})
+        self.assertAlmostEqual(z["m1"], 1.5)
+        self.assertAlmostEqual(z["m2"], 0.0)
+        self.assertIsNone(z["m3"])
+
+    def test_cmaes_seeded_bounded(self):
+        from core import cmaes, edit_penalty
+        bounds = {"a": [0, 1], "b": [-1, 0.5]}
+        seen = []
+
+        def many(batch):
+            seen.extend(batch)
+            return [(v["a"] - 0.3) ** 2 + (v["b"] - 0.9) ** 2 for _, v in batch]
+
+        run = lambda seed: cmaes({"a": 0.5, "b": 0.0}, bounds, seed, 60, many, popsize=6)
+        i, best, cost = run(4)
+        self.assertEqual([j for j, _ in seen], list(range(60)))
+        self.assertEqual(seen[0][1], {"a": 0.5, "b": 0.0})  # the mean is the first candidate
+        self.assertTrue(all(0 <= v["a"] <= 1 and -1 <= v["b"] <= 0.5 for _, v in seen))
+        self.assertAlmostEqual(best["a"], 0.3, places=1)
+        self.assertEqual(best["b"], 0.5)  # optimum outside: pinned at the bound
+        self.assertEqual(seen[i][1], best)
+        first = list(seen)
+        seen.clear()
+        self.assertEqual(run(4), (i, best, cost))
+        self.assertEqual(seen, first)
+        self.assertEqual(edit_penalty({"a": 1.0}, {"a": 0.0}, {"a": 0.5}, 0.1), 0.4)
+
+
 if __name__ == "__main__":
     unittest.main()

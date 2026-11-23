@@ -1,0 +1,71 @@
+{
+ "pass": true,
+ "sweep_pass": false,
+ "blender": {
+  "override": null,
+  "pinned": {
+   "build_hash": "02f0899d78e3",
+   "version": "5.3.0"
+  },
+  "running": {
+   "build_hash": "02f0899d78e3",
+   "version": "5.3.0"
+  }
+ },
+ "seconds": {
+  "export": 13.8,
+  "total": 135.8
+ },
+ "knob_free": true,
+ "core": [
+  {
+   "name": "neutral",
+   "max_mm": 0.0,
+   "mean_mm": 0.0,
+   "bound_mm": 0.00014901161193847656,
+   "pass": true
+  },
+  {
+   "name": "half_blink",
+   "max_mm": 6.006850114687196e-05,
+   "mean_mm": 3.4390134867588223e-07,
+   "bound_mm": 0.0003123415470123291,
+   "pass": true
+  },
+  {
+   "name": "smile_blink",
+   "max_mm": 9.064022496787041e-05,
+   "mean_mm": 2.497071165315201e-06,
+   "bound_mm": 0.0004756714820861816,
+   "pass": true
+  }
+ ],
+ "sweep_failing": 9,
+ "sweep_max_mm": 7.802109538602507,
+ "rest_all_objects": {
+  "fail": [],
+  "max_mm": 3.154996264242982e-05,
+  "objects": 85,
+  "vertices": 406192
+ },
+ "combination_correctives": [],
+ "chain_gaps": [
+  "Laugh",
+  "Sadness",
+  "Squint"
+ ],
+ "sweep_problems_first": [
+  "Laugh=0.375: body_skin: 31606 vertices beyond the bound, max 0.991940 mm > 0.000310 mm",
+  "Laugh=0.375: lid_lower.L: 42 vertices beyond the bound, max 3.234029 mm > 0.000309 mm",
+  "Laugh=0.375: lid_lower.R: 42 vertices beyond the bound, max 3.235281 mm > 0.000309 mm",
+  "Laugh=0.375: mouth: 104 vertices beyond the bound, max 4.017588 mm > 0.000309 mm",
+  "Laugh=0.375: mouth_cavity: 130 vertices beyond the bound, max 3.897062 mm > 0.000309 mm",
+  "Laugh=0.625: body_skin: 32335 vertices beyond the bound, max 1.653194 mm > 0.000310 mm",
+  "Laugh=0.625: lid_lower.L: 42 vertices beyond the bound, max 5.390108 mm > 0.000309 mm",
+  "Laugh=0.625: lid_lower.R: 42 vertices beyond the bound, max 5.392194 mm > 0.000309 mm",
+  "Laugh=0.625: mouth: 104 vertices beyond the bound, max 6.695978 mm > 0.000309 mm",
+  "Laugh=0.625: mouth_cavity: 130 vertices beyond the bound, max 6.495101 mm > 0.000309 mm",
+  "Laugh=0.875: body_skin: 31606 vertices beyond the bound, max 0.991940 mm > 0.000310 mm",
+  "Laugh=0.875: lid_lower.L: 42 vertices beyond the bound, max 3.234059 mm > 0.000309 mm"
+ ]
+}

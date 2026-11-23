@@ -1,0 +1,2204 @@
+{
+ "character": "auburn",
+ "spec_sha256": "182611e8361b80c5bfc981e81f713288754d30e08adbb39e27d4f5c2807a62a9",
+ "seed": 215,
+ "budget": 30,
+ "controls": [
+  "face.brows.height",
+  "face.ears.below_eye_m",
+  "face.ears.radii_m.2",
+  "face.eyes.lids.upper_edge_deg",
+  "face.eyes.offset_z_m",
+  "face.eyes.protrusion_m",
+  "face.eyes.radius_m",
+  "face.eyes.scale.0",
+  "face.eyes.scale.2",
+  "face.eyes.yaw_deg",
+  "face.layout.chin_below_eye_m",
+  "face.layout.mouth_below_eye_m",
+  "face.layout.nose_below_eye_m",
+  "face.mouth.extra_shapes.1.lo_drop_m",
+  "face.mouth.half_width_m",
+  "face.shape.cheek_x",
+  "face.shape.lower_face.cheek_pad_m",
+  "face.shape.lower_face.jaw_x"
+ ],
+ "dropped": {
+  "face.ears.radii_m.1": "max |dz| 0.085 < 0.25",
+  "face.eyes.scale.1": "max |dz| 0.175 < 0.25",
+  "face.mouth.jaw_open_deg": "max |dz| 0.215 < 0.25",
+  "face.mouth.lip_height_m": "max |dz| 0.220 < 0.25",
+  "face.shape.cheek_fullness_m": "max |dz| 0.181 < 0.25",
+  "face.shape.face_width_below_eye_m": "max |dz| 0.175 < 0.25",
+  "face.shape.face_width_m": "max |dz| 0.085 < 0.25",
+  "face.mouth.extra_shapes.1.widen": "redundant with face.mouth.half_width_m (cos +1.000)",
+  "face.shape.lower_face.jaw_round_m": "coupled on front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge with face.shape.lower_face.jaw_x (cos +0.871)",
+  "face.shape.outline_exponent": "coupled on front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge with face.shape.lower_face.jaw_x (cos +0.853)",
+  "face.eyes.lids.lower_edge_deg": "coupled on front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge with face.eyes.scale.2 (cos -0.979)",
+  "face.shape.cheek_forward": "coupled on front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge with face.eyes.offset_z_m (cos +0.877)"
+ },
+ "selection": {
+  "min_effect": 0.25,
+  "max_cos": 0.95,
+  "noisy": "side/opening_h_w",
+  "coupled": [
+   "front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge"
+  ],
+  "coupled_cos": 0.85
+ },
+ "bounds": {
+  "face.brows.height": [
+   1.35,
+   1.75
+  ],
+  "face.ears.below_eye_m": [
+   0.0,
+   0.03
+  ],
+  "face.ears.radii_m.2": [
+   0.032,
+   0.055
+  ],
+  "face.eyes.lids.upper_edge_deg": [
+   24,
+   44
+  ],
+  "face.eyes.offset_z_m": [
+   -0.02,
+   0.004
+  ],
+  "face.eyes.protrusion_m": [
+   0.0,
+   0.01
+  ],
+  "face.eyes.radius_m": [
+   0.04,
+   0.056
+  ],
+  "face.eyes.scale.0": [
+   0.9,
+   1.2
+  ],
+  "face.eyes.scale.2": [
+   0.85,
+   1.2
+  ],
+  "face.eyes.yaw_deg": [
+   -8,
+   10
+  ],
+  "face.layout.chin_below_eye_m": [
+   0.085,
+   0.125
+  ],
+  "face.layout.mouth_below_eye_m": [
+   0.045,
+   0.07
+  ],
+  "face.layout.nose_below_eye_m": [
+   0.028,
+   0.042
+  ],
+  "face.mouth.extra_shapes.1.lo_drop_m": [
+   0.006,
+   0.018
+  ],
+  "face.mouth.half_width_m": [
+   0.016,
+   0.025
+  ],
+  "face.shape.cheek_x": [
+   0.9,
+   1.35
+  ],
+  "face.shape.lower_face.cheek_pad_m": [
+   0.01,
+   0.03
+  ],
+  "face.shape.lower_face.jaw_x": [
+   0.35,
+   0.75
+  ]
+ },
+ "start": {
+  "face.brows.height": 1.57,
+  "face.ears.below_eye_m": 0.012,
+  "face.ears.radii_m.2": 0.039,
+  "face.eyes.lids.upper_edge_deg": 34.5,
+  "face.eyes.offset_z_m": -0.009,
+  "face.eyes.protrusion_m": 0.004,
+  "face.eyes.radius_m": 0.048,
+  "face.eyes.scale.0": 1.03,
+  "face.eyes.scale.2": 1.0,
+  "face.eyes.yaw_deg": 0,
+  "face.layout.chin_below_eye_m": 0.0957,
+  "face.layout.mouth_below_eye_m": 0.055,
+  "face.layout.nose_below_eye_m": 0.034,
+  "face.mouth.extra_shapes.1.lo_drop_m": 0.014,
+  "face.mouth.half_width_m": 0.0205,
+  "face.shape.cheek_x": 1.1,
+  "face.shape.lower_face.cheek_pad_m": 0.019262720780454712,
+  "face.shape.lower_face.jaw_x": 0.528468310871156
+ },
+ "start_cost": 0.8780376175661375,
+ "start_per_view": {
+  "front": 0.5009873237037037,
+  "side": 1.2550879114285713
+ },
+ "surrogate_mean": {
+  "face.brows.height": 1.5026272250841064,
+  "face.ears.below_eye_m": 0.013519406662856222,
+  "face.ears.radii_m.2": 0.044975268392021435,
+  "face.eyes.lids.upper_edge_deg": 38.96720121653194,
+  "face.eyes.offset_z_m": -0.006137667746812608,
+  "face.eyes.protrusion_m": 0.005788353879374949,
+  "face.eyes.radius_m": 0.0512738368848701,
+  "face.eyes.scale.0": 0.9356004767695333,
+  "face.eyes.scale.2": 1.036372210795703,
+  "face.eyes.yaw_deg": 8.766043496702828,
+  "face.layout.chin_below_eye_m": 0.09272846677478881,
+  "face.layout.mouth_below_eye_m": 0.051334496189068685,
+  "face.layout.nose_below_eye_m": 0.03420392710648091,
+  "face.mouth.extra_shapes.1.lo_drop_m": 0.012220548583431913,
+  "face.mouth.half_width_m": 0.01968114930489159,
+  "face.shape.cheek_x": 1.1702336719961488,
+  "face.shape.lower_face.cheek_pad_m": 0.019292671544190343,
+  "face.shape.lower_face.jaw_x": 0.4728663137988107
+ },
+ "edit_weight": 0.005,
+ "best": 15,
+ "best_cost": 0.6397874427591441,
+ "best_parameters": {
+  "face.brows.height": 1.5250113428547831,
+  "face.ears.below_eye_m": 0.017499289499124226,
+  "face.ears.radii_m.2": 0.04521086226882777,
+  "face.eyes.lids.upper_edge_deg": 42.15805576823337,
+  "face.eyes.offset_z_m": -0.006878127385889329,
+  "face.eyes.protrusion_m": 0.005221962666773552,
+  "face.eyes.radius_m": 0.04907196199237959,
+  "face.eyes.scale.0": 0.9666514377324149,
+  "face.eyes.scale.2": 1.0234415867490896,
+  "face.eyes.yaw_deg": 4.178510478928514,
+  "face.layout.chin_below_eye_m": 0.09356950231670268,
+  "face.layout.mouth_below_eye_m": 0.046822521536314665,
+  "face.layout.nose_below_eye_m": 0.03353350830479437,
+  "face.mouth.extra_shapes.1.lo_drop_m": 0.010149547693003944,
+  "face.mouth.half_width_m": 0.020214283788882355,
+  "face.shape.cheek_x": 1.0801705568236406,
+  "face.shape.lower_face.cheek_pad_m": 0.02077614513648731,
+  "face.shape.lower_face.jaw_x": 0.4557310952034065
+ },
+ "wall_s": 1899.2977735579998,
+ "trials": [
+  {
+   "trial": 0,
+   "cost": 0.7195768088694766,
+   "penalty": 0.08290287289064058,
+   "per_view": {
+    "front": 0.3758022148148148,
+    "side": 0.8975456571428572
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 1.018,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.089,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.373,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.307,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.158,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.42,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5026272250841064,
+    "face.ears.below_eye_m": 0.013519406662856222,
+    "face.ears.radii_m.2": 0.044975268392021435,
+    "face.eyes.lids.upper_edge_deg": 38.96720121653194,
+    "face.eyes.offset_z_m": -0.006137667746812608,
+    "face.eyes.protrusion_m": 0.005788353879374949,
+    "face.eyes.radius_m": 0.0512738368848701,
+    "face.eyes.scale.0": 0.9356004767695333,
+    "face.eyes.scale.2": 1.036372210795703,
+    "face.eyes.yaw_deg": 8.766043496702828,
+    "face.layout.chin_below_eye_m": 0.09272846677478881,
+    "face.layout.mouth_below_eye_m": 0.051334496189068685,
+    "face.layout.nose_below_eye_m": 0.03420392710648091,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.012220548583431913,
+    "face.mouth.half_width_m": 0.01968114930489159,
+    "face.shape.cheek_x": 1.1702336719961488,
+    "face.shape.lower_face.cheek_pad_m": 0.019292671544190343,
+    "face.shape.lower_face.jaw_x": 0.4728663137988107
+   }
+  },
+  {
+   "trial": 1,
+   "cost": 0.7229095696009663,
+   "penalty": 0.07307952912477582,
+   "per_view": {
+    "front": 0.3407213466666667,
+    "side": 0.9589387342857144
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 0.902,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.072,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.346,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.474,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.155,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.606185280508186,
+    "face.ears.below_eye_m": 0.01572555327768213,
+    "face.ears.radii_m.2": 0.04681497610075751,
+    "face.eyes.lids.upper_edge_deg": 40.12113784116788,
+    "face.eyes.offset_z_m": -0.005431448090407397,
+    "face.eyes.protrusion_m": 0.0059632944051581085,
+    "face.eyes.radius_m": 0.04922742835110986,
+    "face.eyes.scale.0": 0.9734891878357312,
+    "face.eyes.scale.2": 1.057425398733411,
+    "face.eyes.yaw_deg": 6.0729381842664445,
+    "face.layout.chin_below_eye_m": 0.09442762611733505,
+    "face.layout.mouth_below_eye_m": 0.04927472179320751,
+    "face.layout.nose_below_eye_m": 0.03638514075460181,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.013972493171657002,
+    "face.mouth.half_width_m": 0.020195429990506362,
+    "face.shape.cheek_x": 1.118733941343011,
+    "face.shape.lower_face.cheek_pad_m": 0.020774981476888423,
+    "face.shape.lower_face.jaw_x": 0.5153654229103662
+   }
+  },
+  {
+   "trial": 2,
+   "cost": 0.7561294833721768,
+   "penalty": 0.09287221585894923,
+   "per_view": {
+    "front": 0.4200465207407408,
+    "side": 0.9064680142857143
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 1.039,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.09,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.384,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.757,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.181,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.636,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4645736289230786,
+    "face.ears.below_eye_m": 0.011165596417010246,
+    "face.ears.radii_m.2": 0.0416410554590722,
+    "face.eyes.lids.upper_edge_deg": 40.79627741154263,
+    "face.eyes.offset_z_m": -0.004813267005829935,
+    "face.eyes.protrusion_m": 0.004535886728740281,
+    "face.eyes.radius_m": 0.05096590789460504,
+    "face.eyes.scale.0": 0.9467025151980876,
+    "face.eyes.scale.2": 1.0157164898901736,
+    "face.eyes.yaw_deg": 8.099607866911349,
+    "face.layout.chin_below_eye_m": 0.09212636053383494,
+    "face.layout.mouth_below_eye_m": 0.05219410693596357,
+    "face.layout.nose_below_eye_m": 0.0345348909040691,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.014630382314702685,
+    "face.mouth.half_width_m": 0.01957857639055638,
+    "face.shape.cheek_x": 1.2918699345890026,
+    "face.shape.lower_face.cheek_pad_m": 0.02082198903857887,
+    "face.shape.lower_face.jaw_x": 0.5270240039998864
+   }
+  },
+  {
+   "trial": 3,
+   "cost": 0.7503237092394739,
+   "penalty": 0.08224681484793948,
+   "per_view": {
+    "front": 0.4985003259259259,
+    "side": 0.8376534628571429
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 11,
+     "mean_abs_z": 1.154,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.13,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.428,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.399,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 1.988,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.34,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.575842836383701,
+    "face.ears.below_eye_m": 0.01396233061803735,
+    "face.ears.radii_m.2": 0.04854917853212186,
+    "face.eyes.lids.upper_edge_deg": 38.91962873855413,
+    "face.eyes.offset_z_m": -0.009141575610411137,
+    "face.eyes.protrusion_m": 0.00509684998485279,
+    "face.eyes.radius_m": 0.048914896391884385,
+    "face.eyes.scale.0": 0.9346846764338729,
+    "face.eyes.scale.2": 0.9636674846922694,
+    "face.eyes.yaw_deg": 7.881532320431679,
+    "face.layout.chin_below_eye_m": 0.10080596606000275,
+    "face.layout.mouth_below_eye_m": 0.052307429172610734,
+    "face.layout.nose_below_eye_m": 0.03449350989138208,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010552685568832182,
+    "face.mouth.half_width_m": 0.022758163110674825,
+    "face.shape.cheek_x": 1.1553728303576247,
+    "face.shape.lower_face.cheek_pad_m": 0.020048467808242217,
+    "face.shape.lower_face.jaw_x": 0.4969496764224811
+   }
+  },
+  {
+   "trial": 4,
+   "cost": 0.7571899317923365,
+   "penalty": 0.0816808144907493,
+   "per_view": {
+    "front": 0.4355753288888889,
+    "side": 0.9154429057142857
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 1.087,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.064,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.44,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.669,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.315,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.566,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5398770225933096,
+    "face.ears.below_eye_m": 0.015522177942894622,
+    "face.ears.radii_m.2": 0.04005721798350143,
+    "face.eyes.lids.upper_edge_deg": 37.851059480403606,
+    "face.eyes.offset_z_m": -0.005773872963635835,
+    "face.eyes.protrusion_m": 0.005465034138963439,
+    "face.eyes.radius_m": 0.05184729419353943,
+    "face.eyes.scale.0": 0.9046850165997439,
+    "face.eyes.scale.2": 0.9987715327927196,
+    "face.eyes.yaw_deg": 7.022824926497405,
+    "face.layout.chin_below_eye_m": 0.09296415694869097,
+    "face.layout.mouth_below_eye_m": 0.05380791820840811,
+    "face.layout.nose_below_eye_m": 0.03361412170507065,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.012209017623902217,
+    "face.mouth.half_width_m": 0.01999364282515921,
+    "face.shape.cheek_x": 1.1866271419057957,
+    "face.shape.lower_face.cheek_pad_m": 0.01992954102862099,
+    "face.shape.lower_face.jaw_x": 0.3944000980975271
+   }
+  },
+  {
+   "trial": 5,
+   "cost": 0.7898676189350077,
+   "penalty": 0.10372253232125105,
+   "per_view": {
+    "front": 0.3782399503703704,
+    "side": 0.994050222857143
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 0.96,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.085,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 14,
+     "mean_abs_z": 1.368,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.757,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.232,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 5.8,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4963603391744784,
+    "face.ears.below_eye_m": 0.01440576149371695,
+    "face.ears.radii_m.2": 0.04551041341878305,
+    "face.eyes.lids.upper_edge_deg": 37.5656736515703,
+    "face.eyes.offset_z_m": -0.0027615215427957904,
+    "face.eyes.protrusion_m": 0.007152864651949292,
+    "face.eyes.radius_m": 0.049136506487687026,
+    "face.eyes.scale.0": 0.939047330931198,
+    "face.eyes.scale.2": 1.0544349460801192,
+    "face.eyes.yaw_deg": 7.584309242306173,
+    "face.layout.chin_below_eye_m": 0.08890878339647663,
+    "face.layout.mouth_below_eye_m": 0.05120882082217952,
+    "face.layout.nose_below_eye_m": 0.035411995862084565,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011914773783837472,
+    "face.mouth.half_width_m": 0.020712403286844858,
+    "face.shape.cheek_x": 1.1721404069826218,
+    "face.shape.lower_face.cheek_pad_m": 0.021293667338009723,
+    "face.shape.lower_face.jaw_x": 0.5018187018463462
+   }
+  },
+  {
+   "trial": 6,
+   "cost": 0.7790039058421703,
+   "penalty": 0.08308069145063586,
+   "per_view": {
+    "front": 0.4279452859259259,
+    "side": 0.9639011428571429
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 12,
+     "mean_abs_z": 1.041,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.084,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 9,
+     "mean_abs_z": 1.595,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.49,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.26,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.273,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5458720686186203,
+    "face.ears.below_eye_m": 0.016286298402673302,
+    "face.ears.radii_m.2": 0.04549672648527616,
+    "face.eyes.lids.upper_edge_deg": 39.005888763125824,
+    "face.eyes.offset_z_m": -0.006920011415443664,
+    "face.eyes.protrusion_m": 0.006831753652552373,
+    "face.eyes.radius_m": 0.0519954416903641,
+    "face.eyes.scale.0": 0.9587438248663283,
+    "face.eyes.scale.2": 1.0653431147069221,
+    "face.eyes.yaw_deg": 5.0355364534973095,
+    "face.layout.chin_below_eye_m": 0.09517587705240088,
+    "face.layout.mouth_below_eye_m": 0.050437500182895695,
+    "face.layout.nose_below_eye_m": 0.03579476531827289,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.012507885043486131,
+    "face.mouth.half_width_m": 0.02045146336324672,
+    "face.shape.cheek_x": 1.2213829392319222,
+    "face.shape.lower_face.cheek_pad_m": 0.01770882743150803,
+    "face.shape.lower_face.jaw_x": 0.4453913230629496
+   }
+  },
+  {
+   "trial": 7,
+   "cost": 0.7848789616176369,
+   "penalty": 0.08904940098271634,
+   "per_view": {
+    "front": 0.39475733555555553,
+    "side": 0.9969017857142858
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 1.035,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.108,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 10,
+     "mean_abs_z": 1.519,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.656,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.304,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4629671723652158,
+    "face.ears.below_eye_m": 0.010685986199475816,
+    "face.ears.radii_m.2": 0.04641813218459025,
+    "face.eyes.lids.upper_edge_deg": 40.40098183260454,
+    "face.eyes.offset_z_m": -0.006023355305608333,
+    "face.eyes.protrusion_m": 0.004615896619437516,
+    "face.eyes.radius_m": 0.05151072358261101,
+    "face.eyes.scale.0": 0.9629160876831917,
+    "face.eyes.scale.2": 1.0432970174326524,
+    "face.eyes.yaw_deg": 6.046997474755983,
+    "face.layout.chin_below_eye_m": 0.08733298110738079,
+    "face.layout.mouth_below_eye_m": 0.05174258028372088,
+    "face.layout.nose_below_eye_m": 0.03570859649191067,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.014145999766092137,
+    "face.mouth.half_width_m": 0.01976611367557119,
+    "face.shape.cheek_x": 1.2279346455801137,
+    "face.shape.lower_face.cheek_pad_m": 0.02148709002741387,
+    "face.shape.lower_face.jaw_x": 0.5502720786145769
+   }
+  },
+  {
+   "trial": 8,
+   "cost": 0.7717838151461323,
+   "penalty": 0.08175114578105289,
+   "per_view": {
+    "front": 0.39953562444444446,
+    "side": 0.9805297142857142
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 1.092,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.134,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.397,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.307,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.268,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.332,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5665787991122602,
+    "face.ears.below_eye_m": 0.015145572597429852,
+    "face.ears.radii_m.2": 0.04791411783000582,
+    "face.eyes.lids.upper_edge_deg": 37.37189129789826,
+    "face.eyes.offset_z_m": -0.008965767387879407,
+    "face.eyes.protrusion_m": 0.006585866993446146,
+    "face.eyes.radius_m": 0.04966120127488198,
+    "face.eyes.scale.0": 0.9143946408342205,
+    "face.eyes.scale.2": 1.0446136290298371,
+    "face.eyes.yaw_deg": 8.55255547045805,
+    "face.layout.chin_below_eye_m": 0.09437319678290858,
+    "face.layout.mouth_below_eye_m": 0.05243210137701401,
+    "face.layout.nose_below_eye_m": 0.03526607973804035,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011512450727312263,
+    "face.mouth.half_width_m": 0.020842175594206716,
+    "face.shape.cheek_x": 1.0905534125055036,
+    "face.shape.lower_face.cheek_pad_m": 0.020165032166747573,
+    "face.shape.lower_face.jaw_x": 0.49763924540990523
+   }
+  },
+  {
+   "trial": 9,
+   "cost": 0.8451708323835713,
+   "penalty": 0.11097251455288337,
+   "per_view": {
+    "front": 0.38995561851851857,
+    "side": 1.0784410171428571
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 1.038,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.079,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.392,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 1,
+     "mean_abs_z": 2.132,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.165,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5062986077015772,
+    "face.ears.below_eye_m": 0.019221690288393593,
+    "face.ears.radii_m.2": 0.04623949404340362,
+    "face.eyes.lids.upper_edge_deg": 35.41486873056971,
+    "face.eyes.offset_z_m": -0.004636407617462363,
+    "face.eyes.protrusion_m": 0.005204079060655757,
+    "face.eyes.radius_m": 0.05083444086585806,
+    "face.eyes.scale.0": 0.9,
+    "face.eyes.scale.2": 1.0144674803444447,
+    "face.eyes.yaw_deg": 6.571084074231472,
+    "face.layout.chin_below_eye_m": 0.08696488657640136,
+    "face.layout.mouth_below_eye_m": 0.05066969950869462,
+    "face.layout.nose_below_eye_m": 0.033220375836041496,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011511285404944213,
+    "face.mouth.half_width_m": 0.02007521324718219,
+    "face.shape.cheek_x": 1.2285907447544722,
+    "face.shape.lower_face.cheek_pad_m": 0.018448985648297445,
+    "face.shape.lower_face.jaw_x": 0.4353883739494202
+   }
+  },
+  {
+   "trial": 10,
+   "cost": 0.8462791360797935,
+   "penalty": 0.08815088115915858,
+   "per_view": {
+    "front": 0.4638362555555556,
+    "side": 1.0524202542857144
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 12,
+     "mean_abs_z": 1.08,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.147,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 11,
+     "mean_abs_z": 1.402,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.119,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.26,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.383,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.6061853809348856,
+    "face.ears.below_eye_m": 0.0118562465224456,
+    "face.ears.radii_m.2": 0.04373365964249061,
+    "face.eyes.lids.upper_edge_deg": 37.08203215530831,
+    "face.eyes.offset_z_m": -0.01186271105376613,
+    "face.eyes.protrusion_m": 0.006049056875588014,
+    "face.eyes.radius_m": 0.05096142125078829,
+    "face.eyes.scale.0": 0.948134076120832,
+    "face.eyes.scale.2": 1.0282840075545334,
+    "face.eyes.yaw_deg": 10,
+    "face.layout.chin_below_eye_m": 0.0941007686535746,
+    "face.layout.mouth_below_eye_m": 0.052513189485025244,
+    "face.layout.nose_below_eye_m": 0.03601807496421648,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010257083857805376,
+    "face.mouth.half_width_m": 0.01946471414978779,
+    "face.shape.cheek_x": 1.1001311419339035,
+    "face.shape.lower_face.cheek_pad_m": 0.018313633970468222,
+    "face.shape.lower_face.jaw_x": 0.41385490949950915
+   }
+  },
+  {
+   "trial": 11,
+   "cost": 0.6648573617119933,
+   "penalty": 0.09953356684426848,
+   "per_view": {
+    "front": 0.2641350725925926,
+    "side": 0.866512517142857
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 0.825,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.06,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 15,
+     "mean_abs_z": 1.345,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.757,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.206,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.051,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4928461334744796,
+    "face.ears.below_eye_m": 0.01535836745372737,
+    "face.ears.radii_m.2": 0.046952602953295744,
+    "face.eyes.lids.upper_edge_deg": 39.816380880841066,
+    "face.eyes.offset_z_m": -0.003973965783605024,
+    "face.eyes.protrusion_m": 0.005777749200379153,
+    "face.eyes.radius_m": 0.05201428449167564,
+    "face.eyes.scale.0": 0.9421089077147933,
+    "face.eyes.scale.2": 0.9841200926108196,
+    "face.eyes.yaw_deg": 5.507268904534534,
+    "face.layout.chin_below_eye_m": 0.09432631535710537,
+    "face.layout.mouth_below_eye_m": 0.04886137853258971,
+    "face.layout.nose_below_eye_m": 0.0338278986289446,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010683547237033231,
+    "face.mouth.half_width_m": 0.01971586603282583,
+    "face.shape.cheek_x": 1.1271816866247137,
+    "face.shape.lower_face.cheek_pad_m": 0.022744471865936512,
+    "face.shape.lower_face.jaw_x": 0.4884696408954431
+   }
+  },
+  {
+   "trial": 12,
+   "cost": 0.7087908860040218,
+   "penalty": 0.14785364616275198,
+   "per_view": {
+    "front": 0.1849000511111111,
+    "side": 0.9369744285714285
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 22,
+     "mean_abs_z": 0.861,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.055,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 14,
+     "mean_abs_z": 1.437,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.932,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.145,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.313,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4840483551792676,
+    "face.ears.below_eye_m": 0.020264040064102064,
+    "face.ears.radii_m.2": 0.045685002462979844,
+    "face.eyes.lids.upper_edge_deg": 40.15484831175993,
+    "face.eyes.offset_z_m": -0.0053838340038669195,
+    "face.eyes.protrusion_m": 0.007708604932907265,
+    "face.eyes.radius_m": 0.05384533974772708,
+    "face.eyes.scale.0": 0.9284907063654448,
+    "face.eyes.scale.2": 0.9759967480546665,
+    "face.eyes.yaw_deg": 7.480318386201134,
+    "face.layout.chin_below_eye_m": 0.10085134474119875,
+    "face.layout.mouth_below_eye_m": 0.04756383721228679,
+    "face.layout.nose_below_eye_m": 0.03444920941585781,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.012578902296922562,
+    "face.mouth.half_width_m": 0.019627283229530498,
+    "face.shape.cheek_x": 1.1872709655583864,
+    "face.shape.lower_face.cheek_pad_m": 0.023187214149976314,
+    "face.shape.lower_face.jaw_x": 0.44188916510531495
+   }
+  },
+  {
+   "trial": 13,
+   "cost": 0.7028710076213678,
+   "penalty": 0.07247331270073284,
+   "per_view": {
+    "front": 0.39039457555555557,
+    "side": 0.8704008142857144
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 13,
+     "mean_abs_z": 0.983,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.072,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.437,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.845,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 1.923,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 5.834,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.517654994257441,
+    "face.ears.below_eye_m": 0.013266267261212538,
+    "face.ears.radii_m.2": 0.04711332593688929,
+    "face.eyes.lids.upper_edge_deg": 38.335024675886714,
+    "face.eyes.offset_z_m": -0.004005111265508732,
+    "face.eyes.protrusion_m": 0.004738671542533546,
+    "face.eyes.radius_m": 0.049524028834774275,
+    "face.eyes.scale.0": 0.9560264601346068,
+    "face.eyes.scale.2": 0.9573781597930134,
+    "face.eyes.yaw_deg": 5.58113276875309,
+    "face.layout.chin_below_eye_m": 0.09708077600302645,
+    "face.layout.mouth_below_eye_m": 0.04990845049208604,
+    "face.layout.nose_below_eye_m": 0.03368480872449501,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011315332483272857,
+    "face.mouth.half_width_m": 0.019683173729577313,
+    "face.shape.cheek_x": 1.1466275415464566,
+    "face.shape.lower_face.cheek_pad_m": 0.021950992656485535,
+    "face.shape.lower_face.jaw_x": 0.5367613454981569
+   }
+  },
+  {
+   "trial": 14,
+   "cost": 0.765066904674062,
+   "penalty": 0.1372935800708874,
+   "per_view": {
+    "front": 0.34018659777777777,
+    "side": 0.9153600514285715
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 0.925,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.056,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 12,
+     "mean_abs_z": 1.4,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.096,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.102,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.503376159964178,
+    "face.ears.below_eye_m": 0.014379927522100523,
+    "face.ears.radii_m.2": 0.04644790665297063,
+    "face.eyes.lids.upper_edge_deg": 40.53817962362865,
+    "face.eyes.offset_z_m": -0.00433774587843018,
+    "face.eyes.protrusion_m": 0.008057856618230113,
+    "face.eyes.radius_m": 0.05319384412325328,
+    "face.eyes.scale.0": 0.9019304700314544,
+    "face.eyes.scale.2": 1.0109546705616976,
+    "face.eyes.yaw_deg": 7.247777546512724,
+    "face.layout.chin_below_eye_m": 0.09534756724308696,
+    "face.layout.mouth_below_eye_m": 0.04942071988096219,
+    "face.layout.nose_below_eye_m": 0.03232378572942361,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.009796290084680857,
+    "face.mouth.half_width_m": 0.020680870861101097,
+    "face.shape.cheek_x": 1.084107001039325,
+    "face.shape.lower_face.cheek_pad_m": 0.020782305870818682,
+    "face.shape.lower_face.jaw_x": 0.4841951394082038
+   }
+  },
+  {
+   "trial": 15,
+   "cost": 0.6397874427591441,
+   "penalty": 0.08365559048401182,
+   "per_view": {
+    "front": 0.17293576740740743,
+    "side": 0.9393279371428571
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 23,
+     "mean_abs_z": 0.827,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.107,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.48,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.444,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.138,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5250113428547831,
+    "face.ears.below_eye_m": 0.017499289499124226,
+    "face.ears.radii_m.2": 0.04521086226882777,
+    "face.eyes.lids.upper_edge_deg": 42.15805576823337,
+    "face.eyes.offset_z_m": -0.006878127385889329,
+    "face.eyes.protrusion_m": 0.005221962666773552,
+    "face.eyes.radius_m": 0.04907196199237959,
+    "face.eyes.scale.0": 0.9666514377324149,
+    "face.eyes.scale.2": 1.0234415867490896,
+    "face.eyes.yaw_deg": 4.178510478928514,
+    "face.layout.chin_below_eye_m": 0.09356950231670268,
+    "face.layout.mouth_below_eye_m": 0.046822521536314665,
+    "face.layout.nose_below_eye_m": 0.03353350830479437,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010149547693003944,
+    "face.mouth.half_width_m": 0.020214283788882355,
+    "face.shape.cheek_x": 1.0801705568236406,
+    "face.shape.lower_face.cheek_pad_m": 0.02077614513648731,
+    "face.shape.lower_face.jaw_x": 0.4557310952034065
+   }
+  },
+  {
+   "trial": 16,
+   "cost": 0.7363164749446113,
+   "penalty": 0.11227940298693931,
+   "per_view": {
+    "front": 0.27278382962962966,
+    "side": 0.9752903142857142
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 0.885,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.075,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 14,
+     "mean_abs_z": 1.317,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.58,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.246,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 5.978,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5617494223575619,
+    "face.ears.below_eye_m": 0.014041797453143295,
+    "face.ears.radii_m.2": 0.04869848827169812,
+    "face.eyes.lids.upper_edge_deg": 39.714599087681904,
+    "face.eyes.offset_z_m": -0.005287423740097923,
+    "face.eyes.protrusion_m": 0.0072559469856297455,
+    "face.eyes.radius_m": 0.05032724619558702,
+    "face.eyes.scale.0": 0.9525559375251369,
+    "face.eyes.scale.2": 0.9955657591041632,
+    "face.eyes.yaw_deg": 5.946881888013889,
+    "face.layout.chin_below_eye_m": 0.09289582772968576,
+    "face.layout.mouth_below_eye_m": 0.046120289421408764,
+    "face.layout.nose_below_eye_m": 0.034248529851177364,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010457547183943514,
+    "face.mouth.half_width_m": 0.019603908080215997,
+    "face.shape.cheek_x": 1.141932828958158,
+    "face.shape.lower_face.cheek_pad_m": 0.022138018542039874,
+    "face.shape.lower_face.jaw_x": 0.4586720885876456
+   }
+  },
+  {
+   "trial": 17,
+   "cost": 0.7235720784011404,
+   "penalty": 0.0869403145387064,
+   "per_view": {
+    "front": 0.2853522562962963,
+    "side": 0.9879112714285715
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 0.825,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.073,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 12,
+     "mean_abs_z": 1.395,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.49,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.457,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.246,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5173341157854399,
+    "face.ears.below_eye_m": 0.01656575803253302,
+    "face.ears.radii_m.2": 0.049092945457963735,
+    "face.eyes.lids.upper_edge_deg": 37.392427949263926,
+    "face.eyes.offset_z_m": -0.00625846412268753,
+    "face.eyes.protrusion_m": 0.006178875797382783,
+    "face.eyes.radius_m": 0.05164718547199568,
+    "face.eyes.scale.0": 0.9548284165068099,
+    "face.eyes.scale.2": 1.0215972383833503,
+    "face.eyes.yaw_deg": 5.247344974070343,
+    "face.layout.chin_below_eye_m": 0.0993116040454247,
+    "face.layout.mouth_below_eye_m": 0.051639599432445185,
+    "face.layout.nose_below_eye_m": 0.03424511602858669,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010167504672176145,
+    "face.mouth.half_width_m": 0.019737096362442932,
+    "face.shape.cheek_x": 1.095612122769365,
+    "face.shape.lower_face.cheek_pad_m": 0.02041919292119343,
+    "face.shape.lower_face.jaw_x": 0.41761376131834144
+   }
+  },
+  {
+   "trial": 18,
+   "cost": 0.6926109623970992,
+   "penalty": 0.09317577102143786,
+   "per_view": {
+    "front": 0.25879891703703706,
+    "side": 0.9400714657142857
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 19,
+     "mean_abs_z": 0.816,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.108,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.381,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.119,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.263,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.138,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4764631660900829,
+    "face.ears.below_eye_m": 0.01156534312862625,
+    "face.ears.radii_m.2": 0.044842973346898324,
+    "face.eyes.lids.upper_edge_deg": 41.27796944016548,
+    "face.eyes.offset_z_m": -0.00646918765053419,
+    "face.eyes.protrusion_m": 0.006296300453916104,
+    "face.eyes.radius_m": 0.04896365866925731,
+    "face.eyes.scale.0": 0.9911910340377187,
+    "face.eyes.scale.2": 1.010747582197599,
+    "face.eyes.yaw_deg": 7.202547557428829,
+    "face.layout.chin_below_eye_m": 0.10110723149499264,
+    "face.layout.mouth_below_eye_m": 0.04741202995177121,
+    "face.layout.nose_below_eye_m": 0.0322183524861854,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010985748304466015,
+    "face.mouth.half_width_m": 0.02076778344605448,
+    "face.shape.cheek_x": 1.0082336339922036,
+    "face.shape.lower_face.cheek_pad_m": 0.016258466492799675,
+    "face.shape.lower_face.jaw_x": 0.5328386039466864
+   }
+  },
+  {
+   "trial": 19,
+   "cost": 0.7941835116111086,
+   "penalty": 0.14248368938888648,
+   "per_view": {
+    "front": 0.29417838444444444,
+    "side": 1.00922126
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 17,
+     "mean_abs_z": 0.889,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.06,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 12,
+     "mean_abs_z": 1.496,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.845,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 1,
+     "mean_abs_z": 2.565,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.353,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5302271887281067,
+    "face.ears.below_eye_m": 0.013453976776182614,
+    "face.ears.radii_m.2": 0.046141027842698315,
+    "face.eyes.lids.upper_edge_deg": 43.01770888359738,
+    "face.eyes.offset_z_m": -0.004478109877153802,
+    "face.eyes.protrusion_m": 0.006216824751090084,
+    "face.eyes.radius_m": 0.05001121276926415,
+    "face.eyes.scale.0": 0.9128646856666975,
+    "face.eyes.scale.2": 0.9976184140128114,
+    "face.eyes.yaw_deg": 5.55079547862243,
+    "face.layout.chin_below_eye_m": 0.10143808157919723,
+    "face.layout.mouth_below_eye_m": 0.045,
+    "face.layout.nose_below_eye_m": 0.03468262720316004,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011273759828773159,
+    "face.mouth.half_width_m": 0.019264324133092026,
+    "face.shape.cheek_x": 1.1443716249229954,
+    "face.shape.lower_face.cheek_pad_m": 0.023270143703278755,
+    "face.shape.lower_face.jaw_x": 0.4070487368269958
+   }
+  },
+  {
+   "trial": 20,
+   "cost": 0.7173609097059411,
+   "penalty": 0.08897928452075597,
+   "per_view": {
+    "front": 0.2943236703703704,
+    "side": 0.96243958
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 1.003,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.089,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 12,
+     "mean_abs_z": 1.442,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.399,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.375,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.014,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5523096917063939,
+    "face.ears.below_eye_m": 0.014273412583040844,
+    "face.ears.radii_m.2": 0.045150011001204624,
+    "face.eyes.lids.upper_edge_deg": 42.618587054053236,
+    "face.eyes.offset_z_m": -0.005943209605747681,
+    "face.eyes.protrusion_m": 0.006084053231645323,
+    "face.eyes.radius_m": 0.049621190289128925,
+    "face.eyes.scale.0": 0.956990458946604,
+    "face.eyes.scale.2": 0.9404950271625577,
+    "face.eyes.yaw_deg": 3.102535555465419,
+    "face.layout.chin_below_eye_m": 0.097807406077583,
+    "face.layout.mouth_below_eye_m": 0.04752369453001348,
+    "face.layout.nose_below_eye_m": 0.03265642327518945,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010308832395104224,
+    "face.mouth.half_width_m": 0.021131896038816426,
+    "face.shape.cheek_x": 1.076802860340876,
+    "face.shape.lower_face.cheek_pad_m": 0.018081515959836703,
+    "face.shape.lower_face.jaw_x": 0.4518589536884754
+   }
+  },
+  {
+   "trial": 21,
+   "cost": 0.8451934551376354,
+   "penalty": 0.11034955672493692,
+   "per_view": {
+    "front": 0.29047351111111114,
+    "side": 1.1792142857142858
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 0.999,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.097,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.612,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.757,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 0,
+     "mean_abs_z": 2.643,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.046,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.4838725983239747,
+    "face.ears.below_eye_m": 0.019047707417627253,
+    "face.ears.radii_m.2": 0.04662794416085253,
+    "face.eyes.lids.upper_edge_deg": 42.60206522653307,
+    "face.eyes.offset_z_m": -0.005727826182442745,
+    "face.eyes.protrusion_m": 0.00491107420481499,
+    "face.eyes.radius_m": 0.049023861499250504,
+    "face.eyes.scale.0": 0.9318157649793363,
+    "face.eyes.scale.2": 0.9221707117454614,
+    "face.eyes.yaw_deg": 3.9690206504023404,
+    "face.layout.chin_below_eye_m": 0.09707736254634004,
+    "face.layout.mouth_below_eye_m": 0.04581070059759327,
+    "face.layout.nose_below_eye_m": 0.034347391006104656,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.012051264506775218,
+    "face.mouth.half_width_m": 0.020885609524023498,
+    "face.shape.cheek_x": 1.1116725119850224,
+    "face.shape.lower_face.cheek_pad_m": 0.021631937915751392,
+    "face.shape.lower_face.jaw_x": 0.5065679058822137
+   }
+  },
+  {
+   "trial": 22,
+   "cost": 0.7911198611112308,
+   "penalty": 0.05870314423292386,
+   "per_view": {
+    "front": 0.4345719651851852,
+    "side": 1.0302614685714286
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 13,
+     "mean_abs_z": 1.088,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.13,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 10,
+     "mean_abs_z": 1.579,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.49,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.449,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.148,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5270435127839663,
+    "face.ears.below_eye_m": 0.016123062990637975,
+    "face.ears.radii_m.2": 0.04516318725809064,
+    "face.eyes.lids.upper_edge_deg": 40.87952989144496,
+    "face.eyes.offset_z_m": -0.007787423445515453,
+    "face.eyes.protrusion_m": 0.005536874155871827,
+    "face.eyes.radius_m": 0.05033133626147261,
+    "face.eyes.scale.0": 1.0123462804361028,
+    "face.eyes.scale.2": 0.9294044240466802,
+    "face.eyes.yaw_deg": 4.9426139101946625,
+    "face.layout.chin_below_eye_m": 0.09129855137511475,
+    "face.layout.mouth_below_eye_m": 0.05346399342629429,
+    "face.layout.nose_below_eye_m": 0.03348434584116377,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011676361108449794,
+    "face.mouth.half_width_m": 0.021305567358539883,
+    "face.shape.cheek_x": 1.1291985773274162,
+    "face.shape.lower_face.cheek_pad_m": 0.018553109049370325,
+    "face.shape.lower_face.jaw_x": 0.44977983616229933
+   }
+  },
+  {
+   "trial": 23,
+   "cost": 0.7007552306453052,
+   "penalty": 0.08784657810562266,
+   "per_view": {
+    "front": 0.42568710222222217,
+    "side": 0.8001302028571429
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 13,
+     "mean_abs_z": 1.058,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.078,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.451,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.49,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.91,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.018,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5592769677749367,
+    "face.ears.below_eye_m": 0.016960954216495173,
+    "face.ears.radii_m.2": 0.04428129214860265,
+    "face.eyes.lids.upper_edge_deg": 39.96505242683385,
+    "face.eyes.offset_z_m": -0.005301924550204531,
+    "face.eyes.protrusion_m": 0.005068152982105789,
+    "face.eyes.radius_m": 0.04960525148769968,
+    "face.eyes.scale.0": 0.9450653922626316,
+    "face.eyes.scale.2": 0.9308926183176355,
+    "face.eyes.yaw_deg": 5.909956470183994,
+    "face.layout.chin_below_eye_m": 0.09327624749271785,
+    "face.layout.mouth_below_eye_m": 0.04779455238509288,
+    "face.layout.nose_below_eye_m": 0.03156593201547703,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010913385576443653,
+    "face.mouth.half_width_m": 0.01910364365843162,
+    "face.shape.cheek_x": 1.0738081688762267,
+    "face.shape.lower_face.cheek_pad_m": 0.017472383477809078,
+    "face.shape.lower_face.jaw_x": 0.47790533208789665
+   }
+  },
+  {
+   "trial": 24,
+   "cost": 0.7021222636811908,
+   "penalty": 0.09059051442193142,
+   "per_view": {
+    "front": 0.27268397851851855,
+    "side": 0.95037952
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 18,
+     "mean_abs_z": 0.839,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.097,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.446,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.213,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.682,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.098,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.523817407347154,
+    "face.ears.below_eye_m": 0.01593335257389815,
+    "face.ears.radii_m.2": 0.0446381457870132,
+    "face.eyes.lids.upper_edge_deg": 40.199667565159146,
+    "face.eyes.offset_z_m": -0.005658525194702184,
+    "face.eyes.protrusion_m": 0.006698504397205671,
+    "face.eyes.radius_m": 0.04894990964809159,
+    "face.eyes.scale.0": 0.9428589202922116,
+    "face.eyes.scale.2": 1.0315210075621093,
+    "face.eyes.yaw_deg": 4.087211319496106,
+    "face.layout.chin_below_eye_m": 0.10230920632078645,
+    "face.layout.mouth_below_eye_m": 0.049266016491139576,
+    "face.layout.nose_below_eye_m": 0.033984566253810515,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011054788315367995,
+    "face.mouth.half_width_m": 0.021830192074234513,
+    "face.shape.cheek_x": 0.9596154060120392,
+    "face.shape.lower_face.cheek_pad_m": 0.01564706837524892,
+    "face.shape.lower_face.jaw_x": 0.5292384011453869
+   }
+  },
+  {
+   "trial": 25,
+   "cost": 0.7328478152108702,
+   "penalty": 0.06415948738018226,
+   "per_view": {
+    "front": 0.36247701851851855,
+    "side": 0.9748996371428572
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 0.905,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.084,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 12,
+     "mean_abs_z": 1.478,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.399,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 2.294,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.181,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5195921277807662,
+    "face.ears.below_eye_m": 0.015701432857292315,
+    "face.ears.radii_m.2": 0.043816045637884576,
+    "face.eyes.lids.upper_edge_deg": 39.93245085920452,
+    "face.eyes.offset_z_m": -0.005786460088277608,
+    "face.eyes.protrusion_m": 0.005820078876746273,
+    "face.eyes.radius_m": 0.05090883648284159,
+    "face.eyes.scale.0": 1.0380231022805595,
+    "face.eyes.scale.2": 0.9985179272093839,
+    "face.eyes.yaw_deg": 5.540139030597398,
+    "face.layout.chin_below_eye_m": 0.0980284794932085,
+    "face.layout.mouth_below_eye_m": 0.04936908065675055,
+    "face.layout.nose_below_eye_m": 0.03256160426744344,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011060330337179848,
+    "face.mouth.half_width_m": 0.020208192612024257,
+    "face.shape.cheek_x": 0.9967774255510469,
+    "face.shape.lower_face.cheek_pad_m": 0.018797283227146036,
+    "face.shape.lower_face.jaw_x": 0.5350668572507621
+   }
+  },
+  {
+   "trial": 26,
+   "cost": 0.7240623660761778,
+   "penalty": 0.09710845882750048,
+   "per_view": {
+    "front": 0.38349786592592594,
+    "side": 0.8704099485714286
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 15,
+     "mean_abs_z": 1.056,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.068,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 13,
+     "mean_abs_z": 1.473,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.49,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 2,
+     "mean_abs_z": 1.927,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 5.834,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5795676782335086,
+    "face.ears.below_eye_m": 0.012287578934683303,
+    "face.ears.radii_m.2": 0.04481841091017569,
+    "face.eyes.lids.upper_edge_deg": 41.98346433058536,
+    "face.eyes.offset_z_m": -0.0039073468713445025,
+    "face.eyes.protrusion_m": 0.004696273147310974,
+    "face.eyes.radius_m": 0.04881043137524145,
+    "face.eyes.scale.0": 0.9772902084565911,
+    "face.eyes.scale.2": 0.932393202008339,
+    "face.eyes.yaw_deg": 4.486020365168612,
+    "face.layout.chin_below_eye_m": 0.09672989612923204,
+    "face.layout.mouth_below_eye_m": 0.045,
+    "face.layout.nose_below_eye_m": 0.03264339649623279,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011240505486010143,
+    "face.mouth.half_width_m": 0.02102071969845542,
+    "face.shape.cheek_x": 1.0479520979333141,
+    "face.shape.lower_face.cheek_pad_m": 0.01641453906898424,
+    "face.shape.lower_face.jaw_x": 0.5289882384679981
+   }
+  },
+  {
+   "trial": 27,
+   "cost": 0.6526562873866264,
+   "penalty": 0.08184364902683809,
+   "per_view": {
+    "front": 0.35371396814814815,
+    "side": 0.7879113085714285
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 16,
+     "mean_abs_z": 1.011,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.122,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 11,
+     "mean_abs_z": 1.673,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.213,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 2.286,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.502,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5637594228481855,
+    "face.ears.below_eye_m": 0.012154427398276843,
+    "face.ears.radii_m.2": 0.04134042099329088,
+    "face.eyes.lids.upper_edge_deg": 43.49195638051157,
+    "face.eyes.offset_z_m": -0.00782352489734992,
+    "face.eyes.protrusion_m": 0.005902151340362295,
+    "face.eyes.radius_m": 0.0492446737510199,
+    "face.eyes.scale.0": 0.944760641796905,
+    "face.eyes.scale.2": 1.0220126796996216,
+    "face.eyes.yaw_deg": 6.779565314807067,
+    "face.layout.chin_below_eye_m": 0.09892856781101206,
+    "face.layout.mouth_below_eye_m": 0.04796495822897144,
+    "face.layout.nose_below_eye_m": 0.03509754998042952,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.013088161421322578,
+    "face.mouth.half_width_m": 0.020494799614643237,
+    "face.shape.cheek_x": 1.009047985921892,
+    "face.shape.lower_face.cheek_pad_m": 0.017137251440182702,
+    "face.shape.lower_face.jaw_x": 0.5013580362552118
+   }
+  },
+  {
+   "trial": 28,
+   "cost": 0.9084077158106623,
+   "penalty": 0.14071592030801675,
+   "per_view": {
+    "front": 0.4460264481481482,
+    "side": 1.089357142857143
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 14,
+     "mean_abs_z": 1.169,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.144,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 10,
+     "mean_abs_z": 1.837,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.306,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 0,
+     "mean_abs_z": 2.186,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.726,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5536981204182883,
+    "face.ears.below_eye_m": 0.017922074344463357,
+    "face.ears.radii_m.2": 0.04594861527982192,
+    "face.eyes.lids.upper_edge_deg": 44,
+    "face.eyes.offset_z_m": -0.008454361842433124,
+    "face.eyes.protrusion_m": 0.006814189321320513,
+    "face.eyes.radius_m": 0.047626759075117334,
+    "face.eyes.scale.0": 0.9808215588742466,
+    "face.eyes.scale.2": 0.9054898274870318,
+    "face.eyes.yaw_deg": 7.311836233346009,
+    "face.layout.chin_below_eye_m": 0.10535705332295257,
+    "face.layout.mouth_below_eye_m": 0.04654232144898717,
+    "face.layout.nose_below_eye_m": 0.030898999640738254,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.011593179397480273,
+    "face.mouth.half_width_m": 0.021715897771413247,
+    "face.shape.cheek_x": 0.9947522683617249,
+    "face.shape.lower_face.cheek_pad_m": 0.015733870422150027,
+    "face.shape.lower_face.jaw_x": 0.5332847971372149
+   }
+  },
+  {
+   "trial": 29,
+   "cost": 0.7098191753101011,
+   "penalty": 0.12502551224131803,
+   "per_view": {
+    "front": 0.4255434718518519,
+    "side": 0.7440438542857143
+   },
+   "summary": {
+    "front/face": {
+     "scored": 27,
+     "within": 13,
+     "mean_abs_z": 1.074,
+     "holdout": false
+    },
+    "front/hair": {
+     "scored": 7,
+     "within": 5,
+     "mean_abs_z": 1.068,
+     "holdout": false
+    },
+    "three_quarter/face": {
+     "scored": 24,
+     "within": 10,
+     "mean_abs_z": 1.62,
+     "holdout": true
+    },
+    "three_quarter/hair": {
+     "scored": 1,
+     "within": 1,
+     "mean_abs_z": 0.581,
+     "holdout": true
+    },
+    "side/face": {
+     "scored": 7,
+     "within": 3,
+     "mean_abs_z": 1.759,
+     "holdout": false
+    },
+    "side/hair": {
+     "scored": 2,
+     "within": 0,
+     "mean_abs_z": 6.619,
+     "holdout": false
+    }
+   },
+   "parameters": {
+    "face.brows.height": 1.5165256825100661,
+    "face.ears.below_eye_m": 0.016579584640201397,
+    "face.ears.radii_m.2": 0.04087763967773549,
+    "face.eyes.lids.upper_edge_deg": 44,
+    "face.eyes.offset_z_m": -0.004113970160253257,
+    "face.eyes.protrusion_m": 0.006033184260747273,
+    "face.eyes.radius_m": 0.04942891532078338,
+    "face.eyes.scale.0": 0.9892932446767608,
+    "face.eyes.scale.2": 0.8989955960910544,
+    "face.eyes.yaw_deg": 7.166967939704721,
+    "face.layout.chin_below_eye_m": 0.09955129447024103,
+    "face.layout.mouth_below_eye_m": 0.050898534157335085,
+    "face.layout.nose_below_eye_m": 0.0295613817275389,
+    "face.mouth.extra_shapes.1.lo_drop_m": 0.010270495591116716,
+    "face.mouth.half_width_m": 0.02011412576470347,
+    "face.shape.cheek_x": 1.07282940283368,
+    "face.shape.lower_face.cheek_pad_m": 0.013799793700466741,
+    "face.shape.lower_face.jaw_x": 0.46637051393749085
+   }
+  }
+ ]
+}
