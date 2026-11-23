@@ -65,7 +65,9 @@ The P3-chin\* row is on the sheets for that decision only.
   mirrored references, labelled.
 - [sheet_face.jpg](sheet_face.jpg): face close-up at −90, −45, 0, +45, +90 (frame 0.34 m), same rows.
 - [expressions.jpg](expressions.jpg): front close-up, rows P2 / P3 / P3-chin\*, columns neutral / Smile / Blink 0.5 /
-  Blink / Smile+Blink / SmileOpen (face controls set on the rig; Blender evaluation).
+  Blink / Smile+Blink / SmileOpen (face controls set on the rig; Blender evaluation). Observation, not from P3: at
+  Blink 0.5 the eyes already read as closed on all three rows (P2 the same). The lid keys and their in-between chain
+  are face/3's, rebuilt unchanged on the fitted rest face; worth a look in P4 (expressions and rig).
 
 ## face_generic/4 (what was built)
 
