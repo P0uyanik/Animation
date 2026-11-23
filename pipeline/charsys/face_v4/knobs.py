@@ -8,8 +8,11 @@ Each knob is one Blender deform modifier with a compact falloff on the head skin
      "offsets": {"i_j_k": [dx, dy, dz]}, "mirror": true}
 
 Anchors (face frame: +x = the character's left, -y = forward, +z = up; t runs from the eye line (0) to the spec chin
-(1)): "chin", "mouth", "eye" (per side), {"front": t} (the front-view outline point at that height: the widest skin
-point of the row, per side), {"profile": t} (the profile outline point on the midline: the most forward skin point).
+(1)): "chin", "mouth", "eye" (per side), {"front": t, "jump_m": 0.008} (the front-view outline of the row, per side:
+walking outward from the midline, the last skin point before the surface behind it is more than jump_m deeper, i.e.
+the occluding cheek / jaw edge a front camera sees, else the silhouette), {"cheek": t} (the most forward skin point
+of the row on one side: the profile outline off the midline, e.g. a cheek pad), {"profile": t} (the skin point on
+the midline).
 `offset_m` shifts the anchor; on a per-side anchor x points outward. `move_m` / `scale` move / scale the Warp target
 or the Hook empty about the anchor (x outward per side). `mirror` (default: true for per-side anchors) builds the
 knob on both sides, mirrored. `floor_m` limits the knob to skin above anchor z - floor_m (a smooth fade of
@@ -102,9 +105,9 @@ def lattice_index(key, points):
 def per_side(at):
     if at in MIDLINE or (isinstance(at, dict) and "profile" in at):
         return False
-    if at == "eye" or (isinstance(at, dict) and "front" in at):
+    if at == "eye" or (isinstance(at, dict) and ("front" in at or "cheek" in at)):
         return True
-    raise KnobError(f"unknown knob anchor {at!r} (chin, mouth, eye, {{'front': t}}, {{'profile': t}})")
+    raise KnobError(f"unknown knob anchor {at!r} (chin, mouth, eye, {{'front': t}}, {{'cheek': t}}, {{'profile': t}})")
 
 
 def mirrored(v, sx):
@@ -112,22 +115,39 @@ def mirrored(v, sx):
     return (sx * v[0], v[1], v[2])
 
 
-def anchors(ctx, ex, ez, z_mouth, z_chin, y_centre):
+def anchors(ctx, ex, ez, z_mouth, z_chin):
     """Anchor resolver: (at, sx) -> (x, y, z) on the current skin (ctx ray casts; call after ctx.invalidate())."""
+    from mathutils import Vector
 
     def row_z(t):
         return ez - float(t) * (ez - z_chin)
 
-    def front(sx, z):
-        best = None
-        for i in range(25):  # widest skin point of the row: the front-view outline
-            y = y_centre - 0.12 + 0.17 * i / 24
-            x = ctx.side_x(sx, y, z)
-            if x is not None and (best is None or sx * x > sx * best[0]):
-                best = (x, y)
-        if best is None:
+    def front(sx, z, jump):
+        """Front-view outline of the row: walk outward from the midline along front ray casts; the outline is the
+        last skin point before the surface behind it is more than `jump` deeper (an occluding edge), or before the
+        rays miss the skin (the silhouette)."""
+        prev = None
+        for i in range(0, 400):
+            x = sx * 0.0005 * i
+            loc = ctx.tree().ray_cast(Vector((x, -5.0, z)), Vector((0, 1, 0)), 10.0)[0]
+            if loc is None or (prev is not None and loc.y - prev[1] > jump):
+                break
+            prev = (loc.x, loc.y, z)
+        if prev is None:
             raise KnobError(f"no skin outline at z={z:.4f}")
-        return (best[0], best[1], z)
+        return prev
+
+    def cheek(sx, z):
+        """Most forward skin point of the row on one side (the profile outline off the midline)."""
+        best = None
+        for i in range(2, 241):
+            x = sx * 0.0005 * i
+            loc = ctx.tree().ray_cast(Vector((x, -5.0, z)), Vector((0, 1, 0)), 10.0)[0]
+            if loc is not None and (best is None or loc.y < best[1]):
+                best = (loc.x, loc.y, z)
+        if best is None:
+            raise KnobError(f"no skin at z={z:.4f}")
+        return best
 
     def resolve(at, sx=1):
         if at == "chin":
@@ -140,7 +160,9 @@ def anchors(ctx, ex, ez, z_mouth, z_chin, y_centre):
             z = row_z(at["profile"])
             return (0.0, ctx.face_y(None, 0.0, z), z)
         if isinstance(at, dict) and "front" in at:
-            return front(sx, row_z(at["front"]))
+            return front(sx, row_z(at["front"]), float(at.get("jump_m", 0.008)))
+        if isinstance(at, dict) and "cheek" in at:
+            return cheek(sx, row_z(at["cheek"]))
         raise KnobError(f"unknown knob anchor {at!r}")
 
     return resolve
@@ -275,10 +297,18 @@ def _bake(head, mod_name):
     me = head.data
     had_keys = me.shape_keys is not None
     idx = list(head.modifiers).index(head.modifiers[mod_name])
+    saved = {}
+    if had_keys:  # the new key is made from the evaluated key mix: bake it from Basis alone
+        head.active_shape_key_index = 0
+        for kb in me.shape_keys.key_blocks:
+            saved[kb.name] = kb.value
+            kb.value = 0.0
     with bpy.context.temp_override(object=head, active_object=head, selected_objects=[head]):
         if idx:
             bpy.ops.object.modifier_move_to_index(modifier=mod_name, index=0)
         bpy.ops.object.modifier_apply_as_shapekey(modifier=mod_name, keep_modifier=False)
+    for name, v in saved.items():
+        me.shape_keys.key_blocks[name].value = v
     kbs = me.shape_keys.key_blocks
     key = kbs[mod_name]
     basis = me.shape_keys.reference_key

@@ -73,7 +73,7 @@ def build(C, M, head, spec, P, H, head_bone="DEF-spine.006", eye_bone="DEF-eye.{
         # the fitted rest face and every later key is relative to it)
         zc_knobs = ez - _f(L, "chin_below_eye_m", 0.09)
         rep["knobs"] = KNOBS.apply_knobs(C, head, ctx, fs["knobs"],
-                                         KNOBS.anchors(ctx, ex, ez, z_mouth, zc_knobs, P["head"]["forward"] * H),
+                                         KNOBS.anchors(ctx, ex, ez, z_mouth, zc_knobs),
                                          z_chin=zc_knobs)
     if fs.get("skin"):
         spots = []
