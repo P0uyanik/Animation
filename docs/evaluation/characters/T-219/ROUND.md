@@ -47,6 +47,24 @@ the stored 0.14.0 master); not hair.
 - Strict, default final profile `final720_look` (plush_soft, 128 spp), 512 px tiles, 70 mm, character_neutral/1:
   sheets/auburn_strict.jpg, sheets/white_strict.jpg; 100 % crops (768 px head renders): sheets/*_crops_100.jpg.
 
-## Push-out (step 6)
-s030 copies in shots/ (girls cast explicitly; push-out on, T-194 defaults), frames 1-80, measured with
-T-194 tools/measure_eval.py step 2. Numbers in pushout.json / README (pending the candidate run).
+## Push-out (step 6) — pushout.json, pushout_compare.py
+e912 s030 copies in shots/ with the girls cast explicitly (current = version_dir 0.14.0 / 0.1.0; candidate = the
+T-219 candidate specs, built by run_shot), boy current 2.3.0; frames 1-80, measured every 2nd frame with T-194
+tools/measure_eval.py. ON = run_shot with hair push-out (T-194 defaults, static_move_fade on); OFF = shot_render on the
+same bake without --hair-pushout. Pops = frames where push-out adds > 5 mm to the largest hair-vertex jump (T-194 rule).
+Depth = deepest hair vertex, all surfaces incl. staging overlaps (boy fringe in the auburn skin, 87 mm, both runs).
+
+| run | character | pops >5 mm | max added mm | max depth ON | frames >1 mm ON | max depth OFF | frames >1 mm OFF |
+|---|---|---|---|---|---|---|---|
+| current | boy 2.3.0 | 0/40 | 2.5 | 87.0 | 40 | 87.0 | 40 |
+| current | auburn 0.14.0 | 28/40 | 178.7 | 49.5 | 40 | 72.3 | 40 |
+| current | white 0.1.0 | 25/40 | 80.8 | 23.7 | 40 | 35.0 | 40 |
+| candidate | boy 2.3.0 | 1/40 (f41, 45.2) | 45.2 | 87.0 | 40 | 87.0 | 40 |
+| candidate | auburn 0.15.0 | 28/40 | 156.1 | 56.2 | 40 | 71.9 | 40 |
+| candidate | white 0.2.0 | 23/40 | 95.3 | 26.6 | 40 | 40.3 | 40 |
+
+Reading: push-out and dynamics work on the candidates (same behaviour class as the release). The large push-out pops
+exist in the RELEASED versions too (T-218 finding); the candidates do not remove them (auburn max addition 179 -> 156 mm,
+white 81 -> 95 mm, counts 28 -> 28 / 25 -> 23). Deepest ON contact: auburn outer ringlet in her own skin 49.5 -> 56.2 mm,
+white back mass in her bodice 23.7 -> 26.6 mm. The boy (unchanged) gets one pop at f41 (45 mm) next to the changed
+auburn. Flock strands are render-only curves (no colliders, no chains); they are not in these numbers (hair meshes only).
