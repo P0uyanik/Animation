@@ -70,6 +70,12 @@ def _hair_contact(d, _t):  # T-183: hair.ear_keepout, hair.dynamics.contact, a d
                  or (k == "dynamics" and isinstance(v, dict) and ("contact" in v or chain_contact(v))))
 
 
+def _hair_key(d, key):  # T-219: a top-level key of a hair spec (spec "hair", or "override" -> "hair")
+    def hair(x):
+        return x.get("hair") if isinstance(x, dict) and isinstance(x.get("hair"), dict) else {}
+    return isinstance(d, dict) and (key in hair(d) or key in hair(d.get("override")))
+
+
 def _garment_field(d, field):  # T-184: a clothing item that switches a garment/3 item field on
     return _walk(d, lambda k, v: k == "garments" and isinstance(v, list)
                  and any(isinstance(g, dict) and g.get(field) not in (None, False) for g in v))
@@ -98,6 +104,9 @@ FEATURES = {
     "t168_face": {"scope": "assets", "detect": _t168, "old": "test_face_t168"},
     "hair_contact": {"scope": "characters", "detect": _hair_contact, "old": "none (T-183, new opt-in)"},
     "seated": {"scope": "characters", "detect": lambda d, t: _garment_field(d, "seated"), "old": "T-184 (new)"},
+    "hair_flock": {"scope": "characters", "detect": lambda d, t: _hair_key(d, "flock"), "old": "none (T-207/T-219, new)"},
+    "cap_contour": {"scope": "characters", "detect": lambda d, t: _hair_key(d, "cap_contour"),
+                    "old": "none (T-219, new)"},
 }
 
 

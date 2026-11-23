@@ -1,0 +1,50 @@
+{
+ "character": "girl_auburn_bun_glasses",
+ "label": "m",
+ "scale": 0.46518,
+ "views": [
+  {
+   "view": "sheet30_front",
+   "yaw": 0,
+   "iou_head": 0.9033,
+   "area_ratio": 1.0177,
+   "width_ratio": 0.9568,
+   "top_ratio": 0.9851,
+   "iou_body": 0.839944
+  },
+  {
+   "view": "sheet30_front_left",
+   "yaw": -45,
+   "iou_head": 0.8949,
+   "area_ratio": 1.0063,
+   "width_ratio": 0.9623,
+   "top_ratio": 1.0075,
+   "iou_body": 0.825206
+  },
+  {
+   "view": "sheet30_left",
+   "yaw": 90,
+   "iou_head": 0.7752,
+   "area_ratio": 0.9978,
+   "width_ratio": 0.9744,
+   "top_ratio": 1.0224,
+   "iou_body": 0.785505
+  },
+  {
+   "view": "sheet30_back",
+   "yaw": 180,
+   "iou_head": 0.9052,
+   "area_ratio": 1.0394,
+   "width_ratio": 0.9938,
+   "top_ratio": 1.0444,
+   "iou_body": 0.860609
+  }
+ ],
+ "mean": {
+  "iou_head": 0.8697,
+  "area_ratio": 1.0153,
+  "width_ratio": 0.9718,
+  "top_ratio": 1.0149,
+  "iou_body": 0.8278
+ }
+}

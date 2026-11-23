@@ -10,7 +10,9 @@
 4. Apply rules: kept objects are copied unchanged, other shot objects and all shot lights are replaced, a set
    material restyles a kept object's material, characters/props/actions/production are unchanged, the camera keeps
    its framing and gets depth of field focused at its target, a rect light emits from its center towards its aim.
-5. Refusals on apply: a kept object missing in the shot, a set object named like a shot object, a non-scene shot."""
+5. Refusals on apply: a kept object missing in the shot, a set object named like a shot object, a non-scene shot.
+6. Blender light rig (T-221): a set may name a rig (blender_light_rig: an id, not a path, not 'engine'); apply
+   records it as x_set.light_rig; a set without one gives exactly the pre-T-221 output (no light_rig key)."""
 import copy
 import importlib.util
 import json
@@ -208,12 +210,26 @@ def apply_refusals():
     check(refused(sets.apply, copy.deepcopy(SET), shot, contains="camera"), "refused: shot camera without target")
 
 
+def light_rig():
+    plain = sets.dumps(sets.apply(copy.deepcopy(SET), copy.deepcopy(SHOT)))
+    check("light_rig" not in json.loads(plain)["x_set"], "set without a rig: no x_set.light_rig (output as before)")
+    s = dict(copy.deepcopy(SET), blender_light_rig="fixture_rig")
+    check(sets.validate(s) is s, "set with blender_light_rig validates")
+    out = sets.apply(s, copy.deepcopy(SHOT))
+    check(out["x_set"]["light_rig"] == "fixture_rig", "apply records the set's rig as x_set.light_rig")
+    check(out["lights"] == json.loads(plain)["lights"], "the set's engine lights are still written (engine previews)")
+    for bad, label in (("", "empty"), ("a/b", "a path"), ("engine", "'engine'"), (3, "not a string")):
+        check(refused(sets.validate, dict(copy.deepcopy(SET), blender_light_rig=bad), contains="blender_light_rig"),
+              f"refused: blender_light_rig {label}")
+
+
 def main():
     schema()
     unknown_keys()
     deterministic()
     rules()
     apply_refusals()
+    light_rig()
     print(f"\n{'FAILED' if FAILS else 'PASSED'}: {len(FAILS)} failure(s)")
     return 1 if FAILS else 0
 

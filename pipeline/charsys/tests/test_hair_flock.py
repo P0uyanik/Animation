@@ -24,6 +24,9 @@ CHARSYS = os.path.abspath(os.path.join(HERE, ".."))
 ROOT = os.path.abspath(os.path.join(CHARSYS, "..", ".."))
 MODULE = os.path.join(CHARSYS, "groom", "flock.py")
 OPTIONS = os.path.join(ROOT, "docs", "evaluation", "characters", "T-207", "options")
+GROOM_R6 = os.path.join(CHARSYS, "groom_r6.py")
+V1 = os.path.join(OPTIONS, "V1.json")
+T219 = {"girl_auburn_bun_glasses": "0.15.0", "girl_white_hair_blue_dress": "0.2.0"}  # T-219 candidates (V1 flock)
 TAG = "[test_hair_flock]"
 RESULTS = []
 
@@ -46,12 +49,12 @@ def plain():
         for dp, _, files in os.walk(os.path.join(ROOT, base)):
             for f in files:
                 p = os.path.join(dp, f)
-                if f.endswith(".py") and p not in (MODULE, os.path.abspath(__file__)) and \
+                if f.endswith(".py") and p not in (MODULE, os.path.abspath(__file__), GROOM_R6) and \
                         os.path.dirname(p) != os.path.join(CHARSYS, "groom"):
                     if re.search(r"groom[/.\\]+flock|import flock|ps_hair_flock",
                                  open(p, encoding="utf-8", errors="replace").read()):
                         users.append(os.path.relpath(p, ROOT))
-    check("no shared code references the module (opt-in only)", not users, users[:5])
+    check("no shared code references the module except the groom_r6 hook (opt-in only)", not users, users[:5])
     files = sorted(f for f in os.listdir(OPTIONS) if f.endswith(".json")) if os.path.isdir(OPTIONS) else []
     ok = bool(files) and all(json.load(open(os.path.join(OPTIONS, f))).get("schema") == "plush-studio.hair-flock/1"
                              for f in files)
@@ -59,6 +62,82 @@ def plain():
 
 
 # ---------------------------------------------------------------------------------------------- Blender checks
+def load_cap():
+    """The T-219 cap_contour functions (groom_r6.py section)."""
+    sys.path.insert(0, CHARSYS)
+    import groom_r6
+    return groom_r6._cap_contour()
+
+
+def hook():
+    """T-219: groom_r6.build without the opt-in keys passes the very same arguments to the unchanged body and loads
+    neither module; with them it strips the keys before the groom/4 path. Plain Python (stubbed body)."""
+    sys.path.insert(0, CHARSYS)
+    import groom_r6 as R6
+    calls = []
+    saved = (R6._build, R6._flock, R6._cap_contour)
+
+    def boom():
+        raise AssertionError("opt-in module loaded without its key")
+    try:
+        R6._build = lambda *a: calls.append(a) or ([], {})
+        R6._flock = R6._cap_contour = boom
+        hs, mat, fib = {"generator": "groom/5", "structures": [{"type": "scalp_cap", "name": "cap"}]}, object(), object()
+        res = R6.build("C", "head", "frame", hs, mat, 0.1, fib)
+        check("hook: without the keys build() calls the unchanged body once with the identical arguments",
+              res == ([], {}) and len(calls) == 1 and calls[0][3] is hs and calls[0][:3] == ("C", "head", "frame")
+              and calls[0][4] is mat and calls[0][5] == 0.1 and calls[0][6] is fib)
+    finally:
+        R6._build, R6._flock, R6._cap_contour = saved
+    src = open(GROOM_R6, encoding="utf-8").read()
+    body = src[src.index("def _build("):]
+    check("hook: _build checks the cap_contour key before anything else runs and keeps the groom/4 fast path",
+          body.index('"cap_contour" in hair_spec') < body.index("validate(hair_spec)")
+          and "if not jobs and not keepout and contour is None:" in body)
+    C = load_cap()
+    check("cap_contour: absent key = None, strip returns the same object", C.apply({"structures": []}, None, [])
+          is None and C.strip(hs) is hs)
+    caps = {"structures": [{"type": "scalp_cap", "name": "cap"}]}
+    check("cap_contour: validation", C.validate(dict(caps, cap_contour={})) == []
+          and C.validate(dict(caps, cap_contour={"corner_round_m": 0.2}))
+          and C.validate(dict(caps, cap_contour={"bogus": 1}))
+          and C.validate(dict(caps, cap_contour={"structure": "nope"}))
+          and C.validate({"structures": [], "cap_contour": {}}))
+
+
+def candidates():
+    """T-219: the candidate specs carry exactly the V1 options and a valid cap_contour; no other published or base
+    spec of any character uses either key (published builds stay as they are)."""
+    F, C = load_module(), load_cap()
+    v1 = json.load(open(V1))
+    for cid, ver in T219.items():
+        paths = [os.path.join(ROOT, "assets", "characters", cid, "spec", "candidates", "T-219", f"{cid}.{ver}.spec.json"),
+                 os.path.join(ROOT, "assets", "characters", cid, "versions", ver, "spec.json")]
+        for p in paths:
+            if not os.path.isfile(p):
+                check(f"{cid} {ver}: {os.path.relpath(p, ROOT)} (not present yet)", True)
+                continue
+            hs = json.load(open(p))["hair"]
+            check(f"{cid} {ver}: {os.path.relpath(p, ROOT)} carries the V1 flock options (valid) and a valid "
+                  "cap_contour", hs.get("flock") == v1 and not F.validate(hs["flock"]) and not C.validate(hs))
+    users = []
+    for dp, _, files in os.walk(os.path.join(ROOT, "assets", "characters")):
+        for f in files:
+            if f.endswith(".json") and "spec" in f:
+                p = os.path.join(dp, f)
+                try:
+                    hs = json.load(open(p)).get("hair")
+                except (ValueError, AttributeError):
+                    continue
+                if isinstance(hs, dict) and ("flock" in hs or "cap_contour" in hs):
+                    users.append(os.path.relpath(p, ROOT))
+    allowed = {f"assets/characters/{c}/spec/candidates/T-219/{c}.{v}.spec.json" for c, v in T219.items()}
+    stored = tuple(f"assets/characters/{c}/versions/{v}/" for c, v in T219.items())
+    other = sorted(u for u in users if u not in allowed and not u.startswith(stored))
+    check("only the T-219 candidate specs and their published versions use hair.flock / hair.cap_contour", not other,
+          other[:5])
+
+
 def make_scene(bpy, np):
     """Open tube along -Z (radius 0.03, z 0.3 .. 0) with "ps_fibre" V = metres from the top, a two-bone armature,
     a felt-fibre child with a stand-in "PS Shared Surface Fibres/1" modifier, and a lock material with PS nodes."""
@@ -349,6 +428,47 @@ def inner(tmp):
         except SystemExit as e:
             ck(f"command line refuses {label}", "flock:" in str(e), str(e))
     del mod_path
+
+    # --- T-219 cap_contour: the cap border follows the hairline field, not the head's faces
+    CC = load_cap()
+    bpy.ops.wm.read_factory_settings(use_empty=True)
+    bm = bmesh.new()
+    bmesh.ops.create_uvsphere(bm, u_segments=24, v_segments=16, radius=0.1)
+    hme = bpy.data.meshes.new("head")
+    bm.to_mesh(hme)
+    bm.free()
+    head = bpy.data.objects.new("head", hme)
+    bpy.context.scene.collection.objects.link(head)
+    head.location.z = 0.9
+    bpy.context.view_layer.update()
+    st = {"type": "scalp_cap", "name": "cap", "offset": 0.0, "face_cut": [-0.03, 0.92],
+          "hairline": [[0, 0.91], [90, 0.88], [180, 0.86]]}
+    hs = {"structures": [st], "cap_contour": {"corner_round_m": 0.01}}
+    cfg, st2 = CC.settings(hs)
+    s_of = CC.field(cfg, st2)
+
+    def cap_mesh():
+        me = bpy.data.meshes.new("hair_cap")
+        ob = bpy.data.objects.new("hair_cap", me)
+        bpy.context.scene.collection.objects.link(ob)
+        return ob
+    cap = cap_mesh()
+    rep = CC.apply(hs, head, [cap])
+    me = cap.data
+    edges = {}
+    for p in me.polygons:
+        for k in p.edge_keys:
+            edges[k] = edges.get(k, 0) + 1
+    border = {v for k, n in edges.items() if n == 1 for v in k}
+    sv = [s_of(*v.co) for v in me.vertices]
+    ck("cap_contour: border vertices lie on the hairline field (|s| < 1e-5 m), no vertex below it",
+       border and max(abs(sv[i]) for i in border) < 1e-5 and min(sv) > -1e-6,
+       (len(border), rep))
+    cap2 = cap_mesh()
+    CC.rebuild(cap2, head, cfg, st2)
+    a = np.array([c for v in me.vertices for c in v.co])
+    b = np.array([c for v in cap2.data.vertices for c in v.co])
+    ck("cap_contour: two runs give the same mesh", a.shape == b.shape and np.array_equal(a, b))
     json.dump(out, open(os.path.join(tmp, "inner.json"), "w"))
 
 
@@ -358,6 +478,8 @@ def main():
         return 0
     blender = sys.argv[sys.argv.index("--blender") + 1] if "--blender" in sys.argv else "blender"
     plain()
+    hook()
+    candidates()
     with tempfile.TemporaryDirectory() as tmp:
         p = subprocess.run([blender, "-b", "--factory-startup", "-P", os.path.abspath(__file__), "--", "--inner", tmp],
                            capture_output=True, text=True)

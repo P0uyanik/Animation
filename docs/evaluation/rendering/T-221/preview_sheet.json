@@ -1,0 +1,8 @@
+{
+ "title": "T-221 preview: e907 s010 + water_table_corner, f48, 640x360 16 spp final720_look — engine-translated lights vs rig water_table_corner_window",
+ "columns": [{"label": "engine lights (x_light_rig: engine)", "dir": "../../../../content/sets/build/e907_s010_engine/build/runs/preview/render"},
+             {"label": "rig water_table_corner_window", "dir": "../../../../content/sets/build/e907_s010_rig/build/runs/preview/render"}],
+ "frames": [48],
+ "crops": [{"label": "faces", "box": [0.3, 0.1, 0.7, 0.55]}],
+ "out": "t221_preview_f48_engine_vs_rig.jpg", "max_px": 1024
+}

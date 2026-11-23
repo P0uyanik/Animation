@@ -1,0 +1,51 @@
+{
+ "face.knobs.0.move_m.2": {
+  "bounds": [
+   -0.03,
+   0.0
+  ],
+  "step": -0.004
+ },
+ "face.knobs.0.radius_m": {
+  "bounds": [
+   0.04,
+   0.09
+  ],
+  "step": 0.01
+ },
+ "face.knobs.1.move_m.1": {
+  "bounds": [
+   -0.008,
+   0.004
+  ],
+  "step": -0.002
+ },
+ "face.knobs.2.offsets.2_1_2.2": {
+  "bounds": [
+   -0.03,
+   0.005
+  ],
+  "step": -0.005
+ },
+ "face.knobs.2.offsets.3_1_2.0": {
+  "bounds": [
+   -0.01,
+   0.03
+  ],
+  "step": 0.006
+ },
+ "face.knobs.2.offsets.3_1_2.2": {
+  "bounds": [
+   -0.03,
+   0.01
+  ],
+  "step": -0.005
+ },
+ "face.knobs.2.offsets.3_1_3.0": {
+  "bounds": [
+   -0.01,
+   0.025
+  ],
+  "step": 0.006
+ }
+}

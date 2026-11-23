@@ -1,0 +1,19 @@
+{
+ "applied": {
+  "compositor": "{'look': 'plush_soft', 'params': {'glow': {'type': 'Fog Glow', 'quality': 'High'",
+  "cycles.adaptive_threshold": "0.05",
+  "render.use_persistent_data": "True"
+ },
+ "blend": "girl_auburn_bun_glasses_master.blend",
+ "label": "cur",
+ "profile": "final720_look",
+ "px": 512,
+ "seconds": {
+  "+000": 113.9,
+  "+090": 57.6,
+  "+180": 60.7,
+  "-045": 85.8
+ },
+ "spp": 128,
+ "label_text": "current 0.14.0"
+}

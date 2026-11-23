@@ -1,0 +1,94 @@
+{
+ "what": "T-219 step 1: published specs built without the new keys, before (origin/main 39717ee) and after the groom_r6 flock hook + cap_contour wiring; build_character.py --no-glb --no-compare, then hairhash.py on the master. rest_sha = hair_* mesh vertices + CURVES originals; eval_sha = evaluated hair_* meshes + every evaluated CURVES object; all_mesh_sha = every mesh's vertices.",
+ "before": {
+  "boy_yellow_hoodie": {
+   "version": "2.3.0",
+   "build_s": "139s",
+   "mesh": 10,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 9755952,
+   "rest_sha": "eff4321763ce02a1",
+   "eval_sha": "3733a8bc0cd81e68",
+   "all_mesh_sha": "33bdfdd4f211fbfa"
+  },
+  "girl_auburn_bun_glasses": {
+   "version": "0.14.0",
+   "build_s": "106s",
+   "mesh": 29,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 7590960,
+   "rest_sha": "a73fd309aae6c7c3",
+   "eval_sha": "c42cab135b17ee52",
+   "all_mesh_sha": "b335760cd89f6bbc"
+  },
+  "girl_white_hair_blue_dress": {
+   "version": "0.1.0",
+   "build_s": "112s",
+   "mesh": 33,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 13694598,
+   "rest_sha": "d8e514e923fde7eb",
+   "eval_sha": "fe7e7558edc064c4",
+   "all_mesh_sha": "41098fbfa31d1bc8"
+  }
+ },
+ "after": {
+  "boy_yellow_hoodie": {
+   "version": "2.3.0",
+   "build_s": "165s",
+   "mesh": 10,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 9755952,
+   "rest_sha": "eff4321763ce02a1",
+   "eval_sha": "3733a8bc0cd81e68",
+   "all_mesh_sha": "33bdfdd4f211fbfa"
+  },
+  "girl_auburn_bun_glasses": {
+   "version": "0.14.0",
+   "build_s": "128s",
+   "mesh": 29,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 7591434,
+   "rest_sha": "a73fd309aae6c7c3",
+   "eval_sha": "b599f8dcced689aa",
+   "all_mesh_sha": "b335760cd89f6bbc"
+  },
+  "girl_white_hair_blue_dress": {
+   "version": "0.1.0",
+   "build_s": "108s",
+   "mesh": 33,
+   "curves": 0,
+   "points": 0,
+   "ev_points": 13694598,
+   "rest_sha": "d8e514e923fde7eb",
+   "eval_sha": "fe7e7558edc064c4",
+   "all_mesh_sha": "41098fbfa31d1bc8"
+  }
+ },
+ "identical": {
+  "boy_yellow_hoodie": {
+   "rest_sha": true,
+   "eval_sha": true,
+   "all_mesh_sha": true,
+   "ev_points": true
+  },
+  "girl_auburn_bun_glasses": {
+   "rest_sha": true,
+   "eval_sha": false,
+   "all_mesh_sha": true,
+   "ev_points": false
+  },
+  "girl_white_hair_blue_dress": {
+   "rest_sha": true,
+   "eval_sha": true,
+   "all_mesh_sha": true,
+   "ev_points": true
+  }
+ },
+ "auburn_eval_note": "eval_sha differs only through two GARMENT curve objects (garment.vest.embroidery.fibres 287112 vs 287346 points, garment.vest.embroidery_accent.fibres 191634 vs 191874), not hair; the groom cannot reach them (no key = the unchanged body runs). The same 'before' file re-evaluated twice gives identical values. Hair-only evaluated hash over the 78 hair* curve objects (1775550 points): before d2d4da2128449415 = after d2d4da2128449415. Pre-existing: the stored 0.14.0 master has a third value (287334 / 191466 points); every hair* curve object of both builds equals the stored master's."
+}

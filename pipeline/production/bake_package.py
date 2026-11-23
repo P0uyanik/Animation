@@ -24,6 +24,8 @@ Package (plush.bake_package/1; every path relative to the package folder, which 
                                         its hash is recorded, the file is not shipped)
   content/assets/<id>.asset.json        the prop assets the scene names (shot_render finds content/assets above
                                         the scene)
+  content/sets/rigs/<id>.light_rig.json the Blender light rig the scene picks (T-221: x_light_rig, else its set's
+                                        rig), plus the HDRI it names at the same path relative to the rig (no rig: none)
   code/pipeline/charsys/...             shot_render.py and everything it imports or reads (render_profiles.json,
                                         materials), from the source commit
 No engine executable. Deterministic: same bake, cast and source tree -> byte-identical MANIFEST.json and zip (fixed
@@ -52,7 +54,8 @@ PROFILES_REL = "code/pipeline/charsys/render_profiles.json"
 RENDER_CODE = ["pipeline/charsys/shot_render.py", "pipeline/charsys/episode.py", "pipeline/charsys/render_engine.py",
                "pipeline/charsys/geom.py", "pipeline/charsys/render_profiles.json", "pipeline/charsys/hair_pushout.py",
                "pipeline/charsys/materials/__init__.py",
-               "pipeline/charsys/materials/builder.py"]
+               "pipeline/charsys/materials/builder.py", "pipeline/charsys/set_lights.py",
+               "pipeline/charsys/set_lights_blender.py"]
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
 DEPS_SCRIPT = """import bpy, json, sys
 out = {}
@@ -76,6 +79,41 @@ def load_pc_tool():
     spec.loader.exec_module(mod)
     _PC.append(mod)
     return mod
+
+
+def load_set_lights():
+    """pipeline/charsys/set_lights.py (pure Python): which light rig a scene picks (T-221)."""
+    spec = importlib.util.spec_from_file_location("set_lights", os.path.join(CHARSYS, "set_lights.py"))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def light_rig_entries(scene_path, entries):
+    """Adds the scene's light rig (and its HDRI) at package paths that shot_render resolves the same way: the rig in
+    content/sets/rigs above the packaged scene, the HDRI at the same path relative to the rig. Returns the manifest
+    block, or None without a rig (the package is then exactly as before T-221)."""
+    sl = load_set_lights()
+    try:
+        rig, _ = sl.resolve(scene_path)
+    except sl.RigError as e:
+        raise SystemExit(f"light rig: {e}")
+    if rig is None:
+        return None
+    rel = f"{sl.RIG_DIR.replace(os.sep, '/')}/{rig['id']}{sl.SUFFIX}"
+    entries[rel] = rig["_path"]
+    block = {"id": rig["id"], "file": rel}
+    hdri = sl.hdri_path(rig)
+    if hdri is not None:
+        if not os.path.isfile(hdri):
+            raise SystemExit(f"light rig {rig['id']}: HDRI {hdri} not found")
+        base = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(rig["_path"]))))  # holds content/
+        hrel = os.path.relpath(hdri, base).replace(os.sep, "/")
+        if hrel.startswith("../"):
+            raise SystemExit(f"light rig {rig['id']}: HDRI {hdri} lies outside the folder holding content/sets/rigs")
+        entries[hrel] = hdri
+        block["hdri"] = hrel
+    return block
 
 
 def sha256_bytes(data):
@@ -201,6 +239,7 @@ def collect(bake_path, shot_path=None, blender=None):
             entries[f"content/assets/{os.path.basename(by_id[pid])}"] = by_id[pid]
         else:
             missing_assets.append(pid)
+    rig = light_rig_entries(scene_path, entries)
     # render code
     code = render_code_files()
     check_render_code(code)
@@ -223,6 +262,8 @@ def collect(bake_path, shot_path=None, blender=None):
             "render_entry": RENDER_ENTRY, "render_profiles": PROFILES_REL, "cast_provenance": prov,
             "engine_packages": engine_pkgs, "missing_prop_assets": missing_assets,
             "engine_executable": "not included: render with Blender only (tools/pc/render_package.py)"}
+    if rig is not None:  # (no key without a rig: rig-less packages stay byte-identical)
+        meta["light_rig"] = rig
     return entries, meta
 
 

@@ -13,12 +13,16 @@ Fast: no Blender, no engine (a fake Blender checks what the real one would read)
 3. Verification failures: a changed, a missing and an unlisted file, and a zip entry outside the package folder, each
    stop the PC run (exit 3) before Blender starts.
 4. A render profile the package does not have (e.g. preview_eevee before T-201) fails with a clear message (exit 2).
-5. The packaged render code list covers every pipeline/charsys module the render code imports (real repository)."""
+5. The packaged render code list covers every pipeline/charsys module the render code imports (real repository).
+6. Light rigs (T-221): a rig-less shot packs no rig and no "light_rig" key; a shot whose scene picks a rig packs the
+   rig and its HDRI so that, from the unpacked package alone (source tree gone), set_lights.resolve finds that packaged
+   rig and HDRI; an unknown rig and a missing HDRI stop the packing."""
 import ast
 import contextlib
 import importlib.util
 import io
 import json
+import re
 import os
 import shutil
 import stat
@@ -154,7 +158,65 @@ def run_pc(args):
     return code, err.getvalue() + outp.getvalue()
 
 
+def light_rigs():
+    sl = bp.load_set_lights()
+    with tempfile.TemporaryDirectory() as td:
+        td = Path(td)
+        fx = fixture(td / "src")
+        c, z = pack(fx, td / "plain")
+        man = json.loads((z.parent / z.name[:-9] / "MANIFEST.json").read_bytes())
+        check("rig-less shot: no rig packaged, no light_rig key", c == 0 and "light_rig" not in man
+              and not any(f.startswith("content/sets/") for f in man["files"]))
+        scene_p = td / "src/ep/shots/s1/build/shot.resolved.scene.json"
+        scene = json.loads(scene_p.read_text())
+        scene["x_light_rig"] = "room_rig"
+        scene_p.write_text(json.dumps(scene))
+        write(td / "src/ep/content/sets/hdri/room.hdr", b"#?RADIANCE fake")
+        write(td / "src/ep/content/sets/rigs/room_rig.light_rig.json",
+              {"format": "plush.light_rig", "version": 1, "id": "room_rig",
+               "lights": [{"name": "key", "type": "point", "location": [0, 0, 2], "energy": 10, "color": [1, 1, 1]}],
+               "world": {"hdri": "../hdri/room.hdr", "strength": 1.0}})
+        c, z = pack(fx, td / "rig")
+        folder_src = z.parent / z.name[:-9]
+        man = json.loads((folder_src / "MANIFEST.json").read_bytes())
+        check("rig shot: rig and HDRI packaged and listed", c == 0 and man.get("light_rig") == {
+            "id": "room_rig", "file": "content/sets/rigs/room_rig.light_rig.json", "hdri": "content/sets/hdri/room.hdr"}
+              and {"content/sets/rigs/room_rig.light_rig.json", "content/sets/hdri/room.hdr"} <= set(man["files"]),
+              str(man.get("light_rig")))
+        clean = td / "pc"
+        clean.mkdir()
+        shutil.copyfile(z, clean / z.name)
+        scene_p.write_text(json.dumps(dict(scene, x_light_rig="missing_rig")))
+        try:
+            pack(fx, td / "bad")
+            refused = False
+        except SystemExit as e:
+            refused = "missing_rig" in str(e.code) and "not found" in str(e.code)
+        check("unknown rig: packing refused", refused)
+        scene_p.write_text(json.dumps(scene))
+        (td / "src/ep/content/sets/hdri/room.hdr").unlink()
+        try:
+            pack(fx, td / "bad2")
+            refused = False
+        except SystemExit as e:
+            refused = "HDRI" in str(e.code)
+        check("missing HDRI: packing refused", refused)
+        shutil.rmtree(td / "src")
+        code, _ = run_pc([str(clean / z.name), "--verify-only"])
+        folder = clean / z.name[:-9]
+        cwd = os.getcwd()
+        os.chdir(folder)  # the render's working folder; bake.json's scene_path is package-relative
+        try:
+            rig, rep = sl.resolve(json.loads(Path("bake.json").read_text())["scene_path"])
+        finally:
+            os.chdir(cwd)
+        check("unpacked package alone: the packaged rig and HDRI are the ones resolved", code == 0 and rig is not None
+              and os.path.realpath(rig["_path"]) == os.path.realpath(folder / "content/sets/rigs/room_rig.light_rig.json")
+              and os.path.isfile(sl.hdri_path(rig)) and rep["source"] == "scene x_light_rig")
+
+
 def main():
+    light_rigs()
     with tempfile.TemporaryDirectory() as td:
         td = Path(td)
         fx = fixture(td / "src")
@@ -168,7 +230,7 @@ def main():
         check("same input -> identical zip", z1.read_bytes() == z2.read_bytes())
         man = json.loads(m1)
         check("package name and frames", z1.name.startswith("ep_s1_") and man["frames"] == [1, 4]
-              and "_f" not in z1.name, z1.name)
+              and not re.search(r"_f\d+-\d+\.bake\.zip$", z1.name), z1.name)  # frame suffix only (sha may start with f)
         check("no host paths in the package", str(td) not in (m1 + (z1.parent / z1.name[:-9] / "bake.json").read_bytes()
                                                                  + (z1.parent / z1.name[:-9] / "cast.json").read_bytes()).decode())
         check("only the named prop asset is packaged", "content/assets/cube.asset.json" in man["files"]
@@ -204,10 +266,11 @@ def main():
             os.environ["PATH"] = old_path
         log = json.loads((td / "fake_log.json").read_text()) if (td / "fake_log.json").exists() else {"problems": ["no run"]}
         folder = clean / z1.name[:-9]
+        default_profile = json.loads((folder / man["render_profiles"]).read_text())["default_profile"]
         check("render from the unpacked package alone", code == 0 and not log["problems"], f"{code} {log['problems']} {text[-500:]}")
         check("renders in the package folder", os.path.realpath(log.get("cwd", "")) == os.path.realpath(folder))
         check("frames and report written outside the package",
-              sorted(p.name for p in (clean / f"{folder.name}_render_final720").glob("frame_*.png"))
+              sorted(p.name for p in (clean / f"{folder.name}_render_{default_profile}").glob("frame_*.png"))
               == [f"frame_{f:04d}.png" for f in range(1, 5)])
         check("shot's production.render applied (as run_shot)", "64" in log.get("argv", []) and
               log["argv"][log["argv"].index("--samples") + 1] == "2")
@@ -261,7 +324,8 @@ def main():
     shot_render = ast.parse((ROOT / "pipeline/charsys/shot_render.py").read_text(encoding="utf-8"))
     imported = {a.name for n in ast.walk(shot_render) if isinstance(n, ast.Import) for a in n.names}
     check("shot_render's local imports are packaged", {"episode", "render_engine"} <= imported and all(
-        f"pipeline/charsys/{m}.py" in bp.RENDER_CODE for m in ("episode", "render_engine")))
+        f"pipeline/charsys/{m}.py" in bp.RENDER_CODE for m in ("episode", "render_engine", "set_lights",
+                                                                   "set_lights_blender")))
     print("FAILED: " + ", ".join(FAILS) if FAILS else "all bake package tests passed")
     return 1 if FAILS else 0
 

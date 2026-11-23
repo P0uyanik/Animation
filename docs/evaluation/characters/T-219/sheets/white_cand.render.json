@@ -1,0 +1,19 @@
+{
+ "applied": {
+  "compositor": "{'look': 'plush_soft', 'params': {'glow': {'type': 'Fog Glow', 'quality': 'High'",
+  "cycles.adaptive_threshold": "0.05",
+  "render.use_persistent_data": "True"
+ },
+ "blend": "girl_white_hair_blue_dress_master.blend",
+ "label": "cand",
+ "profile": "final720_look",
+ "px": 512,
+ "seconds": {
+  "+000": 33.8,
+  "+090": 16.0,
+  "+180": 14.1,
+  "-030": 26.1
+ },
+ "spp": 128,
+ "label_text": "candidate 0.2.0"
+}

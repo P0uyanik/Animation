@@ -341,8 +341,10 @@ def main_generic(a, spec, info, out):
         skin = parts[0][0]
         report["jaw"] = FACE.add_jaw(rig, skin, fc["cavity"], fc["mouth"], fc["landmarks"], head_bone, fc["mouth_cfg"])
         FG.add_jaw_preset_drivers(rig, fc["jaw_preset_weights"], float(fc["mouth_cfg"].get("jaw_open_deg", 7.0)))
-        report["inbetween_drivers"] = FG.add_inbetween_drivers(
-            rig, [o for o in sorted(C.all_objects, key=lambda ob: ob.name) if o.type == "MESH"])
+        meshes = [o for o in sorted(C.all_objects, key=lambda ob: ob.name) if o.type == "MESH"]
+        if hasattr(FG, "complete_inbetween_chains"):  # face_generic/4+: stop keys where a chain has none (T-216)
+            report["inbetween_chain_completion"] = FG.complete_inbetween_chains(meshes)
+        report["inbetween_drivers"] = FG.add_inbetween_drivers(rig, meshes)
         bpy.ops.object.select_all(action="DESELECT")  # the jaw adds a fifth influence on some skin vertices
         skin.select_set(True)
         bpy.context.view_layer.objects.active = skin

@@ -1,0 +1,50 @@
+{
+ "character_id": "girl_white_hair_blue_dress",
+ "version": "0.2.0",
+ "parent": "0.1.0",
+ "created": "2026-11-23T07:37:48+00:00",
+ "notes": "girl_white_hair_blue_dress 0.2.0 = T-219 CANDIDATE (not approved, not current): CURRENT 0.1.0 spec + hair.flock (T-207 V1) + H2 hair volume + hair.cap_contour (stair-step fix); face unchanged (D6); spec assets/characters/girl_white_hair_blue_dress/spec/candidates/T-219/girl_white_hair_blue_dress.0.2.0.spec.json (docs/evaluation/characters/T-219/make_specs.py). Owner docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET; CURRENT only after the owner approves the sheet.",
+ "spec_sha256": "95a016afc1f2824e0ccbbf4496e8f562c7e6736c8d98fff3b6f0e73478186e72",
+ "spec_version": "0.2.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "hair"
+ ],
+ "identity_change_approved_by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET: T-207 hair look V1 + H2 / forehead stair-step fix; hair section only)",
+ "files": {
+  "girl_white_hair_blue_dress_master.blend": {
+   "sha256": "f161c76f64b394dd6a9b638a4061a7b479a4b994d048d275176d28edb6d0f673",
+   "bytes": 89315481
+  },
+  "spec.json": {
+   "sha256": "4f72bf9271cc3f084c7b0bc16837870fe79adb6d5112345d57ad3af35e9d4b92",
+   "bytes": 51869
+  },
+  "components.json": {
+   "sha256": "644fec3bd4f7aa133b12afd840408860cf18fbda5b3ea30cdbf714e03b635269",
+   "bytes": 31579
+  },
+  "animation_compat.json": {
+   "sha256": "9056bec41798d2accfc3b8f2401265b9dfe0124d86c848d431c7b972a552fcb0",
+   "bytes": 18969
+  },
+  "build_report.json": {
+   "sha256": "54eb5e6f63df037e78dacda0a187a3fdaab0f758fd159bcbed30abb8d497705f",
+   "bytes": 53434
+  },
+  "spec.resolved.json": {
+   "sha256": "36f2c73d069cb579b137982a74f3bbd2bd1e6bca79a7141b1e77bc724c35ad0a",
+   "bytes": 52373
+  }
+ },
+ "rig": {
+  "rigify_bones": 573,
+  "deform_bones": 236,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_white_hair_blue_dress.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

@@ -1,6 +1,6 @@
 {
  "schema": "plush-studio.render-profiles/2",
- "note": "T-124 profiles, made the default by T-166 (owner decision 2026-11-20): shot_render.py and run_shot.py use 'default_profile' unless --profile names another. 'legacy128' is the previous final preset (128 spp, adaptive 0.01, the shot's own resolution); pin it by name where a golden depends on it. 'encode' holds the delivery encodes (run_shot --codec): HEVC 10-bit by default, H.264 8-bit as the compatibility fallback; masters stay lossless PNG.",
+ "note": "T-124 profiles, made the default by T-166 (owner decision 2026-11-20); since T-220 (owner decision 2026-11-23) the default is 'final720_look' (final720 + plush_soft compositor look): shot_render.py and run_shot.py use 'default_profile' unless --profile names another. 'final720' (no look) stays selectable by name. 'legacy128' is the previous final preset (128 spp, adaptive 0.01, the shot's own resolution); pin it by name where a golden depends on it. 'encode' holds the delivery encodes (run_shot --codec): HEVC 10-bit by default, H.264 8-bit as the compatibility fallback; masters stay lossless PNG.",
  "profiles": {
   "final720": {
    "description": "Final delivery 1280x720: 128 spp + OIDN with a looser adaptive-sampling threshold (0.05). T-124 s010_verbs frame 65: 208 s vs 433 s for the current settings (-52%), 39.4 dB vs 41.2 dB against a 512 spp reference.",
@@ -17,7 +17,7 @@
    }
   },
   "final720_look": {
-   "description": "T-199, OPT-IN (owner has not approved the look yet): final720 plus the 'plush_soft' compositor look: soft fog-glow on highlights, a gentle warm grade and a faint vignette. Render settings are identical to final720; only the compositor tree differs. Select with --profile final720_look.",
+   "description": "DEFAULT final profile (T-220, owner decision 2026-11-23): final720 plus the T-199 'plush_soft' compositor look: soft fog-glow on highlights, a gentle warm grade and a faint vignette. Render settings are identical to final720; only the compositor tree differs. For the previous look-free final render pass --profile final720.",
    "resolution": [
     1280,
     720
@@ -102,7 +102,7 @@
    }
   }
  },
- "default_profile": "final720",
+ "default_profile": "final720_look",
  "encode": {
   "default": "hevc10",
   "codecs": {

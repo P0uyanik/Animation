@@ -1,0 +1,20 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "grids": {
+  "0.01mm": {
+   "changed_objects": [],
+   "identical": true,
+   "other_differences": []
+  },
+  "0.1mm": {
+   "changed_objects": [],
+   "identical": true,
+   "other_differences": []
+  }
+ },
+ "pass": true,
+ "spec_sha256_rebuilt": "85924396b5b6409793572b078100b5106bb09cba94c609a1781d2e04200389b0",
+ "spec_sha256_stored": "85924396b5b6409793572b078100b5106bb09cba94c609a1781d2e04200389b0",
+ "stored_master_unchanged": true,
+ "version": "0.15.0"
+}

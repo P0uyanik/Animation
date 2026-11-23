@@ -1,0 +1,50 @@
+{
+ "character": "girl_white_hair_blue_dress",
+ "label": "cur",
+ "scale": 0.30643,
+ "views": [
+  {
+   "view": "s02_front",
+   "yaw": 0,
+   "iou_head": 0.8582,
+   "area_ratio": 1.1019,
+   "width_ratio": 1.1053,
+   "top_ratio": 1.0,
+   "iou_body": 0.850898
+  },
+  {
+   "view": "s02_front_left",
+   "yaw": -30,
+   "iou_head": 0.7718,
+   "area_ratio": 1.1551,
+   "width_ratio": 1.1121,
+   "top_ratio": 1.0265,
+   "iou_body": 0.845543
+  },
+  {
+   "view": "s02_left",
+   "yaw": 90,
+   "iou_head": 0.7465,
+   "area_ratio": 1.0812,
+   "width_ratio": 1.0426,
+   "top_ratio": 1.0131,
+   "iou_body": 0.804701
+  },
+  {
+   "view": "s02_back",
+   "yaw": 180,
+   "iou_head": 0.8429,
+   "area_ratio": 1.0699,
+   "width_ratio": 1.1239,
+   "top_ratio": 0.894,
+   "iou_body": 0.829639
+  }
+ ],
+ "mean": {
+  "iou_head": 0.8049,
+  "area_ratio": 1.102,
+  "width_ratio": 1.096,
+  "top_ratio": 0.9834,
+  "iou_body": 0.8327
+ }
+}
