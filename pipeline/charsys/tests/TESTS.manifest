@@ -52,7 +52,7 @@ local test_face_v2_socket_wall.py 'needs Blender; local run (not in the gate bef
 local test_garment_details.py 'needs Blender; local run (not in the gate before T-182)'
 local test_garments_v2_t093b.py 'needs Blender; local run (not in the gate before T-182)'
 local test_hair_r4_build.py 'needs Blender; local run (not in the gate before T-182)'
-local test_hair_pushout.py 'T-194; needs Blender (bpy, ~1 min): tools/bpy_blender.py -b --factory-startup -P <file> -- out.json'
+blender test_hair_pushout.py hair-pushout
 local test_hair_v3.py 'plain Python, not in the gate before T-182 (candidate for run)'
 local test_hair_v3_r2.py 'plain Python, not in the gate before T-182 (candidate for run)'
 local test_hair_v3_r3.py 'plain Python, not in the gate before T-182 (candidate for run)'

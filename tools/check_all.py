@@ -1020,6 +1020,16 @@ def unit_hair_curves(c: BlenderContext) -> None:
     add_subcheck(c.subchecks, "hair flock (T-207)", fcode == 0, "" if fcode == 0 else "hair flock test failed", flog)
 
 
+def unit_hair_pushout(c: BlenderContext) -> None:
+    # T-194 opt-in render-time hair push-out: synthetic scenes, no assets (< 1 min); the test writes {"ok": bool}.
+    log = c.logs / "blender-hair-pushout.log"
+    out = c.out / "hair_pushout_test.json"
+    code, _ = run_logged([c.executable, "-b", "--factory-startup", "-P",
+                          str(ROOT / "pipeline/charsys/tests/test_hair_pushout.py"), "--", str(out)], log)
+    ok = code == 0 and json_pass(out, "ok")
+    add_subcheck(c.subchecks, "hair push-out (T-194)", ok, "" if ok else "hair push-out test failed", log)
+
+
 def unit_groom(c: BlenderContext) -> None:
     groom_script = ROOT / "pipeline/charsys/tests/groom_generic_test.py"
     if groom_script.is_file():
@@ -1183,7 +1193,7 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("face-parity", t077_unit("face export parity (T-213)", lambda c: [  # auburn master, ~1 min, temp dir only
         sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_parity.py"), "--blender", c.executable]), False),
     ("face-measurer", t077_unit("face measurer (T-214)", lambda c: [  # 3 released masters, ~60 s, temp dirs only
-        sys.executable, str(ROOT / "tools/fit/tests/test_measurer.py")]), False),
+        sys.executable, str(ROOT / "tools/fit/tests/test_measurer.py")]), False),    ("hair-pushout", unit_hair_pushout, False),  # T-194
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)

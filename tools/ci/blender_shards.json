@@ -21,7 +21,8 @@
     ],
     "3": [
       "shot-eyes",
-      "emotions"
+      "emotions",
+      "hair-pushout"
     ],
     "4": [
       "hair",
@@ -45,7 +46,8 @@
     "ears-shape",
     "glasses-rest",
     "face-parity",
-    "face-measurer"
+    "face-measurer",
+    "hair-pushout"
   ],
   "added_after_t127_note": "Blender units added after T-127. tools/ci/blender_inventory.py accepts exactly these as new: each one's commands must appear exactly once in the shards and in the unsharded path; everything else is compared with pre-T-127 as before."
 }
