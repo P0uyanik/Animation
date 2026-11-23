@@ -89,4 +89,7 @@ Earlier full run before the session 3 fades (`results/e912_s020c2_on.m.json`): c
 
 ## Sheet
 
-SHEET_LINE
+`T-194_r3_sheet.jpg` (1020 x 638): s020 shot camera, Cycles 32 spp border renders around the head
+(`tools/crop_render.py`), columns no push-out / ON / OFF; rows f45 (the boy: his head and hood are behind the auburn
+hair in this camera, so the hood-rim fix is measured only) and f115 (the auburn nape: the cap left inside the neck by
+ON is under the ringlets; no visible difference between the three columns at this camera and frame). P2: one sheet.
