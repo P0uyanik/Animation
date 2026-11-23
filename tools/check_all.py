@@ -1199,6 +1199,8 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("hair-pushout", unit_hair_pushout, False),  # T-194
     ("set-lights", t077_unit("set light rigs (T-221)", lambda c: [c.executable, "-b", "--factory-startup", "-P",  # headless, no render, seconds
         str(ROOT / "pipeline/charsys/tests/test_set_lights_blender.py")]), False),
+    ("contact-audit", t077_unit("contact audit (T-218)", lambda c: [c.executable, "-b", "--factory-startup", "-P",  # synthetic, no assets, ~8 s
+        str(ROOT / "pipeline/production/tests/test_contact_audit.py")]), False),
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)
