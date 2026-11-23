@@ -1,0 +1,41 @@
+{
+  "sheet": "/home/user/Animation/docs/evaluation/rendering/T-221/t221_strict_f48_engine_vs_rig.jpg",
+  "size": [
+    2048,
+    324
+  ],
+  "max_px": 2048,
+  "frames": [
+    48
+  ],
+  "columns": [
+    "engine lights (x_light_rig: engine)",
+    "rig water_table_corner_window"
+  ],
+  "crops": [
+    {
+      "label": "faces",
+      "box": [
+        0.3,
+        0.1,
+        0.7,
+        0.55
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "frame": 48,
+      "column": "engine lights (x_light_rig: engine)",
+      "path": "/home/user/Animation/docs/evaluation/rendering/T-221/../../../../content/sets/build/e907_s010_engine/build/runs/strict/render/frame_0048.png",
+      "sha256": "514da977ae2d9c06e55e6b8648d6b6704410c73d217296f849d12e6930224f29"
+    },
+    {
+      "frame": 48,
+      "column": "rig water_table_corner_window",
+      "path": "/home/user/Animation/docs/evaluation/rendering/T-221/../../../../content/sets/build/e907_s010_rig/build/runs/strict/render/frame_0048.png",
+      "sha256": "24948ca9f580c077f064f4c5e776176506828f2e13a4ba7ae97acaa68a10a40f"
+    }
+  ],
+  "missing": []
+}

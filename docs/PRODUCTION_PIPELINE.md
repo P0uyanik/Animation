@@ -177,7 +177,8 @@ without a rig renders exactly as before (same Blender scene, same pixels).
   world (Background colour, or an Environment Texture as `hdri`). A build followed by a dump gives the file back.
 - **Starting rig:** `water_table_corner_window` (named by `content/sets/water_table_corner.set.json`) is today's
   translated window key / wool rim / fill / window sun and the window sky, saved with `dump` at `light_scale` 1.0.
-  It renders the same frame as the translation (e907 s010 f48: 99 % of pixels identical, max difference 1/255).
+  It renders the same frame as the translation (e907 s010 f48, 1280x720, 128 spp, final720_look: 96.9 % of pixels
+  identical, max difference 5/255, PSNR 67.8 dB; the residue is the dump's 6-significant-digit rounding).
 - **Evidence and tests:** `docs/evaluation/rendering/T-221/`; `pipeline/charsys/tests/test_set_lights.py`,
   `pipeline/charsys/tests/test_set_lights_blender.py`, `pipeline/production/tests/test_sets.py`.
 

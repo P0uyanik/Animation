@@ -1,0 +1,12 @@
+{
+ "check": "no-rig identity: e912_paper_boat s020 frame 100, run_shot --frames 100-100 --samples 8 (640x360, profile final720_look), origin/main 6029c6e vs branch t-221 (same engine build, same bpy 5.3.0)",
+ "pixels_sha256_16": {"main": "5ff9b35d4b406b96", "branch": "5ff9b35d4b406b96"},
+ "pixel_max_abs_diff": 0,
+ "png_file_sha_differs_only_by": "PNG text metadata (render time, file path)",
+ "blender_scene_fingerprint_16": {"main": "a771c155bd6c4398", "branch": "a771c155bd6c4398",
+                                   "covers": "lights (type, energy, colour, matrix), camera, props, world colour/strength of shot.blend"},
+ "shot_render_json_equal_except_timings_and_paths": true,
+ "shot_render_json_has_light_rig_key": false,
+ "bake_json_differs_only_by": "scene_path and character package paths (two checkouts)",
+ "unit_test": "pipeline/charsys/tests/test_set_lights_blender.py NO_RIG_FINGERPRINT 68687398dccd3f4b (setup_world(rig=None) == origin/main)"
+}
