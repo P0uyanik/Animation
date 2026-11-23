@@ -50,7 +50,7 @@ PROFILES_REL = "code/pipeline/charsys/render_profiles.json"
 # shot_render.py and what it imports or reads at render time (repository paths). check_render_code() keeps this
 # list honest: every pipeline/charsys module imported by a listed file must be listed.
 RENDER_CODE = ["pipeline/charsys/shot_render.py", "pipeline/charsys/episode.py", "pipeline/charsys/render_engine.py",
-               "pipeline/charsys/geom.py", "pipeline/charsys/render_profiles.json",
+               "pipeline/charsys/geom.py", "pipeline/charsys/render_profiles.json", "pipeline/charsys/hair_pushout.py",
                "pipeline/charsys/materials/__init__.py",
                "pipeline/charsys/materials/builder.py"]
 ZIP_TIME = (1980, 1, 1, 0, 0, 0)
