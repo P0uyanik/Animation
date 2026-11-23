@@ -22,6 +22,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import re
 import os
 import shutil
 import stat
@@ -229,7 +230,7 @@ def main():
         check("same input -> identical zip", z1.read_bytes() == z2.read_bytes())
         man = json.loads(m1)
         check("package name and frames", z1.name.startswith("ep_s1_") and man["frames"] == [1, 4]
-              and "_f" not in z1.name, z1.name)
+              and not re.search(r"_f\d+-\d+\.bake\.zip$", z1.name), z1.name)  # frame suffix only (sha may start with f)
         check("no host paths in the package", str(td) not in (m1 + (z1.parent / z1.name[:-9] / "bake.json").read_bytes()
                                                                  + (z1.parent / z1.name[:-9] / "cast.json").read_bytes()).decode())
         check("only the named prop asset is packaged", "content/assets/cube.asset.json" in man["files"]
