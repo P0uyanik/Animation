@@ -74,7 +74,7 @@ Earlier full run before the session 3 fades (`results/e912_s020c2_on.m.json`): c
   bake, s020 f100-112: object list, bone poses and SHA-256 of every evaluated mesh (all and hair) equal at f100 / 106 /
   110 / 112 (`results/ident/main_off.h.json`, `our_off.h.json`).
 - Ranges: the full-shot blend (f1-208) and a f100-112 blend give the same hashes at f110 (all meshes, hair, pose);
-  ON2_LINE. A single-frame blend (f110 only): hair hash equal; the other meshes differ only by float noise
+  two separate on-blends of f100-112 are identical at all four frames (`on1` / `on2.h.json`). A single-frame blend (f110 only): hair hash equal; the other meshes differ only by float noise
   (<= 1.8e-7 m, auburn finger bones and hands, from the bone keying of a one-frame range, not from the push-out).
 - Cost (s020, 3 characters, 640x360): setup 46 s once (rest pass, anchor proxies); stage A 3.1 s per frame (s030
   4.0 s); stage B within timing noise (hair evaluation 1.46 / 1.52 s with it against 1.57 / 1.56 s without, f110 /
