@@ -16,6 +16,8 @@ sources (no character-specific code anywhere in the path):
                  "render": {"resolution": [w, h], "samples": n, "light_scale": x,
                             "hair_pushout": true | "<spec.json>" | {...}}}   (T-194, optional: shot_render.py
                                                                              --hair-pushout; absent = off)
+                 "render": {..., "garment_pushout": true | "<spec.json>" | {...}}   (T-222, optional: shot_render.py
+                                                                             --garment-pushout; absent = off)
 
 Each character's "asset" in the scene is ignored and replaced by the package built here. Outputs go to
 <shot dir>/build/ (masters for unpublished casts, packages, bake.json, frames, shot.blend, shot.mp4, run_shot.json).
@@ -481,6 +483,10 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
         hp = r.get("hair_pushout")  # T-194 opt-in; absent or false = the previous invocation
         if hp:
             cmd += ["--hair-pushout", "on" if hp is True else (json.dumps(hp) if isinstance(hp, dict) else resolve(ROOT, hp))]
+        gp = r.get("garment_pushout")  # T-222 opt-in; absent or false = the previous invocation
+        if gp:
+            cmd += ["--garment-pushout",
+                    "on" if gp is True else (json.dumps(gp) if isinstance(gp, dict) else resolve(ROOT, gp))]
         progress = {"n": -1}
 
         def poll():
