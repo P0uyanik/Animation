@@ -64,7 +64,8 @@ def parse():
     ap.add_argument("--resolution", type=int, nargs=2, default=None)
     ap.add_argument("--samples", type=int, default=None)
     ap.add_argument("--light-scale", type=float, default=1.0)
-    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default=None,
+                    help="default: the profile's \"engine\" key, else cycles")
     ap.add_argument("--blend-only", action="store_true")
     ap.add_argument("--hair-pushout", nargs="?", const="on", default=None,
                     help="T-194: push hair out of the real meshes (on, a spec JSON file or inline JSON; hair_pushout.py)")
@@ -77,6 +78,7 @@ def parse():
     if a.profile not in profiles["profiles"]:
         ap.error(f"unknown --profile {a.profile!r} (have: {', '.join(profiles['profiles'])})")
     a.profile_data = profiles["profiles"][a.profile]
+    a.engine = a.engine or a.profile_data.get("engine", "cycles")
     if a.resolution is None and "resolution" in a.profile_data:
         a.resolution = list(a.profile_data["resolution"])
     if a.samples is None:

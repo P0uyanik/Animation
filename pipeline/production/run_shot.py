@@ -332,8 +332,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--shot", required=True)
     ap.add_argument("--blender")
-    ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles",
-                    help="Blender render engine (default: cycles)")
+    ap.add_argument("--engine", choices=("cycles", "eevee"), default=None,
+                    help="Blender render engine (default: the profile's engine key, else cycles)")
     ap.add_argument("--bake-engine", default=os.path.join(ROOT, "build", "apps", "render-cli", "plush-render"),
                     help="path to the plush-render executable used by the bake stage")
     ap.add_argument("--frames", default="")
@@ -355,6 +355,7 @@ def main():
     if a.codec not in profiles["encode"]["codecs"]:
         ap.error(f"unknown --codec {a.codec!r} (have: {', '.join(profiles['encode']['codecs'])})")
     a.profile_data, a.encode_args = profiles["profiles"][a.profile], profiles["encode"]["codecs"][a.codec]["args"]
+    a.engine = a.engine or a.profile_data.get("engine", "cycles")
     if not a.blender and not a.mark_cancelled:
         ap.error("the following arguments are required: --blender")
     shot_path = os.path.abspath(a.shot)
@@ -432,7 +433,7 @@ def main():
 def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, fa, fb, res, r):
     streamed = bool(a.run_dir)
     step = (lambda cmd, log, poll=None: run_streamed(cmd, log, poll)) if streamed else (lambda cmd, log, poll=None: run(cmd, log))
-    rep = {"shot": os.path.relpath(shot_path, ROOT), "steps": {}, "cast": {}}
+    rep = {"shot": os.path.relpath(shot_path, ROOT), "steps": {}, "cast": {}, "engine": a.engine}
     done = []
 
     def stage(name):
@@ -475,9 +476,7 @@ def stages_run(a, shot, shot_path, out, run_out, logs, stages, encode, status, f
                "--profile", a.profile, "--samples", str(a.samples or r.get("samples") or a.profile_data["samples"]),
                "--light-scale", str(r.get("light_scale", 1.0))]
         cmd += (["--resolution", str(res[0]), str(res[1])] if res else []) + (["--frames", a.frames] if a.frames else [])
-        # Omit the default so the pre-T-020 Cycles invocation is unchanged.
-        # shot_render.py itself also defaults to Cycles.
-        cmd += ["--engine", "eevee"] if a.engine == "eevee" else []
+        cmd += ["--engine", a.engine]  # the effective engine (explicit --engine, else the profile's, else cycles)
         cmd += ["--blend-only"] if a.blend_only else []
         hp = r.get("hair_pushout")  # T-194 opt-in; absent or false = the previous invocation
         if hp:
