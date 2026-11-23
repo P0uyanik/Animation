@@ -10,7 +10,7 @@ Branch `t-222-claude-garment-contact`, input `origin/main@625c634`. Opt-in only:
 | --- | --- | --- |
 | A1 | Opt-in flag, identity without it (one s020 frame) | in progress |
 | A2 | garment_body before / after: e912 s020 (all frames, step 2) and s010 (sit down, f1-80) | in progress |
-| A3 | No new pops (garment jump > 5 mm added, T-194 rule) | in progress |
+| A3 | No new pops (garment jump > 5 mm added, T-194 rule): HARD acceptance, per character, full shot at step 1 (Supervisor R8) | in progress |
 | B | Cloth evaluation (pieces, cost / frame, determinism, look), STATUS + wait for go | in progress |
 
 ### Current settings (`garment_pushout.DEFAULTS`)
@@ -24,7 +24,7 @@ Branch `t-222-claude-garment-contact`, input `origin/main@625c634`. Opt-in only:
 | `smooth_iterations`, `normal_smooth` | 0, 2 |
 
 ### Open defects / questions
-- Per-shot key `production.render.garment_pushout` needs run_shot.py (outside the write-set): asked in STATUS.
+- Per-shot key `production.render.garment_pushout`: approved (R8), forwarded by run_shot.py like hair_pushout.
 
 ### Sheets
 (none yet)
