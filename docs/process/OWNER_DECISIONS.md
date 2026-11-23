@@ -1118,3 +1118,10 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   refs scored against a matched smile expression; D6 face and hair ship independently. Standing: no CURRENT change
   without the owner's OK; every new character version needs the owner's sheet approval; P2 budget per session. The
   liaison wants the auburn pilot sheet (all angles, before/after/reference) when ready.
+
+## 2026-11-23 ~06:55 CET (via the liaison; owner: "With All four open decisions i agree")
+- **T-194 hair push-out:** `static_move_fade` ON stays the default (no pops; auburn nape cap left inside, hidden from
+  the shot camera). The rate-limited push-out follow-up is NOT started; optional, only on the owner's request.
+- **Auburn face: GO for P3** (Warp/Hook/Lattice for outline and chin on the T-215 stuck list), then a combined sheet
+  before any release decision.
+- Hair look (T-207) and compositor look (T-199) picks: the liaison confirms them with the owner separately.
