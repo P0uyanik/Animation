@@ -1,0 +1,27 @@
+name: relay-notify
+# Turns each relay push (new RELAY_LOG.md lines) into a comment on the relay PR #2, which wakes the Supervisor.
+on:
+  push:
+    branches: [relay-channel]
+    paths: [RELAY_LOG.md]
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Post new log lines
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          new=$(git diff HEAD~1 HEAD -- RELAY_LOG.md | sed -n 's/^+\([^+].*\)/\1/p')
+          # Round 2 (A5): only READY, BLOCKED and STATUS lines wake the Supervisor.
+          new=$(printf '%s\n' "$new" | grep -E '\| *(READY|BLOCKED|STATUS) *\|' || true)
+          [ -n "$new" ] || exit 0
+          printf 'Relay report:\n```\n%s\n```\n' "$new" > body.txt
+          gh pr comment 2 --repo "$GITHUB_REPOSITORY" --body-file body.txt
