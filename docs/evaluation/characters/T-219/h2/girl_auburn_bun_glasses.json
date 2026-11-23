@@ -1,10 +1,55 @@
 {
- "note": "T-219 H2 (hair volume): crown top lowered, bun moved back/down towards sheet30_left/back; cap border contour (stair-step fix)",
- "hair": {"cap_contour": {"structure": "cap", "corner_round_m": 0.008}},
+ "note": "T-219 H2 (hair volume): crown top lowered, bun moved back/down and back of head fuller (sheet30_left/back); cap border contour (stair-step fix)",
+ "hair": {
+  "cap_contour": {
+   "structure": "cap",
+   "corner_round_m": 0.008
+  }
+ },
  "structures": {
-  "crown": {"height": [0.022, 0.042, 0.03]},
-  "bun": {"buns": {"0": {"el": 72}}},
-  "ringlets_side": {"hang_radii": [0.176, 0.155]},
-  "ringlets_outer": {"hang_radii": [0.176, 0.155]}
+  "crown": {
+   "height": [
+    0.022,
+    0.036,
+    0.03
+   ]
+  },
+  "bun": {
+   "buns": {
+    "0": {
+     "el": 62
+    }
+   }
+  },
+  "ringlets_side": {
+   "hang_radii": [
+    0.176,
+    0.155
+   ]
+  },
+  "ringlets_outer": {
+   "hang_radii": [
+    0.176,
+    0.155
+   ]
+  },
+  "curtain": {
+   "rest_radii": [
+    0.15,
+    0.145
+   ]
+  },
+  "ringlets_back": {
+   "rest_radii": [
+    0.17,
+    0.165
+   ]
+  },
+  "ringlets_back_b": {
+   "rest_radii": [
+    0.17,
+    0.165
+   ]
+  }
  }
 }

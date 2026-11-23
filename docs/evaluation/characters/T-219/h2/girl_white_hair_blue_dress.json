@@ -1,12 +1,73 @@
 {
  "note": "T-219 H2 (hair volume): side/back lock radii and lift reduced (s02 front/back width), buns moved back (s02_left); cap border contour",
- "hair": {"cap_contour": {"structure": "cap", "corner_round_m": 0.008}},
+ "hair": {
+  "cap_contour": {
+   "structure": "cap",
+   "corner_round_m": 0.008
+  }
+ },
  "structures": {
-  "buns": {"buns": {"0": {"az": 66}, "1": {"az": -66}}},
-  "back_mass": {"rest_radii": [0.178, 0.146]},
-  "back_under": {"hang_radii": [0.166, 0.155], "rest_radii": [0.175, 0.145]},
-  "back_locks": {"hang_radii": [0.186, 0.176], "rest_radii": [0.19, 0.16], "lift": [0.03, 0.035]},
-  "outer_locks": {"hang_radii": [0.205, 0.178], "rest_radii": [0.203, 0.165], "lift": [0.028, 0.032]},
-  "side_locks": {"hang_radii": [0.182, 0.162]}
+  "buns": {
+   "buns": {
+    "0": {
+     "az": 84,
+     "el": 60
+    },
+    "1": {
+     "az": -84,
+     "el": 60
+    }
+   }
+  },
+  "back_mass": {
+   "rest_radii": [
+    0.178,
+    0.146
+   ]
+  },
+  "back_under": {
+   "hang_radii": [
+    0.166,
+    0.155
+   ],
+   "rest_radii": [
+    0.175,
+    0.145
+   ]
+  },
+  "back_locks": {
+   "hang_radii": [
+    0.186,
+    0.176
+   ],
+   "rest_radii": [
+    0.19,
+    0.16
+   ],
+   "lift": [
+    0.03,
+    0.035
+   ]
+  },
+  "outer_locks": {
+   "hang_radii": [
+    0.205,
+    0.178
+   ],
+   "rest_radii": [
+    0.203,
+    0.165
+   ],
+   "lift": [
+    0.028,
+    0.032
+   ]
+  },
+  "side_locks": {
+   "hang_radii": [
+    0.182,
+    0.162
+   ]
+  }
  }
 }
