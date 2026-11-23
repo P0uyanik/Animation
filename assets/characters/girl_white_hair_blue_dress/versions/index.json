@@ -8,6 +8,13 @@
    "status": "approved",
    "spec_sha256": "5530064ae3ecc5e6eb3a009df3b87fe55951659fa174edc295ff12031a727942",
    "approval_notes": "new current version: R3 release, third character 0.1.0 CURRENT"
+  },
+  "0.2.0": {
+   "created": "2026-11-23T07:37:48+00:00",
+   "parent": "0.1.0",
+   "notes": "girl_white_hair_blue_dress 0.2.0 = T-219 CANDIDATE (not approved, not current): CURRENT 0.1.0 spec + hair.flock (T-207 V1) + H2 hair volume + hair.cap_contour (stair-step fix); face unchanged (D6); spec assets/characters/girl_white_hair_blue_dress/spec/candidates/T-219/girl_white_hair_blue_dress.0.2.0.spec.json (docs/evaluation/characters/T-219/make_specs.py). Owner docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET; CURRENT only after the owner approves the sheet.",
+   "status": "candidate",
+   "spec_sha256": "95a016afc1f2824e0ccbbf4496e8f562c7e6736c8d98fff3b6f0e73478186e72"
   }
  },
  "pointers": {
@@ -28,6 +35,12 @@
    "previous": null,
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z, typed directly in the T-155 session)",
    "notes": "new current version: R3 release, third character 0.1.0 CURRENT"
+  },
+  {
+   "at": "2026-11-23T07:37:48+00:00",
+   "action": "publish",
+   "version": "0.2.0",
+   "status": "candidate"
   }
  ]
 }

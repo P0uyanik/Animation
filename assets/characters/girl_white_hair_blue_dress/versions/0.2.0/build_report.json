@@ -1,0 +1,2578 @@
+{
+ "blender": "5.3.0",
+ "build": "charsys/1+body_generic/1",
+ "character_id": "girl_white_hair_blue_dress",
+ "spec_path": "assets/characters/girl_white_hair_blue_dress/spec/candidates/T-219/girl_white_hair_blue_dress.0.2.0.spec.json",
+ "overrides": [],
+ "spec_sha256": "95a016afc1f2824e0ccbbf4496e8f562c7e6736c8d98fff3b6f0e73478186e72",
+ "versions": {
+  "generators": {
+   "body": "body_generic/2",
+   "face": "face_generic/3",
+   "groom": "groom/5",
+   "garment": "garment/3",
+   "accessories": "accessories/1",
+   "rig": "rigify_human/1",
+   "materials": "presets/3",
+   "exporter": "export/4"
+  },
+  "pinned_in_spec": [
+   "accessories",
+   "body",
+   "exporter",
+   "face",
+   "garment",
+   "groom",
+   "materials",
+   "rig"
+  ],
+  "defaulted": []
+ },
+ "material_presets": {
+  "skin": "skin-flock/3",
+  "hair": "felt hair cream/3",
+  "hair_bow": "bow felt/3"
+ },
+ "garments": {
+  "generator": "garment/3",
+  "items": [
+   {
+    "name": "dress",
+    "type": "dress",
+    "objects": [
+     "garment.dress.bodice",
+     "garment.dress.band.cuff.L",
+     "garment.dress.band.cuff.R",
+     "garment.dress.collar",
+     "garment.dress.skirt",
+     "garment.dress.band.hem_rib",
+     "garment.dress.ribcuff.L",
+     "garment.dress.ribcuff.R"
+    ],
+    "covered_body_faces": 11738,
+    "mask_body": true,
+    "material_presets": [
+     "cotton knit"
+    ],
+    "fibres": [
+     {
+      "object": "garment.dress.bodice.fibres",
+      "source": "garment.dress.bodice",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.band.cuff.L.fibres",
+      "source": "garment.dress.band.cuff.L",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.band.cuff.R.fibres",
+      "source": "garment.dress.band.cuff.R",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.collar.fibres",
+      "source": "garment.dress.collar",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.skirt.fibres",
+      "source": "garment.dress.skirt",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.band.hem_rib.fibres",
+      "source": "garment.dress.band.hem_rib",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.ribcuff.L.fibres",
+      "source": "garment.dress.ribcuff.L",
+      "preset": "cotton knit",
+      "lod": "close"
+     },
+     {
+      "object": "garment.dress.ribcuff.R.fibres",
+      "source": "garment.dress.ribcuff.R",
+      "preset": "cotton knit",
+      "lod": "close"
+     }
+    ]
+   },
+   {
+    "name": "boots",
+    "type": "boots",
+    "objects": [
+     "garment.boots.main.L",
+     "garment.boots.lining.L",
+     "garment.boots.sole.L",
+     "garment.boots.main.R",
+     "garment.boots.lining.R",
+     "garment.boots.sole.R",
+     "garment.boots.cuff.L",
+     "garment.boots.cuff.R",
+     "garment.boots.stitch.L",
+     "garment.boots.stitch.R"
+    ],
+    "covered_body_faces": 6250,
+    "mask_body": true,
+    "material_presets": [
+     "boot fleece",
+     "cuff fleece/3",
+     "felt"
+    ],
+    "fibres": [
+     {
+      "object": "garment.boots.main.L.fibres",
+      "source": "garment.boots.main.L",
+      "preset": "boot fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.lining.L.fibres",
+      "source": "garment.boots.lining.L",
+      "preset": "cuff fleece/3",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.sole.L.fibres",
+      "source": "garment.boots.sole.L",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.main.R.fibres",
+      "source": "garment.boots.main.R",
+      "preset": "boot fleece",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.lining.R.fibres",
+      "source": "garment.boots.lining.R",
+      "preset": "cuff fleece/3",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.sole.R.fibres",
+      "source": "garment.boots.sole.R",
+      "preset": "felt",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.cuff.L.fibres",
+      "source": "garment.boots.cuff.L",
+      "preset": "cuff fleece/3",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.cuff.R.fibres",
+      "source": "garment.boots.cuff.R",
+      "preset": "cuff fleece/3",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.stitch.L.fibres",
+      "source": "garment.boots.stitch.L",
+      "preset": "wool yarn",
+      "lod": "close"
+     },
+     {
+      "object": "garment.boots.stitch.R.fibres",
+      "source": "garment.boots.stitch.R",
+      "preset": "wool yarn",
+      "lod": "close"
+     }
+    ]
+   },
+   {
+    "name": "tights",
+    "type": "tights",
+    "objects": [
+     "garment.tights.main"
+    ],
+    "fibres": [
+     {
+      "object": "garment.tights.main.fibres",
+      "source": "garment.tights.main",
+      "preset": "cotton knit",
+      "lod": "close"
+     }
+    ],
+    "covered_body_faces": 18272,
+    "mask_body": true,
+    "material_presets": [
+     "cotton knit"
+    ]
+   }
+  ],
+  "objects": 19,
+  "fibres_lod": "close",
+  "covered_body_faces": 17988,
+  "masked_items": [
+   "dress",
+   "boots",
+   "tights"
+  ],
+  "mask_margin_m": 0.013512,
+  "hide_body_faces": true,
+  "collision": {
+   "enabled": true,
+   "offset_m": 0.0018016000000000002,
+   "radius_m": 0.072064,
+   "falloff_m": 0.018016,
+   "passes": 3
+  },
+  "body_fit": {
+   "measures_m": {
+    "arm_root_radius": 0.028342,
+    "thigh_radius": 0.037714,
+    "torso_depth": 0.115536,
+    "head_height": 0.27397
+   },
+   "scale": {
+    "arm": 0.9447,
+    "leg": 0.8381,
+    "torso": 0.9232,
+    "head": 0.9447,
+    "body": 0.9008
+   }
+  },
+  "reuses": "garment/2",
+  "garment_2": {
+   "boots": {
+    "cuff_roll": {
+     "height_m": 0.0503,
+     "thickness_m": 0.0054,
+     "pieces": [
+      {
+       "object": "garment.boots.cuff.L",
+       "top_z_m": 0.1224,
+       "shaft_r_m": 0.0584,
+       "outer_r_m": 0.0638
+      },
+      {
+       "object": "garment.boots.cuff.R",
+       "top_z_m": 0.1224,
+       "shaft_r_m": 0.0584,
+       "outer_r_m": 0.0638
+      }
+     ]
+    }
+   }
+  },
+  "garment_3": {
+   "tights": {
+    "tights": {
+     "waist_z_m": 0.4,
+     "ease_m": 0.0021,
+     "thickness_m": 0.0012,
+     "vertices": 36700,
+     "covered_body_faces": 18272
+    },
+    "fibre_uv": {
+     "uv_map": "ps_fibre",
+     "swap": false,
+     "mean_radius_m": {
+      "garment.tights.main": {
+       "body": 0.0787,
+       "leg0": 0.0395,
+       "leg1": 0.0396
+      }
+     }
+    }
+   },
+   "dress": {
+    "skirt_pattern": {
+     "piece": "garment.dress.skirt",
+     "panels": 12,
+     "relief_m": 0.00419,
+     "peak_m": 0.00419,
+     "vertices": 76800,
+     "subdivide": 2
+    },
+    "cloth_sim": {
+     "piece": "garment.dress.skirt",
+     "pinned_vertices": 3456,
+     "vertices": 76800,
+     "pin_top": 0.03,
+     "pin_blend": 0.05
+    },
+    "rib_cuff": {
+     "ribs": 18,
+     "height_m": 0.02834,
+     "pieces": {
+      "garment.dress.ribcuff.L": {
+       "vertices": 1296,
+       "radius_m": 0.0287,
+       "centre_m": [
+        0.1862,
+        0.0,
+        0.4286
+       ]
+      },
+      "garment.dress.ribcuff.R": {
+       "vertices": 1296,
+       "radius_m": 0.0287,
+       "centre_m": [
+        -0.1878,
+        0.0,
+        0.4296
+       ]
+      }
+     }
+    },
+    "fibre_uv": {
+     "uv_map": "ps_fibre",
+     "swap": false,
+     "mean_radius_m": {
+      "garment.dress.bodice": {
+       "arm0": 0.0398,
+       "arm1": 0.0398,
+       "body": 0.0774
+      },
+      "garment.dress.band.cuff.L": {
+       "arm0": 0.031
+      },
+      "garment.dress.band.cuff.R": {
+       "arm1": 0.031
+      },
+      "garment.dress.collar": {
+       "body": 0.0758
+      },
+      "garment.dress.skirt": {
+       "arm0": 0.0503,
+       "arm1": 0.0503,
+       "body": 0.1236
+      },
+      "garment.dress.band.hem_rib": {
+       "body": 0.1416
+      },
+      "garment.dress.ribcuff.L": {
+       "arm0": 0.0291
+      },
+      "garment.dress.ribcuff.R": {
+       "arm1": 0.0291
+      }
+     }
+    },
+    "collar_seat": {
+     "collar": "garment.dress.collar",
+     "over": [],
+     "columns": 73,
+     "neckline_z_m": 0.615,
+     "inner_radius_m": 0.0602,
+     "thickness_m": 0.004,
+     "droop_deg": {
+      "min": 5.7,
+      "max": 80.0
+     },
+     "hinges_raised": 0,
+     "strips_stiffened": 194,
+     "rest_clearance_over_gap_m": {
+      "p50": 0.00399,
+      "p95": 0.00935,
+      "max": 0.01318
+     }
+    }
+   },
+   "boots": {
+    "sole_stitch": {
+     "pitch_m": 0.00754,
+     "pieces": {
+      "garment.boots.stitch.L": {
+       "stitches": 42,
+       "z_m": -0.0067,
+       "outline_m": 0.3239
+      },
+      "garment.boots.stitch.R": {
+       "stitches": 42,
+       "z_m": -0.0067,
+       "outline_m": 0.3231
+      }
+     }
+    }
+   }
+  }
+ },
+ "hands": {
+  "generator": "hands_r2/1",
+  "L": {
+   "finger_radius_mm": 6.24,
+   "gap_mm": 2.03,
+   "voxel_mm": 0.61,
+   "vertices": 8001
+  },
+  "R": {
+   "finger_radius_mm": 6.24,
+   "gap_mm": 2.03,
+   "voxel_mm": 0.61,
+   "vertices": 8001
+  }
+ },
+ "face": {
+  "generator": "face_generic/3",
+  "shape": {
+   "front_fade_m": 0.08,
+   "outline_smooth_m": 0.006,
+   "outline": {
+    "roundness": 0.9,
+    "exponent": 2.6,
+    "top_z_m": 0.7251,
+    "width_m": 0.1313
+   },
+   "face_width_m": 0.016,
+   "jaw_depth_roundness": 0.6,
+   "cheek_fullness_m": 0.020371455472376523,
+   "lower_face": {
+    "cheek_pad_m": 0.011,
+    "jaw_round_m": 0.008,
+    "jaw_z_m": 0.6344,
+    "jaw_half_width_m": 0.0758
+   }
+  },
+  "nose": {
+   "type": "small_round",
+   "tip_m": [
+    0.0,
+    -0.1164,
+    0.6997
+   ]
+  },
+  "felt_eye": {
+   "material": "M_eye_felt",
+   "highlights": 1,
+   "lid_line_materials": [
+    "M_lash_generic"
+   ]
+  },
+  "lower_fit": {
+   "L": {
+    "gap": 0.0025899679392805334,
+    "shift_max_m": 0.00422,
+    "shift_mean_m": 0.00297
+   },
+   "R": {
+    "gap": 0.0025899679392805334,
+    "shift_max_m": 0.00422,
+    "shift_mean_m": 0.00297
+   }
+  },
+  "lid_roll_deg": {
+   "upper": 1.0,
+   "lower": 0.0
+  },
+  "lid_trim": {
+   "L": {
+    "bounds_m": {
+     "up": [
+      0.03747,
+      null,
+      null
+     ],
+     "lo": [
+      0.00037,
+      0.00037,
+      0.01585
+     ]
+    },
+    "removed_vertices": {
+     "up": 218,
+     "lo": 1574
+    }
+   },
+   "R": {
+    "bounds_m": {
+     "up": [
+      0.03747,
+      null,
+      null
+     ],
+     "lo": [
+      0.00037,
+      0.00037,
+      0.01585
+     ]
+    },
+    "removed_vertices": {
+     "up": 218,
+     "lo": 1574
+    }
+   }
+  },
+  "eyes": {
+   "L": {
+    "centre_m": [
+     0.0588,
+     -0.0758,
+     0.7251
+    ],
+    "radius_m": 0.048,
+    "front_protrusion_m": 0.004,
+    "gaze_envelope": 1.0796,
+    "lid_gap_upper": 0.0904,
+    "lid_gap_lower": 0.0904
+   },
+   "R": {
+    "centre_m": [
+     -0.0588,
+     -0.0758,
+     0.7251
+    ],
+    "radius_m": 0.048,
+    "front_protrusion_m": 0.004,
+    "gaze_envelope": 1.0796,
+    "lid_gap_upper": 0.0904,
+    "lid_gap_lower": 0.0904
+   }
+  },
+  "socket_refined_faces": 3656,
+  "lid_socket": {
+   "L": {
+    "vertices": 17354,
+    "opening": 4319,
+    "moved_max_m": 0.024
+   },
+   "R": {
+    "vertices": 17443,
+    "opening": 4326,
+    "moved_max_m": 0.024
+   },
+   "smoothed_vertices": 16891,
+   "wall_smoothed_vertices": 18914,
+   "corner_relaxed_vertices": 17395,
+   "closed_fill": {
+    "L": {
+     "vertices": 7615,
+     "max_m": 0.0214
+    },
+    "R": {
+     "vertices": 7683,
+     "max_m": 0.02139
+    }
+   }
+  },
+  "lip_fullness": {
+   "upper": 1.45,
+   "lower": 1.8,
+   "forward_m": 0.0014
+  },
+  "blink_overlap_deg": 36.75,
+  "blink": {
+   "L": {
+    "lid": "lid_upper.L",
+    "edge_upper_deg": 26.9,
+    "edge_lower_deg": -39.0,
+    "close_deg": 102.6,
+    "flatten": 0.35
+   },
+   "R": {
+    "lid": "lid_upper.R",
+    "edge_upper_deg": 26.9,
+    "edge_lower_deg": -39.0,
+    "close_deg": 102.6,
+    "flatten": 0.35
+   }
+  },
+  "smile_coupling": {
+   "head_vertices": 32676,
+   "cheek_radius_m": [
+    0.0359,
+    0.0359
+   ],
+   "eye_squint_deg": 6.0,
+   "intensity": 1.0,
+   "asymmetry": 0.0
+  },
+  "cheek_raise": {
+   "raise_m": 0.004,
+   "forward_m": 0.003,
+   "radius_m": 0.04
+  },
+  "lids_follow_skin": [
+   "lid_lower.L:MouthSmile",
+   "lid_lower.R:MouthSmile",
+   "lid_lower.L:CheekRaise",
+   "lid_lower.R:CheekRaise"
+  ],
+  "mouth_rest_shape": {
+   "shape": "soft_smile",
+   "objects": [
+    "mouth",
+    "mouth_cavity",
+    "body_skin",
+    "lid_lower.L",
+    "lid_lower.R"
+   ]
+  },
+  "closed_fit": {
+   "L": {
+    "gaze_range_deg": [
+     26,
+     26
+    ],
+    "gap": 0.002,
+    "fade_deg": 20.0,
+    "fade_above_edge_deg": 20.0,
+    "corner_fade": [
+     0.7,
+     0.95
+    ],
+    "close_deg": 102.61,
+    "rest_edge_deg": -19.59,
+    "keys": {
+     "Blink.L@25": 0.00018,
+     "Blink.L@50": 0.00154,
+     "Blink.L@75": 0.00527,
+     "Blink.L": 0.00924,
+     "EyeWide": 0.0052,
+     "EyeSquint": 8e-05,
+     "Blink@25": 0.00018,
+     "Blink@50": 0.00154,
+     "Blink@75": 0.00527,
+     "Blink": 0.00924,
+     "LeftEyeClosed@25": 0.00018,
+     "LeftEyeClosed@50": 0.00154,
+     "LeftEyeClosed@75": 0.00527,
+     "LeftEyeClosed": 0.00924,
+     "Squint@25": 0.00012,
+     "Squint@50": 0.00092,
+     "Squint@75": 0.00385,
+     "Squint": 0.00873,
+     "WideOpen": 0.0052,
+     "Smile": 3e-05,
+     "Surprise": 0.0052,
+     "Sadness@25": 5e-05,
+     "Sadness@50": 5e-05,
+     "Sadness@75": 5e-05,
+     "Sadness": 6e-05,
+     "Anger": 4e-05,
+     "Confusion": 2e-05,
+     "Laugh@25": 0.00013,
+     "Laugh@50": 0.00122,
+     "Laugh@75": 0.00456,
+     "Laugh": 0.00956,
+     "Worried": 0.00523,
+     "Curious": 0.00523,
+     "SmileClosed": 2e-05,
+     "Thinking": 3e-05,
+     "SmileOpen": 2e-05
+    },
+    "shell_material": {
+     "M_skin_face": "M_skin_face.lid"
+    },
+    "shift_max_m": {
+     "lid_upper.L": 0.00956,
+     "lash.L": 0.00611
+    },
+    "skin_fill": {
+     "Blink.L": 0.01738,
+     "Blink": 0.01738,
+     "LeftEyeClosed": 0.01738
+    },
+    "lash_curve": {
+     "out_m": 0.003,
+     "sag_deg": 5.0,
+     "corner_lift_deg": 7.0,
+     "seam_deg": -25.0,
+     "blend_deg": 10.0,
+     "keys": {
+      "Blink.L@50": 1.0,
+      "Blink.L@75": 1.0,
+      "Blink.L": 1.0,
+      "Blink@50": 1.0,
+      "Blink@75": 1.0,
+      "Blink": 1.0,
+      "LeftEyeClosed@50": 1.0,
+      "LeftEyeClosed@75": 1.0,
+      "LeftEyeClosed": 1.0,
+      "Squint@50": 0.591,
+      "Squint@75": 1.0,
+      "Squint": 1.0,
+      "Laugh@50": 0.906,
+      "Laugh@75": 1.0,
+      "Laugh": 1.0
+     }
+    }
+   },
+   "R": {
+    "gaze_range_deg": [
+     26,
+     26
+    ],
+    "gap": 0.002,
+    "fade_deg": 20.0,
+    "fade_above_edge_deg": 20.0,
+    "corner_fade": [
+     0.7,
+     0.95
+    ],
+    "close_deg": 102.61,
+    "rest_edge_deg": -19.59,
+    "keys": {
+     "Blink.R@25": 0.00018,
+     "Blink.R@50": 0.00154,
+     "Blink.R@75": 0.00527,
+     "Blink.R": 0.00924,
+     "EyeWide": 0.0052,
+     "EyeSquint": 8e-05,
+     "Blink@25": 0.00018,
+     "Blink@50": 0.00154,
+     "Blink@75": 0.00527,
+     "Blink": 0.00924,
+     "RightEyeClosed@25": 0.00018,
+     "RightEyeClosed@50": 0.00154,
+     "RightEyeClosed@75": 0.00527,
+     "RightEyeClosed": 0.00924,
+     "Squint@25": 0.00012,
+     "Squint@50": 0.00092,
+     "Squint@75": 0.00385,
+     "Squint": 0.00873,
+     "WideOpen": 0.0052,
+     "Smile": 3e-05,
+     "Surprise": 0.0052,
+     "Sadness@25": 5e-05,
+     "Sadness@50": 5e-05,
+     "Sadness@75": 5e-05,
+     "Sadness": 6e-05,
+     "Anger": 4e-05,
+     "Confusion": 2e-05,
+     "Laugh@25": 0.00013,
+     "Laugh@50": 0.00122,
+     "Laugh@75": 0.00456,
+     "Laugh": 0.00956,
+     "Worried": 0.00523,
+     "Curious": 0.00523,
+     "SmileClosed": 2e-05,
+     "Thinking": 3e-05,
+     "SmileOpen": 2e-05
+    },
+    "shell_material": {
+     "M_skin_face": "M_skin_face.lid"
+    },
+    "shift_max_m": {
+     "lid_upper.R": 0.00956,
+     "lash.R": 0.00611
+    },
+    "skin_fill": {
+     "Blink.R": 0.01741,
+     "Blink": 0.01741,
+     "RightEyeClosed": 0.01741
+    },
+    "lash_curve": {
+     "out_m": 0.003,
+     "sag_deg": 5.0,
+     "corner_lift_deg": 7.0,
+     "seam_deg": -25.0,
+     "blend_deg": 10.0,
+     "keys": {
+      "Blink.R@50": 1.0,
+      "Blink.R@75": 1.0,
+      "Blink.R": 1.0,
+      "Blink@50": 1.0,
+      "Blink@75": 1.0,
+      "Blink": 1.0,
+      "RightEyeClosed@50": 1.0,
+      "RightEyeClosed@75": 1.0,
+      "RightEyeClosed": 1.0,
+      "Squint@50": 0.594,
+      "Squint@75": 1.0,
+      "Squint": 1.0,
+      "Laugh@50": 0.908,
+      "Laugh@75": 1.0,
+      "Laugh": 1.0
+     }
+    }
+   }
+  },
+  "action_units": [
+   "Blink.L",
+   "Blink.R",
+   "EyeWide",
+   "EyeSquint",
+   "BrowUp.L",
+   "BrowUp.R",
+   "BrowDown",
+   "BrowSad",
+   "MouthSmile",
+   "MouthFrown",
+   "MouthWide",
+   "MouthO",
+   "JawOpen",
+   "CheekRaise"
+  ],
+  "action_units_missing": [],
+  "presets": [
+   "Blink",
+   "LeftEyeClosed",
+   "RightEyeClosed",
+   "Squint",
+   "WideOpen",
+   "Smile",
+   "Frown",
+   "Surprise",
+   "Sadness",
+   "Anger",
+   "Confusion",
+   "Laugh",
+   "MouthOpen",
+   "Worried",
+   "Curious",
+   "SmileClosed",
+   "Thinking",
+   "SmileOpen"
+  ],
+  "lid_shell_exposed": {
+   "lid_upper.L": 0.023,
+   "lid_upper.R": 0.023,
+   "lid_lower.L": 0.25,
+   "lid_lower.R": 0.25
+  },
+  "lid_shell_exposed_3q": {
+   "yaw_-35": {
+    "lid_upper.R": {
+     "past_corner_vertices": 246,
+     "visible": 11,
+     "fraction": 0.045
+    },
+    "lid_lower.R": {
+     "past_corner_vertices": 0,
+     "visible": 0,
+     "fraction": 0.0
+    }
+   },
+   "yaw_35": {
+    "lid_upper.L": {
+     "past_corner_vertices": 246,
+     "visible": 11,
+     "fraction": 0.045
+    },
+    "lid_lower.L": {
+     "past_corner_vertices": 0,
+     "visible": 0,
+     "fraction": 0.0
+    }
+   }
+  },
+  "lid_corner_extent_m": {
+   "lid_upper.L": {
+    "outer": 0.03754,
+    "inner": 0.05393
+   },
+   "lid_lower.L": {
+    "outer": 0.00037,
+    "inner": 0.00037
+   },
+   "lash.L": {
+    "outer": 0.04586,
+    "inner": 0.02834
+   },
+   "lid_upper.R": {
+    "outer": 0.03754,
+    "inner": 0.05393
+   },
+   "lid_lower.R": {
+    "outer": 0.00037,
+    "inner": 0.00037
+   },
+   "lash.R": {
+    "outer": 0.04586,
+    "inner": 0.02834
+   }
+  },
+  "notes": [
+   "non-spherical eyeball (scale [1.03, 0.8, 1.0]): the lids clear its rigid gaze sweep over gaze_range_deg [16, 8] (envelope 1.080)"
+  ]
+ },
+ "accessories": {},
+ "hair": {
+  "generator": "groom/5",
+  "structures": {
+   "cap": {
+    "type": "scalp_cap",
+    "faces": 10565
+   },
+   "buns": {
+    "buns": 2,
+    "finish": "felt",
+    "type": "bun"
+   },
+   "crown": {
+    "shape": "gather",
+    "grid": [
+     220,
+     48
+    ],
+    "type": "felt_volume"
+   },
+   "fringe": {
+    "masses": 19,
+    "keepout_clamped": 0,
+    "mean_footprint_cm2": 81.0,
+    "mean_depth": 0.42,
+    "type": "masses"
+   },
+   "temples": {
+    "masses": 2,
+    "keepout_clamped": 0,
+    "mean_footprint_cm2": 68.5,
+    "mean_depth": 0.6,
+    "type": "masses"
+   },
+   "back_mass": {
+    "shape": "curtain",
+    "grid": [
+     180,
+     100
+    ],
+    "columns": 10,
+    "type": "curtain"
+   },
+   "back_under_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_03": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_04": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_05": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_under_06": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_03": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_04": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_05": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_06": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_07": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "back_locks_08": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_r00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_r01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "outer_locks_r02": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_r00": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "side_locks_r01": {
+    "locks": 1,
+    "style": "wavy",
+    "finish": "felt",
+    "type": "locks"
+   },
+   "bow": {
+    "size_m": 0.118,
+    "loops": 4,
+    "type": "felt_bow"
+   }
+  },
+  "objects": [
+   "hair_cap",
+   "hair_buns",
+   "hair_crown",
+   "hair_fringe",
+   "hair_temples",
+   "hair_back_mass",
+   "hair_back_under_00",
+   "hair_back_under_01",
+   "hair_back_under_02",
+   "hair_back_under_03",
+   "hair_back_under_04",
+   "hair_back_under_05",
+   "hair_back_under_06",
+   "hair_back_locks_00",
+   "hair_back_locks_01",
+   "hair_back_locks_02",
+   "hair_back_locks_03",
+   "hair_back_locks_04",
+   "hair_back_locks_05",
+   "hair_back_locks_06",
+   "hair_back_locks_07",
+   "hair_back_locks_08",
+   "hair_outer_locks_00",
+   "hair_outer_locks_01",
+   "hair_outer_locks_02",
+   "hair_outer_locks_r00",
+   "hair_outer_locks_r01",
+   "hair_outer_locks_r02",
+   "hair_side_locks_00",
+   "hair_side_locks_01",
+   "hair_side_locks_r00",
+   "hair_side_locks_r01",
+   "hair_bow"
+  ],
+  "vertices": 133838,
+  "keepout": {
+   "az": 34.0,
+   "el_min": -8.0,
+   "violations": 7,
+   "by_object": {
+    "hair_fringe": 7
+   }
+  },
+  "fibres": {
+   "objects": 99,
+   "layers": [
+    "felt",
+    "halo",
+    "flyaways"
+   ],
+   "directional": 0.0
+  },
+  "dynamics": {
+   "chains": 49
+  },
+  "lowered": {
+   "staggered_locks": {
+    "back_under": 7,
+    "back_locks": 9,
+    "outer_locks": 6,
+    "side_locks": 4
+   },
+   "wave_phase_deg": {
+    "back_under_00": 190.0,
+    "back_under_01": 160.0,
+    "back_under_02": 215.0,
+    "back_under_03": 175.0,
+    "back_under_04": 200.0,
+    "back_under_05": 190.0,
+    "back_under_06": 160.0,
+    "back_locks_00": 0.0,
+    "back_locks_01": 25.0,
+    "back_locks_02": 345.0,
+    "back_locks_03": 35.0,
+    "back_locks_04": 10.0,
+    "back_locks_05": 335.0,
+    "back_locks_06": 20.0,
+    "back_locks_07": 0.0,
+    "back_locks_08": 25.0,
+    "outer_locks_00": 30.0,
+    "outer_locks_01": 350.0,
+    "outer_locks_02": 30.0,
+    "outer_locks_r00": 170.0,
+    "outer_locks_r01": 210.0,
+    "outer_locks_r02": 170.0,
+    "side_locks_00": 60.0,
+    "side_locks_01": 20.0,
+    "side_locks_r00": 200.0,
+    "side_locks_r01": 240.0
+   },
+   "accessories": {
+    "seated_lift_m": {
+     "bow": 0.0353
+    },
+    "turned_deg": {
+     "bow": 7.0
+    }
+   }
+  },
+  "cap_contour": {
+   "faces_before": 10565,
+   "faces": 10593,
+   "snapped": 114,
+   "split": 182,
+   "corner_round_m": 0.008,
+   "hairline_dz_m": 0.0
+  },
+  "reshaped": {
+   "fringe": {
+    "tips": {
+     "from": 0.55,
+     "scale": 0.85,
+     "power": 1.0,
+     "flatten": 0.6,
+     "calm": 0.0,
+     "round": 0.0
+    },
+    "clump": {
+     "bend_m": 0.003,
+     "twist_deg": 8,
+     "lumps": 0.05,
+     "lump_wavelength": 0.8,
+     "seed": 1
+    },
+    "reshaped": 19
+   },
+   "temples": {
+    "tips": {
+     "from": 0.6,
+     "scale": 0.7,
+     "power": 1.2,
+     "flatten": 0.4,
+     "calm": 0.0,
+     "round": 0.0
+    },
+    "reshaped": 2
+   },
+   "back_under": {
+    "tips": {
+     "from": 0.72,
+     "scale": 0.6,
+     "power": 1.3,
+     "flatten": 0.3,
+     "calm": 0.3,
+     "round": 0.0
+    },
+    "clump": {
+     "bend_m": 0.006,
+     "twist_deg": 20,
+     "lumps": 0.06,
+     "lump_wavelength": 0.5,
+     "seed": 10
+    },
+    "reshaped": 7
+   },
+   "back_locks": {
+    "tips": {
+     "from": 0.72,
+     "scale": 0.6,
+     "power": 1.3,
+     "flatten": 0.3,
+     "calm": 0.3,
+     "round": 0.0
+    },
+    "clump": {
+     "bend_m": 0.006,
+     "twist_deg": 20,
+     "lumps": 0.06,
+     "lump_wavelength": 0.5,
+     "seed": 10
+    },
+    "reshaped": 9
+   },
+   "outer_locks": {
+    "tips": {
+     "from": 0.72,
+     "scale": 0.6,
+     "power": 1.3,
+     "flatten": 0.3,
+     "calm": 0.3,
+     "round": 0.0
+    },
+    "clump": {
+     "bend_m": 0.006,
+     "twist_deg": 20,
+     "lumps": 0.06,
+     "lump_wavelength": 0.5,
+     "seed": 11
+    },
+    "reshaped": 6
+   },
+   "side_locks": {
+    "tips": {
+     "from": 0.72,
+     "scale": 0.6,
+     "power": 1.3,
+     "flatten": 0.3,
+     "calm": 0.3,
+     "round": 0.0
+    },
+    "clump": {
+     "bend_m": 0.006,
+     "twist_deg": 20,
+     "lumps": 0.06,
+     "lump_wavelength": 0.5,
+     "seed": 10
+    },
+    "reshaped": 4
+   }
+  },
+  "flock": {
+   "schema": "plush-studio.hair-flock/1",
+   "look": "V1 flock",
+   "seed": 1,
+   "meshes": [
+    "hair_back_locks_00",
+    "hair_back_locks_01",
+    "hair_back_locks_02",
+    "hair_back_locks_03",
+    "hair_back_locks_04",
+    "hair_back_locks_05",
+    "hair_back_locks_06",
+    "hair_back_locks_07",
+    "hair_back_locks_08",
+    "hair_back_mass",
+    "hair_back_under_00",
+    "hair_back_under_01",
+    "hair_back_under_02",
+    "hair_back_under_03",
+    "hair_back_under_04",
+    "hair_back_under_05",
+    "hair_back_under_06",
+    "hair_buns",
+    "hair_cap",
+    "hair_crown",
+    "hair_fringe",
+    "hair_outer_locks_00",
+    "hair_outer_locks_01",
+    "hair_outer_locks_02",
+    "hair_outer_locks_r00",
+    "hair_outer_locks_r01",
+    "hair_outer_locks_r02",
+    "hair_side_locks_00",
+    "hair_side_locks_01",
+    "hair_side_locks_r00",
+    "hair_side_locks_r01",
+    "hair_temples"
+   ],
+   "velvet": {
+    "M_hair": {
+     "set": [
+      "albedo_variation.lo",
+      "albedo_variation.hi",
+      "sheen.lo",
+      "sheen.hi",
+      "sheen_roughness",
+      "sheen_tint",
+      "rim_colour"
+     ]
+    }
+   },
+   "hidden_fibre_objects": [
+    "hair_back_locks_00.fibres",
+    "hair_back_locks_00.fibres.001",
+    "hair_back_locks_00.fibres.002",
+    "hair_back_locks_01.fibres",
+    "hair_back_locks_01.fibres.001",
+    "hair_back_locks_01.fibres.002",
+    "hair_back_locks_02.fibres",
+    "hair_back_locks_02.fibres.001",
+    "hair_back_locks_02.fibres.002",
+    "hair_back_locks_03.fibres",
+    "hair_back_locks_03.fibres.001",
+    "hair_back_locks_03.fibres.002",
+    "hair_back_locks_04.fibres",
+    "hair_back_locks_04.fibres.001",
+    "hair_back_locks_04.fibres.002",
+    "hair_back_locks_05.fibres",
+    "hair_back_locks_05.fibres.001",
+    "hair_back_locks_05.fibres.002",
+    "hair_back_locks_06.fibres",
+    "hair_back_locks_06.fibres.001",
+    "hair_back_locks_06.fibres.002",
+    "hair_back_locks_07.fibres",
+    "hair_back_locks_07.fibres.001",
+    "hair_back_locks_07.fibres.002",
+    "hair_back_locks_08.fibres",
+    "hair_back_locks_08.fibres.001",
+    "hair_back_locks_08.fibres.002",
+    "hair_back_mass.fibres",
+    "hair_back_mass.fibres.001",
+    "hair_back_mass.fibres.002",
+    "hair_back_under_00.fibres",
+    "hair_back_under_00.fibres.001",
+    "hair_back_under_00.fibres.002",
+    "hair_back_under_01.fibres",
+    "hair_back_under_01.fibres.001",
+    "hair_back_under_01.fibres.002",
+    "hair_back_under_02.fibres",
+    "hair_back_under_02.fibres.001",
+    "hair_back_under_02.fibres.002",
+    "hair_back_under_03.fibres",
+    "hair_back_under_03.fibres.001",
+    "hair_back_under_03.fibres.002",
+    "hair_back_under_04.fibres",
+    "hair_back_under_04.fibres.001",
+    "hair_back_under_04.fibres.002",
+    "hair_back_under_05.fibres",
+    "hair_back_under_05.fibres.001",
+    "hair_back_under_05.fibres.002",
+    "hair_back_under_06.fibres",
+    "hair_back_under_06.fibres.001",
+    "hair_back_under_06.fibres.002",
+    "hair_buns.fibres",
+    "hair_buns.fibres.001",
+    "hair_buns.fibres.002",
+    "hair_cap.fibres",
+    "hair_cap.fibres.001",
+    "hair_cap.fibres.002",
+    "hair_crown.fibres",
+    "hair_crown.fibres.001",
+    "hair_crown.fibres.002",
+    "hair_fringe.fibres",
+    "hair_fringe.fibres.001",
+    "hair_fringe.fibres.002",
+    "hair_outer_locks_00.fibres",
+    "hair_outer_locks_00.fibres.001",
+    "hair_outer_locks_00.fibres.002",
+    "hair_outer_locks_01.fibres",
+    "hair_outer_locks_01.fibres.001",
+    "hair_outer_locks_01.fibres.002",
+    "hair_outer_locks_02.fibres",
+    "hair_outer_locks_02.fibres.001",
+    "hair_outer_locks_02.fibres.002",
+    "hair_outer_locks_r00.fibres",
+    "hair_outer_locks_r00.fibres.001",
+    "hair_outer_locks_r00.fibres.002",
+    "hair_outer_locks_r01.fibres",
+    "hair_outer_locks_r01.fibres.001",
+    "hair_outer_locks_r01.fibres.002",
+    "hair_outer_locks_r02.fibres",
+    "hair_outer_locks_r02.fibres.001",
+    "hair_outer_locks_r02.fibres.002",
+    "hair_side_locks_00.fibres",
+    "hair_side_locks_00.fibres.001",
+    "hair_side_locks_00.fibres.002",
+    "hair_side_locks_01.fibres",
+    "hair_side_locks_01.fibres.001",
+    "hair_side_locks_01.fibres.002",
+    "hair_side_locks_r00.fibres",
+    "hair_side_locks_r00.fibres.001",
+    "hair_side_locks_r00.fibres.002",
+    "hair_side_locks_r01.fibres",
+    "hair_side_locks_r01.fibres.001",
+    "hair_side_locks_r01.fibres.002",
+    "hair_temples.fibres",
+    "hair_temples.fibres.001",
+    "hair_temples.fibres.002"
+   ],
+   "scaled_fibre_objects": [],
+   "layers": {
+    "hair_back_locks_00.flock": {
+     "flow": "uv",
+     "area_m2": 0.12129,
+     "hidden_area_m2": 0.03817,
+     "weighted_area_m2": 0.08313,
+     "strands": 24938,
+     "sha": "276353067dedfaa9"
+    },
+    "hair_back_locks_01.flock": {
+     "flow": "uv",
+     "area_m2": 0.09901,
+     "hidden_area_m2": 0.02135,
+     "weighted_area_m2": 0.07766,
+     "strands": 23299,
+     "sha": "aa8ab2fd47061546"
+    },
+    "hair_back_locks_02.flock": {
+     "flow": "uv",
+     "area_m2": 0.12057,
+     "hidden_area_m2": 0.02122,
+     "weighted_area_m2": 0.09935,
+     "strands": 29804,
+     "sha": "6a20608662e1a768"
+    },
+    "hair_back_locks_03.flock": {
+     "flow": "uv",
+     "area_m2": 0.09996,
+     "hidden_area_m2": 0.02759,
+     "weighted_area_m2": 0.07237,
+     "strands": 21712,
+     "sha": "2fe6f7f965571bcb"
+    },
+    "hair_back_locks_04.flock": {
+     "flow": "uv",
+     "area_m2": 0.10326,
+     "hidden_area_m2": 0.03185,
+     "weighted_area_m2": 0.07141,
+     "strands": 21424,
+     "sha": "fc84807324b154bd"
+    },
+    "hair_back_locks_05.flock": {
+     "flow": "uv",
+     "area_m2": 0.12252,
+     "hidden_area_m2": 0.02485,
+     "weighted_area_m2": 0.09767,
+     "strands": 29302,
+     "sha": "ff7a22a46c97404f"
+    },
+    "hair_back_locks_06.flock": {
+     "flow": "uv",
+     "area_m2": 0.10519,
+     "hidden_area_m2": 0.02534,
+     "weighted_area_m2": 0.07985,
+     "strands": 23954,
+     "sha": "d3c5556c1c5c06f5"
+    },
+    "hair_back_locks_07.flock": {
+     "flow": "uv",
+     "area_m2": 0.1055,
+     "hidden_area_m2": 0.02197,
+     "weighted_area_m2": 0.08352,
+     "strands": 25057,
+     "sha": "476b3771d9dc801f"
+    },
+    "hair_back_locks_08.flock": {
+     "flow": "uv",
+     "area_m2": 0.09922,
+     "hidden_area_m2": 0.02191,
+     "weighted_area_m2": 0.07731,
+     "strands": 23192,
+     "sha": "25cf97e29c718561"
+    },
+    "hair_back_mass.flock": {
+     "flow": "uv",
+     "area_m2": 0.2302,
+     "hidden_area_m2": 0.07587,
+     "weighted_area_m2": 0.15433,
+     "strands": 46300,
+     "sha": "65d9c11a64b09654"
+    },
+    "hair_back_under_00.flock": {
+     "flow": "uv",
+     "area_m2": 0.08028,
+     "hidden_area_m2": 0.02091,
+     "weighted_area_m2": 0.05936,
+     "strands": 17808,
+     "sha": "f47f4931e04744a7"
+    },
+    "hair_back_under_01.flock": {
+     "flow": "uv",
+     "area_m2": 0.08611,
+     "hidden_area_m2": 0.02086,
+     "weighted_area_m2": 0.06525,
+     "strands": 19576,
+     "sha": "c3416db170d7a0bd"
+    },
+    "hair_back_under_02.flock": {
+     "flow": "uv",
+     "area_m2": 0.08216,
+     "hidden_area_m2": 0.02358,
+     "weighted_area_m2": 0.05858,
+     "strands": 17574,
+     "sha": "1c4c2c8efa19f863"
+    },
+    "hair_back_under_03.flock": {
+     "flow": "uv",
+     "area_m2": 0.09478,
+     "hidden_area_m2": 0.02879,
+     "weighted_area_m2": 0.06599,
+     "strands": 19798,
+     "sha": "f199eff71db0cec7"
+    },
+    "hair_back_under_04.flock": {
+     "flow": "uv",
+     "area_m2": 0.07234,
+     "hidden_area_m2": 0.02117,
+     "weighted_area_m2": 0.05117,
+     "strands": 15352,
+     "sha": "8bebe88b3135be5a"
+    },
+    "hair_back_under_05.flock": {
+     "flow": "uv",
+     "area_m2": 0.09348,
+     "hidden_area_m2": 0.02023,
+     "weighted_area_m2": 0.07325,
+     "strands": 21974,
+     "sha": "1c863238aa49d6ff"
+    },
+    "hair_back_under_06.flock": {
+     "flow": "uv",
+     "area_m2": 0.07776,
+     "hidden_area_m2": 0.02189,
+     "weighted_area_m2": 0.05587,
+     "strands": 16762,
+     "sha": "ddd9643366dd7315"
+    },
+    "hair_buns.flock": {
+     "flow": "uv",
+     "area_m2": 0.14207,
+     "hidden_area_m2": 0.00204,
+     "weighted_area_m2": 0.14003,
+     "strands": 42008,
+     "sha": "94e7448608ba172a"
+    },
+    "hair_cap.flock": {
+     "flow": "down",
+     "area_m2": 0.10749,
+     "hidden_area_m2": 0.02423,
+     "weighted_area_m2": 0.08325,
+     "strands": 24975,
+     "sha": "392aebb4b9582c40"
+    },
+    "hair_crown.flock": {
+     "flow": "uv",
+     "area_m2": 0.25983,
+     "hidden_area_m2": 0.04312,
+     "weighted_area_m2": 0.21672,
+     "strands": 65015,
+     "sha": "a711b724f672b9c4"
+    },
+    "hair_fringe.flock": {
+     "flow": "chain",
+     "area_m2": 0.30308,
+     "hidden_area_m2": 0.12141,
+     "weighted_area_m2": 0.18168,
+     "strands": 54503,
+     "sha": "00fa52966ac11728"
+    },
+    "hair_outer_locks_00.flock": {
+     "flow": "uv",
+     "area_m2": 0.09541,
+     "hidden_area_m2": 0.02403,
+     "weighted_area_m2": 0.07137,
+     "strands": 21412,
+     "sha": "e52e908cbf58a2e8"
+    },
+    "hair_outer_locks_01.flock": {
+     "flow": "uv",
+     "area_m2": 0.08686,
+     "hidden_area_m2": 0.03136,
+     "weighted_area_m2": 0.0555,
+     "strands": 16651,
+     "sha": "ac057fbf1abf95aa"
+    },
+    "hair_outer_locks_02.flock": {
+     "flow": "uv",
+     "area_m2": 0.09942,
+     "hidden_area_m2": 0.02812,
+     "weighted_area_m2": 0.0713,
+     "strands": 21389,
+     "sha": "3b30a6da64f12147"
+    },
+    "hair_outer_locks_r00.flock": {
+     "flow": "uv",
+     "area_m2": 0.08632,
+     "hidden_area_m2": 0.01812,
+     "weighted_area_m2": 0.0682,
+     "strands": 20460,
+     "sha": "9298e97e1b73d996"
+    },
+    "hair_outer_locks_r01.flock": {
+     "flow": "uv",
+     "area_m2": 0.0839,
+     "hidden_area_m2": 0.02488,
+     "weighted_area_m2": 0.05902,
+     "strands": 17705,
+     "sha": "0b77744961b6801e"
+    },
+    "hair_outer_locks_r02.flock": {
+     "flow": "uv",
+     "area_m2": 0.08187,
+     "hidden_area_m2": 0.03125,
+     "weighted_area_m2": 0.05062,
+     "strands": 15186,
+     "sha": "b3b30aa0fd79fc02"
+    },
+    "hair_side_locks_00.flock": {
+     "flow": "uv",
+     "area_m2": 0.03865,
+     "hidden_area_m2": 0.00254,
+     "weighted_area_m2": 0.03611,
+     "strands": 10833,
+     "sha": "bdc93fa0edb303d6"
+    },
+    "hair_side_locks_01.flock": {
+     "flow": "uv",
+     "area_m2": 0.04029,
+     "hidden_area_m2": 0.00335,
+     "weighted_area_m2": 0.03694,
+     "strands": 11083,
+     "sha": "15dc5a34852642e7"
+    },
+    "hair_side_locks_r00.flock": {
+     "flow": "uv",
+     "area_m2": 0.04374,
+     "hidden_area_m2": 0.00482,
+     "weighted_area_m2": 0.03892,
+     "strands": 11676,
+     "sha": "6c00a2f551ca1a70"
+    },
+    "hair_side_locks_r01.flock": {
+     "flow": "uv",
+     "area_m2": 0.03457,
+     "hidden_area_m2": 0.00331,
+     "weighted_area_m2": 0.03126,
+     "strands": 9379,
+     "sha": "4db5a8cd3aceb3c8"
+    },
+    "hair_temples.flock": {
+     "flow": "chain",
+     "area_m2": 0.02883,
+     "hidden_area_m2": 0.00296,
+     "weighted_area_m2": 0.02587,
+     "strands": 7761,
+     "sha": "a5ff83cabbab8acc"
+    }
+   },
+   "strands_total": 747862,
+   "strand_sha": "634d2c005855db09",
+   "seconds": 3.66
+  }
+ },
+ "rig": {
+  "rigify_bones": 573,
+  "deform_bones": 236,
+  "fit_profile": "rigify_human_metarig/1",
+  "weighted_objects": 3,
+  "vertices": 103692,
+  "unweighted_after_heat": 1338,
+  "unweighted_after_cleanup": 0,
+  "nearest_bone_fallback": []
+ },
+ "garment_skinning": {
+  "method": "nearest_body_weights/1",
+  "objects": 19,
+  "vertices": 169454,
+  "max_source_distance_m": 0.278979,
+  "collision_proxy": "garment.collider.body_skin",
+  "collision": {
+   "method": "shrinkwrap_outside_after_armature/1",
+   "enabled": true,
+   "offset_m": 0.001802,
+   "radius_m": 0.072064,
+   "falloff_m": 0.018016,
+   "passes": 3
+  },
+  "mask": {
+   "worn": [
+    "boots",
+    "dress",
+    "tights"
+   ],
+   "masked_items": [
+    "boots",
+    "dress",
+    "tights"
+   ],
+   "hidden_body_vertices": 28019,
+   "hidden_body_faces": 28311,
+   "visible_body_faces": 59207,
+   "collision_weighted_vertices": 90518
+  },
+  "per_object": {
+   "garment.tights.main": {
+    "vertices": 36700,
+    "nearest_source_vertices": 18350
+   },
+   "garment.dress.bodice": {
+    "vertices": 25392,
+    "nearest_source_vertices": 11544
+   },
+   "garment.dress.band.cuff.L": {
+    "vertices": 264,
+    "nearest_source_vertices": 92
+   },
+   "garment.dress.band.cuff.R": {
+    "vertices": 264,
+    "nearest_source_vertices": 88
+   },
+   "garment.dress.collar": {
+    "vertices": 1022,
+    "nearest_source_vertices": 631
+   },
+   "garment.dress.skirt": {
+    "vertices": 76800,
+    "nearest_source_vertices": 1
+   },
+   "garment.dress.band.hem_rib": {
+    "vertices": 1152,
+    "nearest_source_vertices": 1
+   },
+   "garment.dress.ribcuff.L": {
+    "vertices": 1296,
+    "nearest_source_vertices": 296
+   },
+   "garment.dress.ribcuff.R": {
+    "vertices": 1296,
+    "nearest_source_vertices": 290
+   },
+   "garment.boots.main.L": {
+    "vertices": 6552,
+    "nearest_source_vertices": 3096
+   },
+   "garment.boots.lining.L": {
+    "vertices": 192,
+    "nearest_source_vertices": 121
+   },
+   "garment.boots.sole.L": {
+    "vertices": 310,
+    "nearest_source_vertices": 184
+   },
+   "garment.boots.main.R": {
+    "vertices": 6552,
+    "nearest_source_vertices": 3096
+   },
+   "garment.boots.lining.R": {
+    "vertices": 192,
+    "nearest_source_vertices": 122
+   },
+   "garment.boots.sole.R": {
+    "vertices": 310,
+    "nearest_source_vertices": 184
+   },
+   "garment.boots.cuff.L": {
+    "vertices": 5328,
+    "nearest_source_vertices": 998
+   },
+   "garment.boots.cuff.R": {
+    "vertices": 5328,
+    "nearest_source_vertices": 998
+   },
+   "garment.boots.stitch.L": {
+    "vertices": 252,
+    "nearest_source_vertices": 102
+   },
+   "garment.boots.stitch.R": {
+    "vertices": 252,
+    "nearest_source_vertices": 94
+   }
+  },
+  "collar_seat": {
+   "dress": {
+    "collar": "garment.dress.collar",
+    "carried_by": "DEF-spine.003",
+    "shoulder_share": 0.35,
+    "reach": {
+     "deg": -75.0,
+     "axis": [
+      1.0,
+      0.0,
+      0.0
+     ],
+     "strength": 0.0,
+     "sides": {
+      "L": {
+       "bone": "DEF-upper_arm.L",
+       "channel": "ROT_X",
+       "reach_swing_rad": 1.07564,
+       "gate_rad": 0.0,
+       "arms_down_swing_rad": -0.29503,
+       "arms_down_value": 0.0,
+       "objects": [],
+       "vertices": 0,
+       "max_correction_m": 0.0,
+       "layer_over": [],
+       "max_layer_push_m": 0.0,
+       "expression": null
+      },
+      "R": {
+       "bone": "DEF-upper_arm.R",
+       "channel": "ROT_X",
+       "reach_swing_rad": 1.07564,
+       "gate_rad": 0.0,
+       "arms_down_swing_rad": -0.29503,
+       "arms_down_value": 0.0,
+       "objects": [],
+       "vertices": 0,
+       "max_correction_m": 0.0,
+       "layer_over": [],
+       "max_layer_push_m": 0.0,
+       "expression": null
+      }
+     }
+    },
+    "keys": []
+   }
+  }
+ },
+ "face_controls": {
+  "face_Blink.L": [
+   "body_skin",
+   "eye.L",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lid_upper.L"
+  ],
+  "face_Blink.R": [
+   "body_skin",
+   "eye.R",
+   "garment.collider.body_skin",
+   "lash.R",
+   "lid_upper.R"
+  ],
+  "face_EyeWide": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_EyeSquint": [
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_BrowUp.L": [
+   "brow.L"
+  ],
+  "face_BrowUp.R": [
+   "brow.R"
+  ],
+  "face_BrowDown": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_BrowSad": [
+   "brow.L",
+   "brow.R"
+  ],
+  "face_MouthSmile": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lid_lower.L",
+   "lid_lower.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthFrown": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthWide": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthO": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_JawOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_CheekRaise": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lid_lower.L",
+   "lid_lower.R"
+  ],
+  "face_Blink": [
+   "body_skin",
+   "eye.L",
+   "eye.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_upper.L",
+   "lid_upper.R"
+  ],
+  "face_LeftEyeClosed": [
+   "body_skin",
+   "eye.L",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lid_upper.L"
+  ],
+  "face_RightEyeClosed": [
+   "body_skin",
+   "eye.R",
+   "garment.collider.body_skin",
+   "lash.R",
+   "lid_upper.R"
+  ],
+  "face_Squint": [
+   "body_skin",
+   "eye.L",
+   "eye.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_WideOpen": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Smile": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Frown": [
+   "brow.L",
+   "brow.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Surprise": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Sadness": [
+   "brow.L",
+   "brow.R",
+   "eye.L",
+   "eye.R",
+   "lash.L",
+   "lash.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Anger": [
+   "brow.L",
+   "brow.R",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Confusion": [
+   "brow.L",
+   "brow.R",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Laugh": [
+   "body_skin",
+   "eye.L",
+   "eye.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_MouthOpen": [
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Worried": [
+   "body_skin",
+   "brow.L",
+   "brow.R",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Curious": [
+   "body_skin",
+   "brow.L",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_SmileClosed": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_Thinking": [
+   "brow.L",
+   "brow.R",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ],
+  "face_SmileOpen": [
+   "body_skin",
+   "garment.collider.body_skin",
+   "lash.L",
+   "lash.R",
+   "lid_lower.L",
+   "lid_lower.R",
+   "lid_upper.L",
+   "lid_upper.R",
+   "mouth",
+   "mouth_cavity"
+  ]
+ },
+ "jaw": {
+  "body_skin": 2817,
+  "pivot": [
+   0.0,
+   0.004,
+   0.6829
+  ]
+ },
+ "inbetween_drivers": 164,
+ "joints_m": {
+  "spine_0": [
+   0.0,
+   0.0,
+   0.2834
+  ],
+  "spine_1": [
+   0.0,
+   0.0,
+   0.3576
+  ],
+  "spine_2": [
+   0.0,
+   0.0,
+   0.4318
+  ],
+  "spine_3": [
+   0.0,
+   0.0,
+   0.506
+  ],
+  "spine_4": [
+   0.0,
+   0.0,
+   0.5802
+  ],
+  "spine_5": [
+   0.0,
+   0.0,
+   0.616
+  ],
+  "neck_top": [
+   0.0,
+   0.0,
+   0.6519
+  ],
+  "head_top": [
+   0.0,
+   -0.0038,
+   0.9164
+  ],
+  "clavicle.L": [
+   0.0189,
+   0.0,
+   0.5802
+  ],
+  "shoulder.L": [
+   0.0926,
+   0.0,
+   0.5802
+  ],
+  "elbow.L": [
+   0.144,
+   0.0,
+   0.498
+  ],
+  "wrist.L": [
+   0.1899,
+   0.0,
+   0.4244
+  ],
+  "hand_end.L": [
+   0.2099,
+   0.0,
+   0.3924
+  ],
+  "pelvis.L": [
+   0.0491,
+   -0.0147,
+   0.3279
+  ],
+  "hip.L": [
+   0.0491,
+   0.0,
+   0.2834
+  ],
+  "knee.L": [
+   0.0491,
+   -0.0038,
+   0.1937
+  ],
+  "ankle.L": [
+   0.0491,
+   0.0,
+   0.0624
+  ],
+  "toe.L": [
+   0.0491,
+   -0.0572,
+   0.0172
+  ],
+  "toe_tip.L": [
+   0.0491,
+   -0.0987,
+   0.0172
+  ],
+  "heel_in.L": [
+   0.0151,
+   0.0283,
+   0.0
+  ],
+  "heel_out.L": [
+   0.0831,
+   0.0283,
+   0.0
+  ],
+  "clavicle.R": [
+   -0.0189,
+   0.0,
+   0.5802
+  ],
+  "shoulder.R": [
+   -0.0926,
+   0.0,
+   0.5802
+  ],
+  "elbow.R": [
+   -0.144,
+   0.0,
+   0.498
+  ],
+  "wrist.R": [
+   -0.1899,
+   0.0,
+   0.4244
+  ],
+  "hand_end.R": [
+   -0.2099,
+   0.0,
+   0.3924
+  ],
+  "pelvis.R": [
+   -0.0491,
+   -0.0147,
+   0.3279
+  ],
+  "hip.R": [
+   -0.0491,
+   0.0,
+   0.2834
+  ],
+  "knee.R": [
+   -0.0491,
+   -0.0038,
+   0.1937
+  ],
+  "ankle.R": [
+   -0.0491,
+   0.0,
+   0.0624
+  ],
+  "toe.R": [
+   -0.0491,
+   -0.0572,
+   0.0172
+  ],
+  "toe_tip.R": [
+   -0.0491,
+   -0.0987,
+   0.0172
+  ],
+  "heel_in.R": [
+   -0.0151,
+   0.0283,
+   0.0
+  ],
+  "heel_out.R": [
+   -0.0831,
+   0.0283,
+   0.0
+  ]
+ },
+ "objects": [
+  "LM_chin",
+  "LM_ear_L",
+  "LM_ear_R",
+  "LM_eye_L",
+  "LM_eye_R",
+  "LM_mouth",
+  "LM_nose",
+  "body_skin",
+  "brow.L",
+  "brow.R",
+  "ear.L",
+  "ear.R",
+  "eye.L",
+  "eye.R",
+  "garment.boots.cuff.L",
+  "garment.boots.cuff.L.fibres",
+  "garment.boots.cuff.R",
+  "garment.boots.cuff.R.fibres",
+  "garment.boots.lining.L",
+  "garment.boots.lining.L.fibres",
+  "garment.boots.lining.R",
+  "garment.boots.lining.R.fibres",
+  "garment.boots.main.L",
+  "garment.boots.main.L.fibres",
+  "garment.boots.main.R",
+  "garment.boots.main.R.fibres",
+  "garment.boots.sole.L",
+  "garment.boots.sole.L.fibres",
+  "garment.boots.sole.R",
+  "garment.boots.sole.R.fibres",
+  "garment.boots.stitch.L",
+  "garment.boots.stitch.L.fibres",
+  "garment.boots.stitch.R",
+  "garment.boots.stitch.R.fibres",
+  "garment.collider.body_skin",
+  "garment.dress.band.cuff.L",
+  "garment.dress.band.cuff.L.fibres",
+  "garment.dress.band.cuff.R",
+  "garment.dress.band.cuff.R.fibres",
+  "garment.dress.band.hem_rib",
+  "garment.dress.band.hem_rib.fibres",
+  "garment.dress.bodice",
+  "garment.dress.bodice.fibres",
+  "garment.dress.collar",
+  "garment.dress.collar.fibres",
+  "garment.dress.ribcuff.L",
+  "garment.dress.ribcuff.L.fibres",
+  "garment.dress.ribcuff.R",
+  "garment.dress.ribcuff.R.fibres",
+  "garment.dress.skirt",
+  "garment.dress.skirt.fibres",
+  "garment.tights.main",
+  "garment.tights.main.fibres",
+  "hair_back_locks_00",
+  "hair_back_locks_00.fibres",
+  "hair_back_locks_00.fibres.001",
+  "hair_back_locks_00.fibres.002",
+  "hair_back_locks_00.flock",
+  "hair_back_locks_01",
+  "hair_back_locks_01.fibres",
+  "hair_back_locks_01.fibres.001",
+  "hair_back_locks_01.fibres.002",
+  "hair_back_locks_01.flock",
+  "hair_back_locks_02",
+  "hair_back_locks_02.fibres",
+  "hair_back_locks_02.fibres.001",
+  "hair_back_locks_02.fibres.002",
+  "hair_back_locks_02.flock",
+  "hair_back_locks_03",
+  "hair_back_locks_03.fibres",
+  "hair_back_locks_03.fibres.001",
+  "hair_back_locks_03.fibres.002",
+  "hair_back_locks_03.flock",
+  "hair_back_locks_04",
+  "hair_back_locks_04.fibres",
+  "hair_back_locks_04.fibres.001",
+  "hair_back_locks_04.fibres.002",
+  "hair_back_locks_04.flock",
+  "hair_back_locks_05",
+  "hair_back_locks_05.fibres",
+  "hair_back_locks_05.fibres.001",
+  "hair_back_locks_05.fibres.002",
+  "hair_back_locks_05.flock",
+  "hair_back_locks_06",
+  "hair_back_locks_06.fibres",
+  "hair_back_locks_06.fibres.001",
+  "hair_back_locks_06.fibres.002",
+  "hair_back_locks_06.flock",
+  "hair_back_locks_07",
+  "hair_back_locks_07.fibres",
+  "hair_back_locks_07.fibres.001",
+  "hair_back_locks_07.fibres.002",
+  "hair_back_locks_07.flock",
+  "hair_back_locks_08",
+  "hair_back_locks_08.fibres",
+  "hair_back_locks_08.fibres.001",
+  "hair_back_locks_08.fibres.002",
+  "hair_back_locks_08.flock",
+  "hair_back_mass",
+  "hair_back_mass.fibres",
+  "hair_back_mass.fibres.001",
+  "hair_back_mass.fibres.002",
+  "hair_back_mass.flock",
+  "hair_back_under_00",
+  "hair_back_under_00.fibres",
+  "hair_back_under_00.fibres.001",
+  "hair_back_under_00.fibres.002",
+  "hair_back_under_00.flock",
+  "hair_back_under_01",
+  "hair_back_under_01.fibres",
+  "hair_back_under_01.fibres.001",
+  "hair_back_under_01.fibres.002",
+  "hair_back_under_01.flock",
+  "hair_back_under_02",
+  "hair_back_under_02.fibres",
+  "hair_back_under_02.fibres.001",
+  "hair_back_under_02.fibres.002",
+  "hair_back_under_02.flock",
+  "hair_back_under_03",
+  "hair_back_under_03.fibres",
+  "hair_back_under_03.fibres.001",
+  "hair_back_under_03.fibres.002",
+  "hair_back_under_03.flock",
+  "hair_back_under_04",
+  "hair_back_under_04.fibres",
+  "hair_back_under_04.fibres.001",
+  "hair_back_under_04.fibres.002",
+  "hair_back_under_04.flock",
+  "hair_back_under_05",
+  "hair_back_under_05.fibres",
+  "hair_back_under_05.fibres.001",
+  "hair_back_under_05.fibres.002",
+  "hair_back_under_05.flock",
+  "hair_back_under_06",
+  "hair_back_under_06.fibres",
+  "hair_back_under_06.fibres.001",
+  "hair_back_under_06.fibres.002",
+  "hair_back_under_06.flock",
+  "hair_bow",
+  "hair_bow.fibres",
+  "hair_bow.fibres.001",
+  "hair_bow.fibres.002",
+  "hair_buns",
+  "hair_buns.fibres",
+  "hair_buns.fibres.001",
+  "hair_buns.fibres.002",
+  "hair_buns.flock",
+  "hair_cap",
+  "hair_cap.fibres",
+  "hair_cap.fibres.001",
+  "hair_cap.fibres.002",
+  "hair_cap.flock",
+  "hair_crown",
+  "hair_crown.fibres",
+  "hair_crown.fibres.001",
+  "hair_crown.fibres.002",
+  "hair_crown.flock",
+  "hair_fringe",
+  "hair_fringe.fibres",
+  "hair_fringe.fibres.001",
+  "hair_fringe.fibres.002",
+  "hair_fringe.flock",
+  "hair_outer_locks_00",
+  "hair_outer_locks_00.fibres",
+  "hair_outer_locks_00.fibres.001",
+  "hair_outer_locks_00.fibres.002",
+  "hair_outer_locks_00.flock",
+  "hair_outer_locks_01",
+  "hair_outer_locks_01.fibres",
+  "hair_outer_locks_01.fibres.001",
+  "hair_outer_locks_01.fibres.002",
+  "hair_outer_locks_01.flock",
+  "hair_outer_locks_02",
+  "hair_outer_locks_02.fibres",
+  "hair_outer_locks_02.fibres.001",
+  "hair_outer_locks_02.fibres.002",
+  "hair_outer_locks_02.flock",
+  "hair_outer_locks_r00",
+  "hair_outer_locks_r00.fibres",
+  "hair_outer_locks_r00.fibres.001",
+  "hair_outer_locks_r00.fibres.002",
+  "hair_outer_locks_r00.flock",
+  "hair_outer_locks_r01",
+  "hair_outer_locks_r01.fibres",
+  "hair_outer_locks_r01.fibres.001",
+  "hair_outer_locks_r01.fibres.002",
+  "hair_outer_locks_r01.flock",
+  "hair_outer_locks_r02",
+  "hair_outer_locks_r02.fibres",
+  "hair_outer_locks_r02.fibres.001",
+  "hair_outer_locks_r02.fibres.002",
+  "hair_outer_locks_r02.flock",
+  "hair_side_locks_00",
+  "hair_side_locks_00.fibres",
+  "hair_side_locks_00.fibres.001",
+  "hair_side_locks_00.fibres.002",
+  "hair_side_locks_00.flock",
+  "hair_side_locks_01",
+  "hair_side_locks_01.fibres",
+  "hair_side_locks_01.fibres.001",
+  "hair_side_locks_01.fibres.002",
+  "hair_side_locks_01.flock",
+  "hair_side_locks_r00",
+  "hair_side_locks_r00.fibres",
+  "hair_side_locks_r00.fibres.001",
+  "hair_side_locks_r00.fibres.002",
+  "hair_side_locks_r00.flock",
+  "hair_side_locks_r01",
+  "hair_side_locks_r01.fibres",
+  "hair_side_locks_r01.fibres.001",
+  "hair_side_locks_r01.fibres.002",
+  "hair_side_locks_r01.flock",
+  "hair_temples",
+  "hair_temples.fibres",
+  "hair_temples.fibres.001",
+  "hair_temples.fibres.002",
+  "hair_temples.flock",
+  "hand.L",
+  "hand.R",
+  "lash.L",
+  "lash.R",
+  "lid_lower.L",
+  "lid_lower.R",
+  "lid_upper.L",
+  "lid_upper.R",
+  "mouth",
+  "mouth_cavity",
+  "rig_girl_white_hair_blue_dress"
+ ]
+}

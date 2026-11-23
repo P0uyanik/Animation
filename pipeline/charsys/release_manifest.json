@@ -109,6 +109,40 @@
    "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z",
    "date": "2026-11-20",
    "task": "T-178 (migrated: store approval + owner_approved_candidates.json)"
+  },
+  {
+   "character": "girl_auburn_bun_glasses",
+   "version": "0.15.0",
+   "features": [
+    "body.hands",
+    "cap_contour",
+    "closed_fill",
+    "face_generic/3",
+    "groom/5",
+    "hair_flock",
+    "lash_curve"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET",
+   "date": "2026-11-23",
+   "task": "T-219",
+   "decision": "T-207 hair look V1 for the auburn girl (boy unchanged); new character version published as a CANDIDATE, CURRENT only after the owner approves its sheet; forehead stair-step fixed with H2"
+  },
+  {
+   "character": "girl_white_hair_blue_dress",
+   "version": "0.2.0",
+   "features": [
+    "body.hands",
+    "cap_contour",
+    "closed_fill",
+    "face_generic/3",
+    "groom/5",
+    "hair_flock",
+    "lash_curve"
+   ],
+   "decision_ref": "docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET",
+   "date": "2026-11-23",
+   "task": "T-219",
+   "decision": "T-207 hair look V1 for the white-haired girl (boy unchanged); new character version published as a CANDIDATE, CURRENT only after the owner approves its sheet; forehead stair-step fixed with H2"
   }
  ]
 }

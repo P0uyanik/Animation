@@ -1,0 +1,50 @@
+{
+ "character_id": "girl_auburn_bun_glasses",
+ "version": "0.15.0",
+ "parent": "0.14.0",
+ "created": "2026-11-23T07:37:48+00:00",
+ "notes": "girl_auburn_bun_glasses 0.15.0 = T-219 CANDIDATE (not approved, not current): CURRENT 0.14.0 spec + hair.flock (T-207 V1) + H2 hair volume + hair.cap_contour (stair-step fix); face unchanged (D6); spec assets/characters/girl_auburn_bun_glasses/spec/candidates/T-219/girl_auburn_bun_glasses.0.15.0.spec.json (docs/evaluation/characters/T-219/make_specs.py). Owner docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET; CURRENT only after the owner approves the sheet.",
+ "spec_sha256": "85924396b5b6409793572b078100b5106bb09cba94c609a1781d2e04200389b0",
+ "spec_version": "0.15.0",
+ "build": "charsys/1+body_generic/1",
+ "blender": "5.3.0",
+ "identity_changes": [
+  "hair"
+ ],
+ "identity_change_approved_by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET: T-207 hair look V1 + H2 / forehead stair-step fix; hair section only)",
+ "files": {
+  "girl_auburn_bun_glasses_master.blend": {
+   "sha256": "1d94f4c02e3325e08b043f5de9daffa3362b1f356493f03e1a40595ad07bd7ad",
+   "bytes": 84357583
+  },
+  "spec.json": {
+   "sha256": "437ae3c68707448d8bab7417bd44031e8626af82f0519cb27d5ab9887306042f",
+   "bytes": 58585
+  },
+  "components.json": {
+   "sha256": "7d5cce836357446adf16b302d0adba3b09b8364b65af5c609d4b5dc2b215d320",
+   "bytes": 33426
+  },
+  "animation_compat.json": {
+   "sha256": "385d5aab1f4a5d2b829c35c151dc1ccb23e3ba2bf3dda821ab7608e24485e518",
+   "bytes": 16688
+  },
+  "build_report.json": {
+   "sha256": "7dd2811fbe7b8f1132009b09b12a4a170bc0423b73a9b857028eb057deead891",
+   "bytes": 57286
+  },
+  "spec.resolved.json": {
+   "sha256": "755eb3f797caf0d7aa3e6be60a85db080797cbc2cb073eca5980f27f13d28b6e",
+   "bytes": 59087
+  }
+ },
+ "rig": {
+  "rigify_bones": 504,
+  "deform_bones": 167,
+  "unweighted_after_cleanup": 0
+ },
+ "spec_resolved": "spec.resolved.json is the build's fitted spec (body_generic writes fitted values); spec.json is the input spec it was built from (hash = spec_sha256)",
+ "not_stored": {
+  "girl_auburn_bun_glasses.glb": "not needed for reuse: shots link the master and engine packages are exported from it (run_shot.py); reproducible from the master"
+ }
+}

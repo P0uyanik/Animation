@@ -40,6 +40,13 @@
    "status": "approved",
    "spec_sha256": "182611e8361b80c5bfc981e81f713288754d30e08adbb39e27d4f5c2807a62a9",
    "approval_notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make them CURRENT\" Recorded by T-155 (tools/version_switch.py)."
+  },
+  "0.15.0": {
+   "created": "2026-11-23T07:37:48+00:00",
+   "parent": "0.14.0",
+   "notes": "girl_auburn_bun_glasses 0.15.0 = T-219 CANDIDATE (not approved, not current): CURRENT 0.14.0 spec + hair.flock (T-207 V1) + H2 hair volume + hair.cap_contour (stair-step fix); face unchanged (D6); spec assets/characters/girl_auburn_bun_glasses/spec/candidates/T-219/girl_auburn_bun_glasses.0.15.0.spec.json (docs/evaluation/characters/T-219/make_specs.py). Owner docs/process/OWNER_DECISIONS.md 2026-11-23 ~06:58 CET; CURRENT only after the owner approves the sheet.",
+   "status": "candidate",
+   "spec_sha256": "85924396b5b6409793572b078100b5106bb09cba94c609a1781d2e04200389b0"
   }
  },
  "pointers": {
@@ -124,6 +131,12 @@
    "previous": "0.13.0",
    "by": "owner (docs/process/OWNER_DECISIONS.md 2026-11-20 ~23:11Z + ~23:40Z)",
    "notes": "new current version: \"release R3 as boy 2.3.0, girl 0.14.0 and third 0.1.0 and make them CURRENT\" Recorded by T-155 (tools/version_switch.py)."
+  },
+  {
+   "at": "2026-11-23T07:37:48+00:00",
+   "action": "publish",
+   "version": "0.15.0",
+   "status": "candidate"
   }
  ]
 }
