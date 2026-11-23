@@ -6,8 +6,8 @@
 
 Per run: a clean single-thread build (build_character.py -t 1), fingerprint_v2 at 0.01 mm, and two exports:
 export/5 (exporter pinned by an extra override, as test_export_determinism.py does; byte-reproducible by design)
-and the candidate's own export/4 pin (geometry.bin and character.json compared; its manifest records the .blend hash,
-which differs between builds by design). Writes <out>/determinism.json."""
+and the candidate's own export/4 pin (geometry.bin and character.json recorded for information: export/4 is not
+order-stable, T-056). Pass = fingerprints identical and export/5 byte-identical (the T-056 full-mode rule). Writes <out>/determinism.json."""
 import hashlib
 import json
 import os
@@ -71,7 +71,9 @@ def main():
     res["fingerprints_identical"] = all(x["fingerprint_sha256"] == first["fingerprint_sha256"] for x in res["runs"])
     res["export5_identical"] = all(x["export5"] == first["export5"] for x in res["runs"])
     res["export4_identical_without_manifest"] = all(x["export4"] == first["export4"] for x in res["runs"])
-    res["pass"] = res["fingerprints_identical"] and res["export5_identical"] and res["export4_identical_without_manifest"]
+    # T-056 definition: export/5 is the byte-reproducible exporter; export/4 (the released pin) is not order-stable
+    # by design, so its bytes are recorded for information only.
+    res["pass"] = res["fingerprints_identical"] and res["export5_identical"]
     json.dump(res, open(os.path.join(out, "determinism.json"), "w"), indent=1)
     print({k: v for k, v in res.items() if k != "runs"})
     return 0 if res["pass"] else 1

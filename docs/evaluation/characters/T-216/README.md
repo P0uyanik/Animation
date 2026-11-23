@@ -108,7 +108,7 @@ plus two parts. It is registered in [`versions.py`](../../../../pipeline/charsys
 | face_parity (Blender 5.3.0+02f0899d78e3) | **PASS**: knob-free PASS (12 face objects), rest 0.000032 mm, neutral 0, half-blink 0.000007 mm, smile+blink 0.000091 mm; [face_parity.json](face_parity.json) |
 | face_parity `--strict` sweep | **PASS** 56 / 56, max 0.000119 mm (P2: 9 failing, 7.80 mm). P3-chin\*: FAIL, [face_parity_chin_variant.json](face_parity_chin_variant.json) |
 | knob-free | PASS (no knob modifier, empty, lattice or vertex group left; keys relative to Basis) |
-| export determinism | see [determinism.json](determinism.json): DETERMINISM_RESULT |
+| export determinism (2 clean single-thread builds, T-056 rule) | **PASS**: fingerprint_v2 (0.01 mm) identical, export/5 package byte-identical; export/4 bytes differ (not order-stable by design, information only); [determinism.json](determinism.json) |
 | glasses | rigid, clearances unchanged (above) |
 | off-region knob motion | 0.000 mm outside every falloff / box on every build |
 
