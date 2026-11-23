@@ -50,6 +50,9 @@ SAMPLES = {
                      {"dynamics": {"chains": [{"name": "lock", "contact": {"segments": True}}]}}],
     "seated": [{"clothing": {"garments": [{"type": "shorts", "seated": True}]}},
                {"override": {"clothing": {"garments": [{"type": "trousers", "seated": {"collision": False}}]}}}],
+    "hair_flock": [{"hair": {"generator": "groom/5", "flock": {"schema": "plush-studio.hair-flock/1"}}},
+                   {"override": {"hair": {"flock": {}}}}],
+    "cap_contour": [{"hair": {"cap_contour": {"corner_round_m": 0.01}}}, {"override": {"hair": {"cap_contour": {}}}}],
 }
 PLAIN = {"generators": {"groom": "groom/1", "face": "face_generic/2"}, "body": {}, "face": {"nose": {"type": "button"}}}
 

@@ -367,15 +367,57 @@ def apply_jobs(jobs, objs):
 
 
 # -------------------------------------------------------------------------------------------------------------- build
+def _groom_module(name, alias):
+    """A module of groom/ loaded by path (groom/ is a namespace directory)."""
+    import importlib.util
+    import os
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "groom", name + ".py")
+    spec = importlib.util.spec_from_file_location(alias, path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _flock():
+    """groom/flock.py (T-207, opt-in velvet/flock finish)."""
+    return _groom_module("flock", "ps_hair_flock")
+
+
+def _cap_contour():
+    """groom/cap_contour.py (T-219, opt-in smooth scalp-cap border)."""
+    return _groom_module("cap_contour", "ps_hair_cap_contour")
+
+
 def build(C, head, frame, hair_spec, material, face_y, fibres=None):
-    """As groom_r5.build (same arguments and return value), for groom/5 specs."""
+    """As groom_r5.build (same arguments and return value), for groom/5 specs. T-207: a "flock" key (options of
+    groom/flock.py, "plush-studio.hair-flock/1") adds the velvet/flock finish after the build; without the key this
+    is exactly the previous build (the key is checked first and nothing else runs)."""
+    if not (isinstance(hair_spec, dict) and "flock" in hair_spec):
+        return _build(C, head, frame, hair_spec, material, face_y, fibres)
+    FL = _flock()
+    errs = FL.validate(hair_spec["flock"])
+    if errs:
+        raise SystemExit("groom/5 flock: " + "; ".join(errs))
+    objs, rep = _build(C, head, frame, FL.strip_spec(hair_spec), material, face_y, fibres)
+    rep["flock"] = FL.apply_spec(hair_spec, objs)
+    return objs, rep
+
+
+def _build(C, head, frame, hair_spec, material, face_y, fibres=None):
+    contour = None
+    if isinstance(hair_spec, dict) and "cap_contour" in hair_spec:  # T-219 opt-in key (groom/cap_contour.py)
+        CC = _cap_contour()
+        errs = CC.validate(hair_spec)
+        if errs:
+            raise SystemExit("groom/5 cap_contour: " + "; ".join(errs))
+        contour, hair_spec = hair_spec, CC.strip(hair_spec)
     errs = validate(hair_spec)
     if errs:
         raise SystemExit("groom/5: " + "; ".join(errs))
     contact = hair_spec if CT.has_keys(hair_spec) else None  # T-183 opt-in keys (groom_contact.py)
     low, jobs = lower(CT.strip(hair_spec))
     keepout = contact is not None and "ear_keepout" in contact
-    if not jobs and not keepout:
+    if not jobs and not keepout and contour is None:
         objs, rep = R5.build(C, head, frame, low, material, face_y, fibres)
         rep["generator"] = GENERATOR
         if contact is not None:
@@ -383,6 +425,8 @@ def build(C, head, frame, hair_spec, material, face_y, fibres=None):
         return objs, rep
     later = R5._Deferred() if fibres is not None else None  # fibres grow on the final (reshaped) geometry
     objs, rep = R5.build(C, head, frame, low, material, face_y, later)
+    if contour is not None:  # the cap first: reshaping, keep-out, fibres and flock see the new border
+        rep["cap_contour"] = _cap_contour().apply(contour, head, objs)
     if jobs:
         rep["reshaped"] = apply_jobs(jobs, objs)
     if keepout:

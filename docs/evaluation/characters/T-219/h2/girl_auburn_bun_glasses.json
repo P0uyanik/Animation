@@ -1,0 +1,10 @@
+{
+ "note": "T-219 H2 (hair volume): crown top lowered, bun moved back/down towards sheet30_left/back; cap border contour (stair-step fix)",
+ "hair": {"cap_contour": {"structure": "cap", "corner_round_m": 0.008}},
+ "structures": {
+  "crown": {"height": [0.022, 0.042, 0.03]},
+  "bun": {"buns": {"0": {"el": 72}}},
+  "ringlets_side": {"hang_radii": [0.176, 0.155]},
+  "ringlets_outer": {"hang_radii": [0.176, 0.155]}
+ }
+}
