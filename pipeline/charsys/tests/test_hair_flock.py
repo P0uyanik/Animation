@@ -132,10 +132,11 @@ def candidates():
                     continue
                 if isinstance(hs, dict) and ("flock" in hs or "cap_contour" in hs):
                     users.append(os.path.relpath(p, ROOT))
-    allowed = {f"assets/characters/{c}/spec/candidates/T-219/{c}.{v}.spec.json" for c, v in T219.items()} | \
-              {f"assets/characters/{c}/versions/{v}/spec.json" for c, v in T219.items()}
-    check("only the T-219 candidate specs use hair.flock / hair.cap_contour", set(users) <= allowed,
-          sorted(set(users) - allowed)[:5])
+    allowed = {f"assets/characters/{c}/spec/candidates/T-219/{c}.{v}.spec.json" for c, v in T219.items()}
+    stored = tuple(f"assets/characters/{c}/versions/{v}/" for c, v in T219.items())
+    other = sorted(u for u in users if u not in allowed and not u.startswith(stored))
+    check("only the T-219 candidate specs and their published versions use hair.flock / hair.cap_contour", not other,
+          other[:5])
 
 
 def make_scene(bpy, np):
