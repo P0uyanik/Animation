@@ -56,7 +56,7 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
             "characters": "all", "stages": ["chains", "vertices"], "enclosure": True, "exit_test": False,
             "lock_volume": False, "static_inside": "keep",
             "static_fade_m": [0.002, 0.01], "keep_outside": "static",
-            "other_skin_fade_m": [0.004, 0.012]}
+            "other_skin_fade_m": [0.004, 0.012], "static_move_fade_m": [0.0, 0.0]}
 # exit_test / lock_volume: off by default, both make visible frame-to-frame pops (README, e912 s020 f105-111)
 # static_inside "keep": a static vertex whose anchor is inside a collider at this frame (its anchor ray first meets a
 # BACK face), or that is not behind a surface itself (its ray to the anchor first meets a FRONT face), is left as baked; "clamp" = the old rule (snapped next to its anchor: the boy's cap into his hood rim and
@@ -69,7 +69,8 @@ DEFAULTS = {"margin_m": 0.002, "core_radius_m": 0.012, "vertex_margin_m": 0.0015
 # full up to d = a and faded to nothing at d = b (applied d * (b - d) / (b - a) between), so the push-out never moves
 # a vertex by more than b^2 / 4 / (b - a) (4.5 mm with the defaults) for a neighbour: deeper overlaps are staging
 # (heads / bodies inside each other, T-191), left as baked and reported apart; a clamp that lets go when the neighbour
-# leaves would be a pop (boy fringe in the auburn head, s020 f77-83, +44 mm)
+# leaves would be a pop (boy fringe in the auburn head, s020 f77-83, +44 mm). static_move_fade_m [a, b] (off with
+# [0, 0]): the same move fade for every clamp of a static vertex
 MAX_TRIES = 3
 EPS = 1e-5
 CHAIN_MIN_WEIGHT = 0.05  # a vertex with less than this summed DYN weight is static
@@ -95,8 +96,8 @@ def load_spec(arg):
         raise ValueError(f"hair push-out: static_inside must be keep / clamp, got {spec['static_inside']}")
     if spec["keep_outside"] not in ("static", "all"):
         raise ValueError(f"hair push-out: keep_outside must be static / all, got {spec['keep_outside']}")
-    if len(spec["static_fade_m"]) != 2 or len(spec["other_skin_fade_m"]) != 2:
-        raise ValueError("hair push-out: static_fade_m and other_skin_fade_m must be [a, b]")
+    if any(len(spec[k]) != 2 for k in ("static_fade_m", "other_skin_fade_m", "static_move_fade_m")):
+        raise ValueError("hair push-out: static_fade_m, other_skin_fade_m, static_move_fade_m must be [a, b]")
     return spec
 
 
@@ -795,7 +796,8 @@ class PushOut:
             sets.append(cs)
         group = _clamp_group(float(self.spec["vertex_margin_m"]), bool(self.spec["exit_test"]),
                              self.spec["static_inside"] == "keep", [float(x) for x in self.spec["static_fade_m"]],
-                             self.spec["keep_outside"] == "all", [float(x) for x in self.spec["other_skin_fade_m"]])
+                             self.spec["keep_outside"] == "all", [float(x) for x in self.spec["other_skin_fade_m"]],
+                             [float(x) for x in self.spec["static_move_fade_m"]])
         for n in self.names:
             oc = bpy.data.collections.new(f"{PREFIX}.others.{n}")
             for m_ in sorted(self.figures):
@@ -829,7 +831,8 @@ def _collector_group(col):
     return ng
 
 
-def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, outside_all=False, other_fade=None):
+def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, outside_all=False, other_fade=None,
+                 static_move_fade=None):
     """Shared clamp: inputs Geometry, Anchors (geometry, world), Colliders (geometry, world), Self (matrix)."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.clamp", "GeometryNodeTree")
@@ -1036,11 +1039,31 @@ def _clamp_group(margin, exit_test=True, static_keep=True, static_fade=None, out
         on_other.operation = "AND"
         L.new(rc4.outputs["Is Hit"], on_other.inputs[0])
         L.new(same.outputs[0], on_other.inputs[1])
+        if static_move_fade and static_move_fade[1] > static_move_fade[0] and static_keep:
+            ms = N.new("ShaderNodeMapRange")
+            ms.clamp = True
+            L.new(dv.outputs["Value"], ms.inputs["Value"])
+            ms.inputs["From Min"].default_value = static_move_fade[0]
+            ms.inputs["From Max"].default_value = static_move_fade[1]
+            ms.inputs["To Min"].default_value = 1.0
+            ms.inputs["To Max"].default_value = 0.0
+            or_ = N.new("FunctionNodeBooleanMath")
+            or_.operation = "OR"
+            L.new(on_other.outputs[0], or_.inputs[0])
+            L.new(ist.outputs[0], or_.inputs[1])
+            if static_move_fade != other_fade:  # static: its own fade (the neighbour's wins where both apply)
+                sw0 = N.new("GeometryNodeSwitch")
+                sw0.input_type = "FLOAT"
+                L.new(on_other.outputs[0], sw0.inputs["Switch"])
+                L.new(ms.outputs["Result"], sw0.inputs["False"])
+                L.new(mo.outputs["Result"], sw0.inputs["True"])
+                mo = sw0
+            on_other = or_
         wsw = N.new("GeometryNodeSwitch")
         wsw.input_type = "FLOAT"
         L.new(on_other.outputs[0], wsw.inputs["Switch"])
         wsw.inputs["False"].default_value = 1.0
-        L.new(mo.outputs["Result"], wsw.inputs["True"])
+        L.new(mo.outputs[0], wsw.inputs["True"])
         po_ = N.new("ShaderNodeMix")
         po_.data_type = "VECTOR"
         L.new(wsw.outputs[0], po_.inputs["Factor"])
