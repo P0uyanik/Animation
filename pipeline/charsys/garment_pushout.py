@@ -325,6 +325,9 @@ class GarmentPushOut:
         # one pass over the frames for every garment (the scene-wide bake needs the objects as the selection in
         # background mode); objects the push-out does not read are hidden meanwhile (hair, face, props: speed)
         objs = [o for o, _m in mods]
+        for o in objs:  # a shot's garments are system library overrides; the bake operator needs editable ones
+            if o.override_library is not None and o.override_library.is_system_override:
+                o.override_library.is_system_override = False
         need = set(objs) | {self.states[n]["rig"] for n in self.names}
         for n in self.names:
             need |= set(self.solids[n]) | {x for _o, b_, t_ in self.proxies[n] for x in (b_, t_)}
