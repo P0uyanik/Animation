@@ -1,0 +1,152 @@
+{
+ "master": "girl_white_hair_blue_dress_master.blend",
+ "motion": "sit",
+ "frames": 54,
+ "evidence_frames": {
+  "sit_half": 22,
+  "sit": 54
+ },
+ "seed": 126,
+ "settings": {
+  "rows": 30,
+  "columns": 120,
+  "smooth": 2,
+  "jitter_m": 0.0001,
+  "quality": 14,
+  "vertex_mass": 0.01,
+  "tension": 40.0,
+  "compression": 40.0,
+  "shear": 5.0,
+  "bending": 40.0,
+  "tension_damping": 6.0,
+  "bending_damping": 0.6,
+  "air_damping": 2.0,
+  "collision_quality": 6,
+  "distance_m": 0.004,
+  "body_thickness_m": 0.0045,
+  "friction": 12.0,
+  "self_collision": false,
+  "pin_stiffness": 1.0
+ },
+ "piece": "garment.dress.skirt",
+ "followers": [
+  "garment.dress.skirt",
+  "garment.dress.band.hem_rib"
+ ],
+ "proxy_vertices": 3600,
+ "props": [
+  "cloth.prop.seat"
+ ],
+ "cache": "sit.pc2",
+ "cache_sha256": "32e5d747059373f4f0370a7209001dc61602de812dfee708444074ba72cb07b8",
+ "penetration": {
+  "sit_half": {
+   "frame": 22,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": -0.7,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": -0.0,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     55,
+     0
+    ],
+    "inside_skin": 55,
+    "inside_skin_share": 0.00072,
+    "max_depth_mm": 1.8,
+    "p95_depth_mm": 1.0,
+    "under_layer": 114,
+    "under_layer_share": 0.00148,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": -0.7,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   }
+  },
+  "sit": {
+   "frame": 54,
+   "simulated": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.1,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 72,
+    "under_layer_share": 0.00094,
+    "layer_mm": 3.6
+   },
+   "skinned": {
+    "vertices": 76800,
+    "hem_rise_mm": 0.0,
+    "inside_by_third_hem_mid_waist": [
+     773,
+     91,
+     0
+    ],
+    "inside_skin": 864,
+    "inside_skin_share": 0.01125,
+    "max_depth_mm": 15.06,
+    "p95_depth_mm": 14.03,
+    "under_layer": 1316,
+    "under_layer_share": 0.01714,
+    "layer_mm": 3.6
+   },
+   "proxy": {
+    "vertices": 3600,
+    "hem_rise_mm": 0.5,
+    "inside_by_third_hem_mid_waist": [
+     0,
+     0,
+     0
+    ],
+    "inside_skin": 0,
+    "inside_skin_share": 0.0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0,
+    "under_layer": 0,
+    "under_layer_share": 0.0,
+    "layer_mm": 3.6
+   }
+  }
+ },
+ "blender": "5.3.0",
+ "seconds": {
+  "setup": 9.3,
+  "simulate": 58.6,
+  "measure": 44.5
+ }
+}

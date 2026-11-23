@@ -1,0 +1,74 @@
+{
+ "blend": "/tmp/claude-0/-home-user-Animation/cfabbd3b-dcb2-55d2-a62c-254152741512/scratchpad/w/s010_off/shot.blend",
+ "piece": "garment.dress.skirt",
+ "frames": [
+  1,
+  80
+ ],
+ "proxy_vertices": 3600,
+ "boxes": [
+  "prop.floor",
+  "prop.wall",
+  "prop.board",
+  "prop.board_frame",
+  "prop.stool_white",
+  "prop.stool_auburn",
+  "prop.stool_boy",
+  "prop.table_top",
+  "prop.table_leg0",
+  "prop.table_leg1",
+  "prop.table_leg2",
+  "prop.table_leg3",
+  "prop.sheet"
+ ],
+ "sha256": "c279b82cf0c1f4a215cbface76066fc37947e5358a9292d3d8f58d05a2f2cf90",
+ "seconds": {
+  "setup": 13.9,
+  "simulate": 257.3,
+  "per_frame": 3.22
+ },
+ "penetration": {
+  "1": {
+   "cloth": {
+    "hem_rise_mm": 23.1,
+    "inside_skin": 0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0
+   },
+   "skinned": {
+    "hem_rise_mm": 23.1,
+    "inside_skin": 0,
+    "max_depth_mm": 0.0,
+    "p95_depth_mm": 0.0
+   }
+  },
+  "40": {
+   "cloth": {
+    "hem_rise_mm": -69.7,
+    "inside_skin": 148,
+    "max_depth_mm": 5.16,
+    "p95_depth_mm": 3.39
+   },
+   "skinned": {
+    "hem_rise_mm": -83.3,
+    "inside_skin": 833,
+    "max_depth_mm": 14.91,
+    "p95_depth_mm": 12.74
+   }
+  },
+  "80": {
+   "cloth": {
+    "hem_rise_mm": -30.3,
+    "inside_skin": 1173,
+    "max_depth_mm": 12.25,
+    "p95_depth_mm": 6.53
+   },
+   "skinned": {
+    "hem_rise_mm": -84.2,
+    "inside_skin": 807,
+    "max_depth_mm": 15.62,
+    "p95_depth_mm": 13.25
+   }
+  }
+ }
+}
