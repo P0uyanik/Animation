@@ -1,0 +1,1797 @@
+{
+  "character": "auburn",
+  "spec_sha256": "235096a12dc7963762ea7738976f5c88ef8daa4fd33545d724ca26922624d79b",
+  "seed": 216,
+  "budget": 30,
+  "controls": [
+    "face.knobs.0.move_m.2",
+    "face.knobs.0.radius_m",
+    "face.knobs.1.move_m.1",
+    "face.knobs.2.offsets.2_1_2.2",
+    "face.knobs.2.offsets.3_1_2.0",
+    "face.knobs.2.offsets.3_1_3.0"
+  ],
+  "dropped": {
+    "face.knobs.2.offsets.3_1_2.2": "max |dz| 0.155 < 0.25"
+  },
+  "selection": {
+    "min_effect": 0.25,
+    "max_cos": 0.95,
+    "noisy": "side/opening_h_w",
+    "coupled": [
+      "front/cheek_width,front/jaw_width,front/chin_width,side/cheek_advance,side/cheek_bulge"
+    ],
+    "coupled_cos": 0.85
+  },
+  "bounds": {
+    "face.knobs.0.move_m.2": [
+      -0.03,
+      0.0
+    ],
+    "face.knobs.0.radius_m": [
+      0.04,
+      0.09
+    ],
+    "face.knobs.1.move_m.1": [
+      -0.008,
+      0.004
+    ],
+    "face.knobs.2.offsets.2_1_2.2": [
+      -0.03,
+      0.005
+    ],
+    "face.knobs.2.offsets.3_1_2.0": [
+      -0.01,
+      0.03
+    ],
+    "face.knobs.2.offsets.3_1_3.0": [
+      -0.01,
+      0.025
+    ]
+  },
+  "start": {
+    "face.knobs.0.move_m.2": -0.01,
+    "face.knobs.0.radius_m": 0.06,
+    "face.knobs.1.move_m.1": -0.003,
+    "face.knobs.2.offsets.2_1_2.2": -0.01,
+    "face.knobs.2.offsets.3_1_2.0": 0.008,
+    "face.knobs.2.offsets.3_1_3.0": 0.004
+  },
+  "start_cost": 0.495449847989418,
+  "start_per_view": {
+    "front": 0.23749406740740742,
+    "side": 0.7534056285714286
+  },
+  "surrogate_mean": {
+    "face.knobs.0.move_m.2": -0.01053130547775312,
+    "face.knobs.0.radius_m": 0.07045914045423154,
+    "face.knobs.1.move_m.1": -0.0030523058934189056,
+    "face.knobs.2.offsets.2_1_2.2": -0.016804097592378858,
+    "face.knobs.2.offsets.3_1_2.0": 0.009963331587582452,
+    "face.knobs.2.offsets.3_1_3.0": 0.004148009587805809
+  },
+  "edit_weight": 0.005,
+  "best": 6,
+  "best_cost": 0.4111001192994696,
+  "best_parameters": {
+    "face.knobs.0.move_m.2": -0.015871304202389643,
+    "face.knobs.0.radius_m": 0.06570952196122407,
+    "face.knobs.1.move_m.1": -0.0008647392242247367,
+    "face.knobs.2.offsets.2_1_2.2": -0.013324890853517048,
+    "face.knobs.2.offsets.3_1_2.0": 0.008073180771779999,
+    "face.knobs.2.offsets.3_1_3.0": -0.001661782854110283
+  },
+  "trials": [
+    {
+      "trial": 0,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.01053130547775312,
+        "face.knobs.0.radius_m": 0.07045914045423154,
+        "face.knobs.1.move_m.1": -0.0030523058934189056,
+        "face.knobs.2.offsets.2_1_2.2": -0.016804097592378858,
+        "face.knobs.2.offsets.3_1_2.0": 0.009963331587582452,
+        "face.knobs.2.offsets.3_1_3.0": 0.004148009587805809
+      },
+      "cost": 0.46513778897888075,
+      "per_view": {
+        "front": 0.22977906592592595,
+        "side": 0.6697787571428572
+      },
+      "penalty": 0.015358877444489214,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 19,
+          "mean_abs_z": 0.804,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 1.022,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.773,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.262,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.297,
+          "holdout": false
+        }
+      },
+      "build_s": 202.8144774100001,
+      "measure_s": 14.466199729999971
+    },
+    {
+      "trial": 1,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.0072735484189940525,
+        "face.knobs.0.radius_m": 0.06379040904763038,
+        "face.knobs.1.move_m.1": -0.0034790169832790117,
+        "face.knobs.2.offsets.2_1_2.2": -0.021415002782997284,
+        "face.knobs.2.offsets.3_1_2.0": 0.005442051609913508,
+        "face.knobs.2.offsets.3_1_3.0": 0.007982465239612492
+      },
+      "cost": 0.4894481650297509,
+      "per_view": {
+        "front": 0.24046309851851852,
+        "side": 0.6734329
+      },
+      "penalty": 0.032500165770491654,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.812,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 1.026,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.794,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.564,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.232,
+          "holdout": false
+        }
+      },
+      "build_s": 210.4991196709998,
+      "measure_s": 11.697417761999532
+    },
+    {
+      "trial": 2,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011045908109767553,
+        "face.knobs.0.radius_m": 0.0836202791739577,
+        "face.knobs.1.move_m.1": -0.005653508273490375,
+        "face.knobs.2.offsets.2_1_2.2": -0.01878250578201285,
+        "face.knobs.2.offsets.3_1_2.0": 0.0009905982122452688,
+        "face.knobs.2.offsets.3_1_3.0": 0.005952850782705023
+      },
+      "cost": 0.4708773458805897,
+      "per_view": {
+        "front": 0.30649097185185187,
+        "side": 0.5156254914285714
+      },
+      "penalty": 0.059819114240378134,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 16,
+          "mean_abs_z": 0.923,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.0,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.803,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.154,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.185,
+          "holdout": false
+        }
+      },
+      "build_s": 168.64281238299918,
+      "measure_s": 13.507051408000734
+    },
+    {
+      "trial": 3,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011502108970457399,
+        "face.knobs.0.radius_m": 0.07082529986026076,
+        "face.knobs.1.move_m.1": -0.00414040001510718,
+        "face.knobs.2.offsets.2_1_2.2": -0.026710919016509776,
+        "face.knobs.2.offsets.3_1_2.0": 0.004190710321978337,
+        "face.knobs.2.offsets.3_1_3.0": 2.2560469734278846e-05
+      },
+      "cost": 0.5360080564262434,
+      "per_view": {
+        "front": 0.34520649259259256,
+        "side": 0.5903022971428572
+      },
+      "penalty": 0.06825366155851857,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 15,
+          "mean_abs_z": 0.88,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.97,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.834,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 2.057,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.322,
+          "holdout": false
+        }
+      },
+      "build_s": 166.7958203520002,
+      "measure_s": 12.850322600999789
+    },
+    {
+      "trial": 4,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.01258099770767615,
+        "face.knobs.0.radius_m": 0.07376044979464327,
+        "face.knobs.1.move_m.1": -0.003539608098751222,
+        "face.knobs.2.offsets.2_1_2.2": -0.01107403479163828,
+        "face.knobs.2.offsets.3_1_2.0": 0.012346354573332984,
+        "face.knobs.2.offsets.3_1_3.0": 0.0035630528455491816
+      },
+      "cost": 0.49164637560230606,
+      "per_view": {
+        "front": 0.2568882474074074,
+        "side": 0.696816197142857
+      },
+      "penalty": 0.014794153327173811,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.801,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 1.034,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.745,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.284,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.267,
+          "holdout": false
+        }
+      },
+      "build_s": 168.81953135500044,
+      "measure_s": 13.655214247999538
+    },
+    {
+      "trial": 5,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011587881490949026,
+        "face.knobs.0.radius_m": 0.0742829778511553,
+        "face.knobs.1.move_m.1": -0.00015851837125845265,
+        "face.knobs.2.offsets.2_1_2.2": -0.022362395141032006,
+        "face.knobs.2.offsets.3_1_2.0": 0.007382182361667608,
+        "face.knobs.2.offsets.3_1_3.0": 0.0004723252736937057
+      },
+      "cost": 0.4585962303889969,
+      "per_view": {
+        "front": 0.29571227185185184,
+        "side": 0.5146245885714286
+      },
+      "penalty": 0.053427800177356696,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 16,
+          "mean_abs_z": 0.876,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.987,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.853,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.195,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.336,
+          "holdout": false
+        }
+      },
+      "build_s": 167.58938523000052,
+      "measure_s": 13.100931205000052
+    },
+    {
+      "trial": 6,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.015871304202389643,
+        "face.knobs.0.radius_m": 0.06570952196122407,
+        "face.knobs.1.move_m.1": -0.0008647392242247367,
+        "face.knobs.2.offsets.2_1_2.2": -0.013324890853517048,
+        "face.knobs.2.offsets.3_1_2.0": 0.008073180771779999,
+        "face.knobs.2.offsets.3_1_3.0": -0.001661782854110283
+      },
+      "cost": 0.4111001192994696,
+      "per_view": {
+        "front": 0.25693458,
+        "side": 0.5157344828571429
+      },
+      "penalty": 0.024765587870898182,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.92,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.999,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.872,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.139,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.354,
+          "holdout": false
+        }
+      },
+      "build_s": 170.6937664849993,
+      "measure_s": 13.073055849999946
+    },
+    {
+      "trial": 7,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.013276397743286799,
+        "face.knobs.0.radius_m": 0.07705627668196854,
+        "face.knobs.1.move_m.1": -0.0004085966692185458,
+        "face.knobs.2.offsets.2_1_2.2": -0.01575639821970278,
+        "face.knobs.2.offsets.3_1_2.0": 0.005813265411383604,
+        "face.knobs.2.offsets.3_1_3.0": 0.0014840062585667578
+      },
+      "cost": 0.4811415203236807,
+      "per_view": {
+        "front": 0.22598654666666665,
+        "side": 0.6673660457142858
+      },
+      "penalty": 0.03446522413320446,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.85,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.006,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.835,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.187,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.271,
+          "holdout": false
+        }
+      },
+      "build_s": 168.80810423399998,
+      "measure_s": 13.741725220999797
+    },
+    {
+      "trial": 8,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.013756733193280014,
+        "face.knobs.0.radius_m": 0.07367053118570327,
+        "face.knobs.1.move_m.1": -0.0019293774946007739,
+        "face.knobs.2.offsets.2_1_2.2": -0.01338824683668769,
+        "face.knobs.2.offsets.3_1_2.0": 0.0101122829448158,
+        "face.knobs.2.offsets.3_1_3.0": 0.0021834680431174966
+      },
+      "cost": 0.4665532756715469,
+      "per_view": {
+        "front": 0.22621369703703706,
+        "side": 0.6697702114285714
+      },
+      "penalty": 0.018561321438742666,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.848,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.012,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.817,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.254,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.335,
+          "holdout": false
+        }
+      },
+      "build_s": 169.92355710799984,
+      "measure_s": 14.358015833000536
+    },
+    {
+      "trial": 9,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011516096930976077,
+        "face.knobs.0.radius_m": 0.08020582138622986,
+        "face.knobs.1.move_m.1": 0.0005767818482725669,
+        "face.knobs.2.offsets.2_1_2.2": -0.0191242072428046,
+        "face.knobs.2.offsets.3_1_2.0": 0.011548852640761718,
+        "face.knobs.2.offsets.3_1_3.0": 0.0037352942975049375
+      },
+      "cost": 0.44245878917859555,
+      "per_view": {
+        "front": 0.24734642888888891,
+        "side": 0.5265052542857143
+      },
+      "penalty": 0.05553294759129396,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.861,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 1.01,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.806,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.491,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.339,
+          "holdout": false
+        }
+      },
+      "build_s": 168.74491333399965,
+      "measure_s": 13.831487477999872
+    },
+    {
+      "trial": 10,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.014572157579769396,
+        "face.knobs.0.radius_m": 0.08565193319177836,
+        "face.knobs.1.move_m.1": -0.0024549954027552707,
+        "face.knobs.2.offsets.2_1_2.2": -0.022071004414576358,
+        "face.knobs.2.offsets.3_1_2.0": 0.0064328805131803005,
+        "face.knobs.2.offsets.3_1_3.0": 0.006143915549798025
+      },
+      "cost": 0.4999488293775348,
+      "per_view": {
+        "front": 0.33394734592592595,
+        "side": 0.5260975657142858
+      },
+      "penalty": 0.06992637355742891,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 15,
+          "mean_abs_z": 0.892,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.976,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 10,
+          "mean_abs_z": 1.865,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.445,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.317,
+          "holdout": false
+        }
+      },
+      "build_s": 169.7684477920002,
+      "measure_s": 11.935743088999516
+    },
+    {
+      "trial": 11,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.014183379379136895,
+        "face.knobs.0.radius_m": 0.07168447151234589,
+        "face.knobs.1.move_m.1": -0.0022114803353496812,
+        "face.knobs.2.offsets.2_1_2.2": -0.025778776655997163,
+        "face.knobs.2.offsets.3_1_2.0": -0.004850823157941413,
+        "face.knobs.2.offsets.3_1_3.0": 0.003375227381353296
+      },
+      "cost": 0.55678402335274,
+      "per_view": {
+        "front": 0.35002456814814814,
+        "side": 0.5918288857142857
+      },
+      "penalty": 0.08585729642152304,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 16,
+          "mean_abs_z": 0.922,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.964,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.879,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 2.04,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.425,
+          "holdout": false
+        }
+      },
+      "build_s": 165.94969361600033,
+      "measure_s": 13.36347849699996
+    },
+    {
+      "trial": 12,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.017272883761342797,
+        "face.knobs.0.radius_m": 0.07155124803848743,
+        "face.knobs.1.move_m.1": -0.0009011742549922836,
+        "face.knobs.2.offsets.2_1_2.2": -0.017019772913680474,
+        "face.knobs.2.offsets.3_1_2.0": 0.010484321458496445,
+        "face.knobs.2.offsets.3_1_3.0": -0.003923308467474109
+      },
+      "cost": 0.5182941747079511,
+      "per_view": {
+        "front": 0.35202518,
+        "side": 0.58828424
+      },
+      "penalty": 0.04813946470795112,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 15,
+          "mean_abs_z": 0.925,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.982,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 7,
+          "mean_abs_z": 1.905,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 2.124,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.373,
+          "holdout": false
+        }
+      },
+      "build_s": 165.5868999459999,
+      "measure_s": 14.44370803000038
+    },
+    {
+      "trial": 13,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011088753613302093,
+        "face.knobs.0.radius_m": 0.0800949907507856,
+        "face.knobs.1.move_m.1": 0.0005045380570591097,
+        "face.knobs.2.offsets.2_1_2.2": -0.01650631915893333,
+        "face.knobs.2.offsets.3_1_2.0": 0.00976453771593236,
+        "face.knobs.2.offsets.3_1_3.0": 0.0031350112614390684
+      },
+      "cost": 0.5166092382168109,
+      "per_view": {
+        "front": 0.22264784370370372,
+        "side": 0.7207388371428571
+      },
+      "penalty": 0.044915897793530495,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 19,
+          "mean_abs_z": 0.814,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 1.022,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.802,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 2.634,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.309,
+          "holdout": false
+        }
+      },
+      "build_s": 172.96072158599964,
+      "measure_s": 11.706393022999691
+    },
+    {
+      "trial": 14,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.00892098410577832,
+        "face.knobs.0.radius_m": 0.06392889861437787,
+        "face.knobs.1.move_m.1": -0.0011703487763652775,
+        "face.knobs.2.offsets.2_1_2.2": -0.022715400876473654,
+        "face.knobs.2.offsets.3_1_2.0": 0.00558334913499659,
+        "face.knobs.2.offsets.3_1_3.0": 0.002465730585123293
+      },
+      "cost": 0.4239338755055114,
+      "per_view": {
+        "front": 0.2557726140740741,
+        "side": 0.5145060514285714
+      },
+      "penalty": 0.03879454275418869,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.869,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 1.003,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.839,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.213,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.284,
+          "holdout": false
+        }
+      },
+      "build_s": 155.034417502,
+      "measure_s": 13.287609158999658
+    },
+    {
+      "trial": 15,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.012086410436361245,
+        "face.knobs.0.radius_m": 0.06067853718694237,
+        "face.knobs.1.move_m.1": 0.0011316759255260884,
+        "face.knobs.2.offsets.2_1_2.2": -0.01071686905746461,
+        "face.knobs.2.offsets.3_1_2.0": 0.005247127990949769,
+        "face.knobs.2.offsets.3_1_3.0": -0.004665889900250271
+      },
+      "cost": 0.6004537173634125,
+      "per_view": {
+        "front": 0.23383364444444443,
+        "side": 0.8984590885714285
+      },
+      "penalty": 0.034307350855476024,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.842,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.03,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.763,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 2,
+          "mean_abs_z": 2.473,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.209,
+          "holdout": false
+        }
+      },
+      "build_s": 109.94807567200041,
+      "measure_s": 13.529470668999238
+    },
+    {
+      "trial": 16,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.012334563879252646,
+        "face.knobs.0.radius_m": 0.07887655500519952,
+        "face.knobs.1.move_m.1": -0.0005185715980975244,
+        "face.knobs.2.offsets.2_1_2.2": -0.014392476833004927,
+        "face.knobs.2.offsets.3_1_2.0": 0.012157302771391239,
+        "face.knobs.2.offsets.3_1_3.0": -0.0029744007245586694
+      },
+      "cost": 0.4925486056490983,
+      "per_view": {
+        "front": 0.2345886637037037,
+        "side": 0.6700458685714287
+      },
+      "penalty": 0.0402313395115321,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 19,
+          "mean_abs_z": 0.826,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.012,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.771,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.273,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.335,
+          "holdout": false
+        }
+      },
+      "build_s": 174.91782246100047,
+      "measure_s": 14.398700379999354
+    },
+    {
+      "trial": 17,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011230560176817003,
+        "face.knobs.0.radius_m": 0.08086533135945023,
+        "face.knobs.1.move_m.1": 0.000648908618019044,
+        "face.knobs.2.offsets.2_1_2.2": -0.011359461479906834,
+        "face.knobs.2.offsets.3_1_2.0": 0.006389960644619915,
+        "face.knobs.2.offsets.3_1_3.0": -0.0036737622796263435
+      },
+      "cost": 0.595659038421486,
+      "per_view": {
+        "front": 0.21641034148148147,
+        "side": 0.879322057142857
+      },
+      "penalty": 0.047792839109316775,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.808,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.03,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.769,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 2,
+          "mean_abs_z": 2.623,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.355,
+          "holdout": false
+        }
+      },
+      "build_s": 160.85656789600034,
+      "measure_s": 11.473695972999849
+    },
+    {
+      "trial": 18,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.01238772600151192,
+        "face.knobs.0.radius_m": 0.0600046236285944,
+        "face.knobs.1.move_m.1": -0.002918387800975801,
+        "face.knobs.2.offsets.2_1_2.2": -0.020673841215096717,
+        "face.knobs.2.offsets.3_1_2.0": 0.004228003520004577,
+        "face.knobs.2.offsets.3_1_3.0": 0.0030296073740035314
+      },
+      "cost": 0.445368355050232,
+      "per_view": {
+        "front": 0.3229564496296296,
+        "side": 0.5144141971428572
+      },
+      "penalty": 0.02668303166398855,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 16,
+          "mean_abs_z": 0.917,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.987,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.873,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.206,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.268,
+          "holdout": false
+        }
+      },
+      "build_s": 168.42378754499987,
+      "measure_s": 13.75616925200029
+    },
+    {
+      "trial": 19,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.014786302135540462,
+        "face.knobs.0.radius_m": 0.07000486137268312,
+        "face.knobs.1.move_m.1": -0.0019093913356865218,
+        "face.knobs.2.offsets.2_1_2.2": -0.014336306725909586,
+        "face.knobs.2.offsets.3_1_2.0": 0.00584098605251933,
+        "face.knobs.2.offsets.3_1_3.0": 0.0011274277624334344
+      },
+      "cost": 0.4879262992635464,
+      "per_view": {
+        "front": 0.2706929362962963,
+        "side": 0.6667500685714286
+      },
+      "penalty": 0.019204796829683957,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 19,
+          "mean_abs_z": 0.906,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.0,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.854,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.176,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.32,
+          "holdout": false
+        }
+      },
+      "build_s": 172.81072140299966,
+      "measure_s": 11.83757668599992
+    },
+    {
+      "trial": 20,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.0033850732844421354,
+        "face.knobs.0.radius_m": 0.07550042027290974,
+        "face.knobs.1.move_m.1": -0.002473415273145061,
+        "face.knobs.2.offsets.2_1_2.2": -0.02259547387229283,
+        "face.knobs.2.offsets.3_1_2.0": 0.002084402651899235,
+        "face.knobs.2.offsets.3_1_3.0": -0.00040098055028916016
+      },
+      "cost": 0.53072645240604,
+      "per_view": {
+        "front": 0.22973446074074075,
+        "side": 0.7010914314285713
+      },
+      "penalty": 0.06531350632138395,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.747,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.018,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.753,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.294,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.197,
+          "holdout": false
+        }
+      },
+      "build_s": 165.21631480799988,
+      "measure_s": 14.829149955000503
+    },
+    {
+      "trial": 21,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.011275269881982491,
+        "face.knobs.0.radius_m": 0.0753273153442788,
+        "face.knobs.1.move_m.1": -0.0018768038288577912,
+        "face.knobs.2.offsets.2_1_2.2": -0.01846402253300122,
+        "face.knobs.2.offsets.3_1_2.0": 0.005313842719558284,
+        "face.knobs.2.offsets.3_1_3.0": -0.0005102901686988449
+      },
+      "cost": 0.42110350141520353,
+      "per_view": {
+        "front": 0.26243321555555554,
+        "side": 0.5157998428571429
+      },
+      "penalty": 0.031986972208854304,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.857,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.999,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.811,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.151,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.268,
+          "holdout": false
+        }
+      },
+      "build_s": 172.2205194070002,
+      "measure_s": 11.903578114000084
+    },
+    {
+      "trial": 22,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.010386405993789278,
+        "face.knobs.0.radius_m": 0.07076276743848452,
+        "face.knobs.1.move_m.1": -0.0016537403740931062,
+        "face.knobs.2.offsets.2_1_2.2": -0.020621348940106813,
+        "face.knobs.2.offsets.3_1_2.0": 0.0036643643258777517,
+        "face.knobs.2.offsets.3_1_3.0": 0.0023952186532922443
+      },
+      "cost": 0.4958916614456013,
+      "per_view": {
+        "front": 0.2593510711111111,
+        "side": 0.6651619971428572
+      },
+      "penalty": 0.03363512731861716,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.873,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.0,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.862,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.21,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.239,
+          "holdout": false
+        }
+      },
+      "build_s": 160.97656368699973,
+      "measure_s": 15.301435078000395
+    },
+    {
+      "trial": 23,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.013490780933101763,
+        "face.knobs.0.radius_m": 0.06651871451821403,
+        "face.knobs.1.move_m.1": -0.0007216183596886637,
+        "face.knobs.2.offsets.2_1_2.2": -0.019266183653354307,
+        "face.knobs.2.offsets.3_1_2.0": 0.0016973348564317692,
+        "face.knobs.2.offsets.3_1_3.0": 0.0010005366767837486
+      },
+      "cost": 0.4835244786117642,
+      "per_view": {
+        "front": 0.3070186155555556,
+        "side": 0.5873091514285714
+      },
+      "penalty": 0.03636059511970069,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 17,
+          "mean_abs_z": 0.909,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.987,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.853,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 4,
+          "mean_abs_z": 2.12,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.353,
+          "holdout": false
+        }
+      },
+      "build_s": 164.34100572199986,
+      "measure_s": 12.399127716000294
+    },
+    {
+      "trial": 24,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.010661337086641496,
+        "face.knobs.0.radius_m": 0.07389916171809915,
+        "face.knobs.1.move_m.1": -0.003050395894608101,
+        "face.knobs.2.offsets.2_1_2.2": -0.02230922975655349,
+        "face.knobs.2.offsets.3_1_2.0": 0.004691188434495347,
+        "face.knobs.2.offsets.3_1_3.0": 0.002530877509461446
+      },
+      "cost": 0.4247121078374948,
+      "per_view": {
+        "front": 0.25119734074074074,
+        "side": 0.5143809371428572
+      },
+      "penalty": 0.041922968895695883,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.848,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.994,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.854,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.214,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.23,
+          "holdout": false
+        }
+      },
+      "build_s": 163.99505934100034,
+      "measure_s": 12.65636360299959
+    },
+    {
+      "trial": 25,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.01070285718542292,
+        "face.knobs.0.radius_m": 0.06706627720370345,
+        "face.knobs.1.move_m.1": -0.003137018957991335,
+        "face.knobs.2.offsets.2_1_2.2": -0.02645096432680365,
+        "face.knobs.2.offsets.3_1_2.0": 0.0050044163912644265,
+        "face.knobs.2.offsets.3_1_3.0": 0.0018889026679433443
+      },
+      "cost": 0.47981786790559383,
+      "per_view": {
+        "front": 0.3284796296296296,
+        "side": 0.5138228714285714
+      },
+      "penalty": 0.05866661737649329,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 15,
+          "mean_abs_z": 0.859,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.976,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 9,
+          "mean_abs_z": 1.842,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.149,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.322,
+          "holdout": false
+        }
+      },
+      "build_s": 162.57295744199928,
+      "measure_s": 12.889528814000187
+    },
+    {
+      "trial": 26,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.013791755463651887,
+        "face.knobs.0.radius_m": 0.0687832127936452,
+        "face.knobs.1.move_m.1": -0.0030851492353738026,
+        "face.knobs.2.offsets.2_1_2.2": -0.014485490020157218,
+        "face.knobs.2.offsets.3_1_2.0": 0.001950566862483771,
+        "face.knobs.2.offsets.3_1_3.0": -0.000652859454232815
+      },
+      "cost": 0.47289409481151296,
+      "per_view": {
+        "front": 0.24762294518518518,
+        "side": 0.6572198114285716
+      },
+      "penalty": 0.020472716504634635,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 20,
+          "mean_abs_z": 0.879,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.005,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.805,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 1.971,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.297,
+          "holdout": false
+        }
+      },
+      "build_s": 162.38832352099962,
+      "measure_s": 13.717445953000606
+    },
+    {
+      "trial": 27,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.012580286618777473,
+        "face.knobs.0.radius_m": 0.0642744038896474,
+        "face.knobs.1.move_m.1": -0.003033498126957331,
+        "face.knobs.2.offsets.2_1_2.2": -0.01728586267769961,
+        "face.knobs.2.offsets.3_1_2.0": 0.005553959076446411,
+        "face.knobs.2.offsets.3_1_3.0": 0.0006185720659902805
+      },
+      "cost": 0.4976186544332474,
+      "per_view": {
+        "front": 0.2828730266666667,
+        "side": 0.6803016285714286
+      },
+      "penalty": 0.016031326814199717,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 18,
+          "mean_abs_z": 0.906,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.0,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.831,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.227,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.297,
+          "holdout": false
+        }
+      },
+      "build_s": 165.10344898999938,
+      "measure_s": 12.26568375900024
+    },
+    {
+      "trial": 28,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.013419328484545901,
+        "face.knobs.0.radius_m": 0.06154930288604772,
+        "face.knobs.1.move_m.1": -0.0017353723834251863,
+        "face.knobs.2.offsets.2_1_2.2": -0.015907764963659594,
+        "face.knobs.2.offsets.3_1_2.0": 0.0061176417507288455,
+        "face.knobs.2.offsets.3_1_3.0": 6.746897682289622e-05
+      },
+      "cost": 0.4847613304838054,
+      "per_view": {
+        "front": 0.27137029925925926,
+        "side": 0.6673660457142858
+      },
+      "penalty": 0.015393157997032817,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 19,
+          "mean_abs_z": 0.906,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 1.0,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.855,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.845,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 3,
+          "mean_abs_z": 2.187,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.271,
+          "holdout": false
+        }
+      },
+      "build_s": 167.76153980099934,
+      "measure_s": 13.838163529000667
+    },
+    {
+      "trial": 29,
+      "parameters": {
+        "face.knobs.0.move_m.2": -0.014558665465761936,
+        "face.knobs.0.radius_m": 0.0670210451995664,
+        "face.knobs.1.move_m.1": -0.0032155332591958024,
+        "face.knobs.2.offsets.2_1_2.2": -0.019642831384488545,
+        "face.knobs.2.offsets.3_1_2.0": 0.01015584285492164,
+        "face.knobs.2.offsets.3_1_3.0": 0.0015984159465479587
+      },
+      "cost": 0.4661158440755457,
+      "per_view": {
+        "front": 0.34855701629629626,
+        "side": 0.5255538257142857
+      },
+      "penalty": 0.029060423070254773,
+      "summary": {
+        "front/face": {
+          "scored": 27,
+          "within": 15,
+          "mean_abs_z": 0.927,
+          "holdout": false
+        },
+        "front/hair": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 0.982,
+          "holdout": false
+        },
+        "three_quarter/face": {
+          "scored": 24,
+          "within": 8,
+          "mean_abs_z": 1.87,
+          "holdout": true
+        },
+        "three_quarter/hair": {
+          "scored": 1,
+          "within": 1,
+          "mean_abs_z": 0.931,
+          "holdout": true
+        },
+        "side/face": {
+          "scored": 7,
+          "within": 5,
+          "mean_abs_z": 2.437,
+          "holdout": false
+        },
+        "side/hair": {
+          "scored": 2,
+          "within": 0,
+          "mean_abs_z": 6.335,
+          "holdout": false
+        }
+      },
+      "build_s": 164.05043402299998,
+      "measure_s": 14.098318220999317
+    }
+  ],
+  "wall_s": 2730.247605144
+}

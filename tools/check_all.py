@@ -1193,7 +1193,10 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("face-parity", t077_unit("face export parity (T-213)", lambda c: [  # auburn master, ~1 min, temp dir only
         sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_parity.py"), "--blender", c.executable]), False),
     ("face-measurer", t077_unit("face measurer (T-214)", lambda c: [  # 3 released masters, ~60 s, temp dirs only
-        sys.executable, str(ROOT / "tools/fit/tests/test_measurer.py")]), False),    ("hair-pushout", unit_hair_pushout, False),  # T-194
+        sys.executable, str(ROOT / "tools/fit/tests/test_measurer.py")]), False),
+    ("face-v4", t077_unit("face_generic/4 knobs + chains (T-216)", lambda c: [  # synthetic meshes, ~10 s, no assets
+        sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_generic_v4.py"), "--blender", c.executable]), False),
+    ("hair-pushout", unit_hair_pushout, False),  # T-194
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)

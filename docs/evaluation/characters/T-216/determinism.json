@@ -1,0 +1,35 @@
+{
+ "spec": "assets/characters/girl_auburn_bun_glasses/spec/girl_auburn_bun_glasses.0.14.0.spec.json",
+ "overrides": [
+  "docs/evaluation/characters/T-216/candidate.override.json"
+ ],
+ "runs": [
+  {
+   "fingerprint_sha256": "5a2fe9510f11011811e6885250b858772ad4322b4f4c09831e96560f767f946a",
+   "export4": {
+    "character.json": "ee1ac9c04cdb4ed53b3d5d7262888e1426093d650f66e1527d6f019f04d0c278",
+    "geometry.bin": "70e858f5a2762eff742870565561f59524f05457221281720945c470aae5743f"
+   },
+   "export5": {
+    "character.json": "ec3a7671e72b8ded7fe9245ffd91f54ee1659a9e55c73513154b2fc74bfb44b4",
+    "geometry.bin": "f8fe9600ca7722dd96ec35ce5daf83b0569930a5a59b9cee406c4a09d43f757f"
+   }
+  },
+  {
+   "fingerprint_sha256": "5a2fe9510f11011811e6885250b858772ad4322b4f4c09831e96560f767f946a",
+   "export4": {
+    "character.json": "0c730b0e5e91f3c940e12db0c78a5f03fd1e092b8a5607c0b7bec70a895c47d1",
+    "geometry.bin": "83edd68c5090e96322806fd934bbd737110ff919d2b9a0ab39e85229e82aa397"
+   },
+   "export5": {
+    "character.json": "ec3a7671e72b8ded7fe9245ffd91f54ee1659a9e55c73513154b2fc74bfb44b4",
+    "geometry.bin": "f8fe9600ca7722dd96ec35ce5daf83b0569930a5a59b9cee406c4a09d43f757f"
+   }
+  }
+ ],
+ "fingerprints_identical": true,
+ "export5_identical": true,
+ "export4_identical_without_manifest": false,
+ "pass": true,
+ "note": "export/4 is not order-stable by design (T-056); its bytes are information only"
+}

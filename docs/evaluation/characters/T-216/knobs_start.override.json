@@ -1,0 +1,74 @@
+{
+ "generators": {
+  "face": "face_generic/4"
+ },
+ "face": {
+  "generator": "face_generic/4",
+  "knobs": [
+   {
+    "name": "chin",
+    "type": "WARP",
+    "at": "chin",
+    "radius_m": 0.06,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0,
+     0,
+     -0.01
+    ]
+   },
+   {
+    "name": "bridge",
+    "type": "WARP",
+    "at": {
+     "profile": 0.0
+    },
+    "radius_m": 0.03,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0,
+     -0.003,
+     0
+    ]
+   },
+   {
+    "name": "lower_face",
+    "type": "LATTICE",
+    "at": "chin",
+    "offset_m": [
+     0,
+     -0.016,
+     0.0
+    ],
+    "size_m": [
+     0.32,
+     0.14,
+     0.2
+    ],
+    "points": [
+     5,
+     3,
+     5
+    ],
+    "mirror": true,
+    "offsets": {
+     "2_1_2": [
+      0,
+      0,
+      -0.01
+     ],
+     "3_1_2": [
+      0.008,
+      0,
+      -0.006
+     ],
+     "3_1_3": [
+      0.004,
+      0,
+      0
+     ]
+    }
+   }
+  ]
+ }
+}

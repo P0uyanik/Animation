@@ -1,0 +1,125 @@
+{
+ "face": {
+  "brows": {
+   "height": 1.5250113428547831
+  },
+  "ears": {
+   "below_eye_m": 0.017499289499124226,
+   "radii_m": [
+    0.014,
+    0.033,
+    0.04521086226882777
+   ]
+  },
+  "eyes": {
+   "lids": {
+    "upper_edge_deg": 42.15805576823337
+   },
+   "offset_z_m": -0.006878127385889329,
+   "protrusion_m": 0.005221962666773552,
+   "radius_m": 0.04907196199237959,
+   "scale": [
+    0.9666514377324149,
+    0.8,
+    1.0234415867490896
+   ],
+   "yaw_deg": 4.178510478928514
+  },
+  "layout": {
+   "chin_below_eye_m": 0.09356950231670268,
+   "mouth_below_eye_m": 0.046822521536314665,
+   "nose_below_eye_m": 0.03353350830479437
+  },
+  "mouth": {
+   "extra_shapes": [
+    {
+     "name": "MouthFrown",
+     "frown_m": 0.0045,
+     "widen": 0.95
+    },
+    {
+     "name": "MouthWide",
+     "frown_m": -0.0055,
+     "widen": 1.55,
+     "up_lift_m": 0.004,
+     "lo_drop_m": 0.010149547693003944
+    },
+    {
+     "name": "MouthO",
+     "frown_m": 0.0,
+     "widen": 0.62,
+     "up_lift_m": 0.0028,
+     "lo_drop_m": 0.0045
+    }
+   ],
+   "half_width_m": 0.020214283788882355
+  },
+  "shape": {
+   "cheek_x": 1.0801705568236406,
+   "lower_face": {
+    "cheek_pad_m": 0.02077614513648731,
+    "jaw_x": 0.4557310952034065
+   }
+  },
+  "generator": "face_generic/4",
+  "knobs": [
+   {
+    "name": "chin",
+    "type": "WARP",
+    "at": "chin",
+    "radius_m": 0.07,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0,
+     0,
+     -0.015
+    ]
+   },
+   {
+    "name": "cheek",
+    "type": "HOOK",
+    "at": {
+     "front": 0.5
+    },
+    "radius_m": 0.045,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0.006,
+     0,
+     0
+    ]
+   },
+   {
+    "name": "jaw",
+    "type": "HOOK",
+    "at": {
+     "front": 0.8
+    },
+    "radius_m": 0.04,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0.005,
+     0,
+     0
+    ]
+   },
+   {
+    "name": "midface",
+    "type": "WARP",
+    "at": {
+     "profile": 0.5
+    },
+    "radius_m": 0.04,
+    "falloff": "SMOOTH",
+    "move_m": [
+     0,
+     0.006,
+     0
+    ]
+   }
+  ]
+ },
+ "generators": {
+  "face": "face_generic/4"
+ }
+}
