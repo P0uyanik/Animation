@@ -33,8 +33,8 @@ Per character (any rig whose deform bones the package lists; nothing character-s
     meshes (own body and garments, the other characters, props, box objects): chain bones re-keyed per frame and a
     per-vertex Geometry Nodes clamp on every hair object (hair_pushout.py). Without the flag nothing of it runs.
   * garment push-out (T-222, opt-in, --garment-pushout): garment vertices that end up inside their own character's
-    posed body are moved back out by a per-vertex Geometry Nodes step on every garment object (garment_pushout.py).
-    Without the flag nothing of it runs.
+    posed body are moved back out by a per-vertex Geometry Nodes step on every garment object, rate-limited per frame
+    and baked into shot.blend (garment_pushout.py). Without the flag nothing of it runs.
 Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error, eye sockets)."""
 import argparse
 import json
@@ -508,6 +508,9 @@ def main():
         tp = time.time()
         gpush.install()
         gpush_s["install_s"] = round(time.time() - tp, 2)
+        tp = time.time()
+        gpush.bake()  # the rate limit's state, packed into shot.blend (frames render in any order)
+        gpush_s["bake_s"] = round(time.time() - tp, 2)
         rep["garment_pushout"] = {**gpush.report, "timing": gpush_s}
     for n, st in states.items():
         rep["characters"][n] = {"master": st["master"], "baked_bones": len(st["bones"]), "facial_controls": len(st["controls"]),

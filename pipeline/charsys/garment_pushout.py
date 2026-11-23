@@ -53,7 +53,7 @@ EPS = 1e-5
 DEFAULTS = {"characters": "all", "items": "all", "margin_m": 0.0015, "clearance_cap_m": 0.01, "reach_m": 0.01,
             "max_exit_m": 0.5, "move_fade_m": [0.02, 0.03], "smooth_iterations": 0, "normal_smooth": 2,
             "nearest_cone_deg": 150.0, "ray_hits": 4, "passes": 2,
-            "max_winding": 1}
+            "max_winding": 1, "max_step_m": 0.003}
 
 
 def load_spec(arg):
@@ -298,10 +298,53 @@ class GarmentPushOut:
             cs.modifiers.new("collect", "NODES").node_group = HP._collector_group(col)
             for o, pb_, pt_ in self.proxies[n]:
                 m = o.modifiers.new(PREFIX, "NODES")
-                m.node_group = _bind_group(group, pb_, pt_, cs, o.name, int(self.spec["passes"]))
+                m.node_group = _bind_group(group, pb_, pt_, cs, o.name, int(self.spec["passes"]),
+                                           float(self.spec["max_step_m"]))
                 last = max(i for i, mm in enumerate(o.modifiers) if mm.type == "ARMATURE")
                 o.modifiers.move(len(o.modifiers) - 1, last + 1)
+                if float(self.spec["max_step_m"]) > 0:
+                    m.bake_target = "PACKED"  # the rate limit's state is baked into the shot.blend (bake())
         self.report["installed"] = True
+
+    def bake(self):
+        """Bakes the rate limit (every garment modifier's simulation zone) over the scene's frame range, packed into
+        the .blend: frames can then be evaluated in any order and in other processes (render, audits).
+        Returns {"frames", "objects", "points" (largest state per object and frame), "seconds"}."""
+        import time
+        bpy = self.bpy
+        if float(self.spec["max_step_m"]) <= 0:
+            return None
+        t = time.time()
+        mods = [(o, o.modifiers[PREFIX]) for n in self.names for o, _b, _t in self.proxies[n]]
+        sc = self.scene
+        for o, m in mods:
+            for b in m.bakes:
+                b.bake_target = "PACKED"
+                b.use_custom_simulation_frame_range = True
+                b.frame_start, b.frame_end = sc.frame_start, sc.frame_end
+        # one pass over the frames for every garment (the scene-wide bake needs the objects as the selection in
+        # background mode); objects the push-out does not read are hidden meanwhile (hair, face, props: speed)
+        objs = [o for o, _m in mods]
+        need = set(objs) | {self.states[n]["rig"] for n in self.names}
+        for n in self.names:
+            need |= set(self.solids[n]) | {x for _o, b_, t_ in self.proxies[n] for x in (b_, t_)}
+        need |= {o for o in sc.objects if o.name.startswith(f"{PREFIX}.solid_set.")}
+        hidden = [o for o in sc.objects if o.type == "MESH" and o not in need and not o.hide_viewport]
+        for o in hidden:
+            o.hide_viewport = True
+        try:
+            with bpy.context.temp_override(selected_objects=objs, selected_editable_objects=objs, active_object=objs[0],
+                                           object=objs[0], visible_objects=objs, view_layer=bpy.context.view_layer,
+                                           scene=sc):
+                r = bpy.ops.object.simulation_nodes_cache_bake(selected=True)
+        finally:
+            for o in hidden:
+                o.hide_viewport = False
+        if "FINISHED" not in r:
+            raise RuntimeError(f"garment push-out: bake failed: {r}")
+        out = {"frames": [sc.frame_start, sc.frame_end], "objects": len(mods), "seconds": round(time.time() - t, 1)}
+        self.report["bake"] = out
+        return out
 
 
 # --------------------------------------------------------------------------------------------- node groups ----
@@ -526,7 +569,7 @@ def _push_group(spec):
     return ng
 
 
-def _bind_group(push, base, tip, solid_set, name, passes=1):
+def _bind_group(push, base, tip, solid_set, name, passes=1, max_step=0.0):
     """Per garment object: wires its two proxies, the solid set and the transforms into the shared push group."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.{name}", "GeometryNodeTree")
@@ -555,5 +598,96 @@ def _bind_group(push, base, tip, solid_set, name, passes=1):
         L.new(me.outputs["Transform"], g.inputs["Self"])
         L.new(ob.outputs["Transform"], g.inputs["Proxy Space"])
         prev = g.outputs[0]
-    L.new(prev, go.inputs[0])
+    L.new(_rate_limit(ng, gi.outputs[0], prev, max_step) if max_step > 0 else prev, go.inputs[0])
     return ng
+
+
+def _rate_limit(ng, g0, g1, step):
+    """Per-vertex rate limit on the push (spec `max_step_m`): offset(f) = offset(f-1) + (raw(f) - offset(f-1))
+    clamped to `step` in length, raw = g1 - g0 (same topology). The state is a simulation zone holding only the
+    vertices with a non-zero offset, as points at (vertex index, 0, 0) with the attribute `off`, so the baked cache
+    stays small. A frame-to-frame change of the push is never larger than `step`: no pop from a push that switches
+    on or off, or turns, between two frames."""
+    N, L = ng.nodes, ng.links
+    pos, idx = N.new("GeometryNodeInputPosition"), N.new("GeometryNodeInputIndex")
+
+    def node(kind, **props):
+        n_ = N.new(kind)
+        for k, v in props.items():
+            setattr(n_, k, v)
+        return n_
+
+    def vm(op, a, b=None):
+        n_ = node("ShaderNodeVectorMath", operation=op)
+        L.new(a, n_.inputs[0])
+        if b is not None:
+            L.new(b, n_.inputs[1])
+        return n_.outputs["Vector"] if op not in ("LENGTH", "DOT_PRODUCT") else n_.outputs["Value"]
+
+    def sample(geo, value, index, dtype):
+        n_ = node("GeometryNodeSampleIndex", data_type=dtype, domain="POINT")
+        L.new(geo, n_.inputs["Geometry"])
+        L.new(value, n_.inputs["Value"])
+        L.new(index, n_.inputs["Index"])
+        return n_.outputs[0]
+
+    key = node("ShaderNodeCombineXYZ")
+    L.new(idx.outputs[0], key.inputs["X"])
+    off_attr = node("GeometryNodeInputNamedAttribute", data_type="FLOAT_VECTOR")
+    off_attr.inputs["Name"].default_value = "off"
+
+    def lookup(cloud):
+        """The `off` of this vertex in a state cloud (zero when it has no point)."""
+        ni = node("GeometryNodeSampleNearest")
+        L.new(cloud, ni.inputs["Geometry"])
+        L.new(key.outputs[0], ni.inputs["Sample Position"])
+        sp = node("ShaderNodeSeparateXYZ")
+        L.new(sample(cloud, pos.outputs[0], ni.outputs[0], "FLOAT_VECTOR"), sp.inputs[0])
+        dx = node("ShaderNodeMath", operation="SUBTRACT")
+        L.new(sp.outputs["X"], dx.inputs[0])
+        L.new(idx.outputs[0], dx.inputs[1])
+        ab = node("ShaderNodeMath", operation="ABSOLUTE")
+        L.new(dx.outputs[0], ab.inputs[0])
+        ok = node("FunctionNodeCompare", data_type="FLOAT", operation="LESS_THAN")
+        L.new(ab.outputs[0], ok.inputs[0])
+        ok.inputs[1].default_value = 0.5
+        sw = node("GeometryNodeSwitch", input_type="VECTOR")
+        L.new(ok.outputs[0], sw.inputs["Switch"])
+        L.new(sample(cloud, off_attr.outputs["Attribute"], ni.outputs[0], "FLOAT_VECTOR"), sw.inputs["True"])
+        return sw.outputs[0]
+
+    raw = vm("SUBTRACT", sample(g1, pos.outputs[0], idx.outputs[0], "FLOAT_VECTOR"), pos.outputs[0])
+    si, so = N.new("GeometryNodeSimulationInput"), N.new("GeometryNodeSimulationOutput")
+    si.pair_with_output(so)
+    prev = lookup(si.outputs["Geometry"])
+    diff = vm("SUBTRACT", raw, prev)
+    ln = vm("LENGTH", diff)
+    mx_ = node("ShaderNodeMath", operation="MAXIMUM")
+    L.new(ln, mx_.inputs[0])
+    mx_.inputs[1].default_value = 1e-9
+    q = node("ShaderNodeMath", operation="DIVIDE")
+    q.inputs[0].default_value = step
+    L.new(mx_.outputs[0], q.inputs[1])
+    mn = node("ShaderNodeMath", operation="MINIMUM")
+    L.new(q.outputs[0], mn.inputs[0])
+    mn.inputs[1].default_value = 1.0
+    sc = node("ShaderNodeVectorMath", operation="SCALE")
+    L.new(diff, sc.inputs[0])
+    L.new(mn.outputs[0], sc.inputs["Scale"])
+    new = vm("ADD", prev, sc.outputs[0])
+    st = node("GeometryNodeStoreNamedAttribute", data_type="FLOAT_VECTOR", domain="POINT")
+    st.inputs["Name"].default_value = "off"
+    L.new(g0, st.inputs["Geometry"])
+    L.new(new, st.inputs["Value"])
+    nz = node("FunctionNodeCompare", data_type="FLOAT", operation="GREATER_THAN")
+    L.new(vm("LENGTH", off_attr.outputs["Attribute"]), nz.inputs[0])
+    nz.inputs[1].default_value = 1e-7
+    mp = N.new("GeometryNodeMeshToPoints")
+    L.new(st.outputs[0], mp.inputs["Mesh"])
+    L.new(nz.outputs[0], mp.inputs["Selection"])
+    L.new(key.outputs[0], mp.inputs["Position"])
+    L.new(mp.outputs[0], so.inputs["Geometry"])
+    spos = N.new("GeometryNodeSetPosition")
+    L.new(g0, spos.inputs["Geometry"])
+    L.new(lookup(so.outputs["Geometry"]), spos.inputs["Offset"])
+    return spos.outputs[0]

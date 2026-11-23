@@ -149,6 +149,60 @@ def bend(rig, deg):
     bpy.context.view_layer.update()
 
 
+def remove_pushout(sc, names):
+    for o in list(bpy.data.objects):
+        if o.name.startswith(GP.PREFIX):
+            bpy.data.objects.remove(o)
+    for k in names:
+        m = sc[k].modifiers.get(GP.PREFIX)
+        if m:
+            sc[k].modifiers.remove(m)
+
+
+def rate_limit(sc, col, rig, names):
+    """The default rate limit: a keyed bend 0 -> BEND over frames 1-10, held to 24, baked and packed."""
+    import tempfile
+    remove_pushout(sc, names)
+    bend(rig, 0.0)
+    scn = bpy.context.scene
+    scn.frame_start, scn.frame_end = 1, 24
+    pb = rig.pose.bones["upper"]
+    for f, deg in ((1, 0.0), (10, BEND), (24, BEND)):
+        pb.rotation_euler = (math.radians(deg), 0, 0)
+        pb.keyframe_insert("rotation_euler", frame=f)
+    gp = GP.GarmentPushOut(scn, GP.load_spec("on"), {"x": {"ov": col, "rig": rig}})
+    gp.install()
+    rep = gp.bake()
+    check(rep is not None and rep["objects"] == 3, f"bake: {rep}")
+    step = GP.DEFAULTS["max_step_m"]
+
+    def offsets(f):
+        scn.frame_set(f)
+        on = {k: world(sc[k]) for k in names}
+        for k in names:
+            sc[k].modifiers[GP.PREFIX].show_viewport = False
+        off = {k: world(sc[k]) for k in names}
+        for k in names:
+            sc[k].modifiers[GP.PREFIX].show_viewport = True
+        return {k: on[k] - off[k] for k in names}
+    seq = [offsets(f) for f in range(1, 25)]
+    dmax = max(float(np.linalg.norm(b[k] - a[k], axis=1).max()) for a, b in zip(seq, seq[1:]) for k in names)
+    check(dmax <= step + 1e-6, f"rate limit: largest frame-to-frame change of the push {dmax * 1e3:.3f} mm "
+                               f"(step {step * 1e3} mm)")
+    grown = max(float(np.linalg.norm(seq[-1][k], axis=1).max()) for k in names)
+    check(grown > 5 * step, f"the push grows over the frames ({grown * 1e3:.1f} mm at frame 24)")
+    path = os.path.join(tempfile.mkdtemp(), "rate.blend")
+    bpy.ops.wm.save_as_mainfile(filepath=path)
+    bpy.ops.wm.open_mainfile(filepath=path)
+    o = bpy.data.objects["garment.shirt.inner"]
+    bpy.context.scene.frame_set(17)  # a jump: only the packed bake can give the sequential state
+    a = world(o)
+    o.modifiers[GP.PREFIX].show_viewport = False
+    b = world(o)
+    d = float(np.abs((a - b) - seq[16]["inner"]).max())
+    check(d < 1e-6, f"packed bake after reload, frame 17 out of order: {d * 1e3:.6f} mm from the sequential push")
+
+
 def main():
     # spec
     s = GP.load_spec("on")
@@ -176,7 +230,7 @@ def main():
     before = {k: world(sc[k]) for k in names}
     bend(rig, 0.0)
 
-    gp = GP.GarmentPushOut(bpy.context.scene, GP.load_spec("on"), {"x": {"ov": col, "rig": rig}})
+    gp = GP.GarmentPushOut(bpy.context.scene, GP.load_spec('{"max_step_m": 0}'), {"x": {"ov": col, "rig": rig}})
     gp.install()
     rep = gp.report["characters"]["x"]
     check(rep["objects"] == 3 and rep["inside_at_rest"] > 0, f"report: 3 objects, embedded vertices found ({rep})")
@@ -223,18 +277,15 @@ def main():
 
     # move fade: with a tiny fade window the deep vertices are left as baked
     bend(rig, 0.0)
-    for o in list(bpy.data.objects):
-        if o.name.startswith(GP.PREFIX):
-            bpy.data.objects.remove(o)
-    for k in names:
-        sc[k].modifiers.remove(sc[k].modifiers[GP.PREFIX])
-    gp2 = GP.GarmentPushOut(bpy.context.scene, GP.load_spec('{"move_fade_m": [0.002, 0.004]}'),
+    remove_pushout(sc, names)
+    gp2 = GP.GarmentPushOut(bpy.context.scene, GP.load_spec('{"move_fade_m": [0.002, 0.004], "max_step_m": 0}'),
                             {"x": {"ov": col, "rig": rig}})
     gp2.install()
     bend(rig, BEND)
     a2 = world(sc["inner"])
     mv2 = float(np.linalg.norm(a2 - before["inner"], axis=1).max())
     check(mv2 <= 0.004 + 1e-6, f"move fade [2, 4] mm: largest move {mv2 * 1e3:.2f} mm")
+    rate_limit(sc, col, rig, names)
     print(f"test_garment_pushout: {'FAIL ' + str(len(FAILS)) if FAILS else 'PASS'}")
     sys.exit(1 if FAILS else 0)
 
