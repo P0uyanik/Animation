@@ -204,10 +204,11 @@ def main():
             os.environ["PATH"] = old_path
         log = json.loads((td / "fake_log.json").read_text()) if (td / "fake_log.json").exists() else {"problems": ["no run"]}
         folder = clean / z1.name[:-9]
+        default_profile = json.loads((folder / man["render_profiles"]).read_text())["default_profile"]
         check("render from the unpacked package alone", code == 0 and not log["problems"], f"{code} {log['problems']} {text[-500:]}")
         check("renders in the package folder", os.path.realpath(log.get("cwd", "")) == os.path.realpath(folder))
         check("frames and report written outside the package",
-              sorted(p.name for p in (clean / f"{folder.name}_render_final720").glob("frame_*.png"))
+              sorted(p.name for p in (clean / f"{folder.name}_render_{default_profile}").glob("frame_*.png"))
               == [f"frame_{f:04d}.png" for f in range(1, 5)])
         check("shot's production.render applied (as run_shot)", "64" in log.get("argv", []) and
               log["argv"][log["argv"].index("--samples") + 1] == "2")
