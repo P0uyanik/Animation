@@ -279,8 +279,10 @@ check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] i
       caps=[c.name for c in po.caps])
 # frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest; frame 3: the rim over the anchors
 for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63, 0.0)),
-                            (4, (0.0, 0.0, 0.0, 1.63)), (5, (0.0, 0.0, 0.0, 0.0))):
-    pb_nb.location = (0, 1.63 if f == 5 else 0.0, 0)
+                            (4, (0.0, 0.0, 0.0, 1.63)), (5, (0.0, 0.0, 0.0, 0.0)), (6, (0.0, 0.0, 0.0, 0.0))):
+    # frame 6: the neighbour's box across the lock chain (x -0.01 .. 0.01, z 0.83 .. 0.91, joint 2 inside: a push of
+    # more than 12 mm): stage A leaves the chain as baked (staging)
+    pb_nb.location = {5: (0, 1.63, 0), 6: (0.08, 1.43, 0)}.get(f, (0, 0.0, 0))
     for path in ("location", "rotation_quaternion", "scale"):
         pb_nb.keyframe_insert(path, frame=f)
     for pb in pbs.values():
@@ -294,7 +296,7 @@ for f, (tz, fx, rz, sz) in ((1, (1.30, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0
             pb.keyframe_insert(path, frame=f)
 baked = {}
 before = {}
-for f in (1, 2, 3, 4, 5):
+for f in (1, 2, 3, 4, 5, 6):
     sc.frame_set(f)
     dg = bpy.context.evaluated_depsgraph_get()
     e = lock.evaluated_get(dg)
@@ -305,6 +307,10 @@ for f in (1, 2, 3, 4, 5):
     if f == 1:
         check("A.scene.rekeyed_in_contact", len(rk) > 0 and po.report["frames"][1]["ch"]["chains_pushed"] == 1,
               report=po.report["frames"][1]["ch"])
+    elif f == 6:
+        after = {n: tuple(pbs[n].rotation_quaternion) for n in names}
+        check("A.scene.neighbour_deep_left_as_baked", len(rk) == 0 and after == baked[6]
+              and po.report["frames"][6]["ch"].get("neighbour_faded", 0) == 1, report=po.report["frames"][6]["ch"])
     elif f == 2:
         sc.frame_set(2)
         after = {n: tuple(pbs[n].rotation_quaternion) for n in names}

@@ -119,7 +119,23 @@ def is_figure(o, rig):
 def world_triangles(objs, deps, head_bone=None):
     """(V (n, 3) float64, T (m, 3) int) of the evaluated objects in world space, in the given order. With head_bone:
     only the triangles whose three vertices are head-dominant (weight >= 0.5 to that bone: scalp, face)."""
+    return concat_pieces([(co, tri) for _o, co, tri in object_triangles(objs, deps, head_bone)])
+
+
+def concat_pieces(pieces):
     Vs, Ts, off = [], [], 0
+    for co, tri in pieces:
+        Vs.append(co)
+        Ts.append(tri + off)
+        off += len(co)
+    if not Vs:
+        return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.int64)
+    return np.concatenate(Vs), np.concatenate(Ts)
+
+
+def object_triangles(objs, deps, head_bone=None):
+    """Per object (in order, empty ones left out): (object, V world, T local indices)."""
+    out = []
     for o in objs:
         e = o.evaluated_get(deps)
         me = e.to_mesh()
@@ -147,14 +163,10 @@ def world_triangles(objs, deps, head_bone=None):
                 tri = tri[keep[tri].all(axis=1)]
                 if len(tri) == 0:
                     continue
-            Vs.append(co)
-            Ts.append(tri + off)
-            off += n
+            out.append((o, co, tri))
         finally:
             e.to_mesh_clear()
-    if not Vs:
-        return np.zeros((0, 3)), np.zeros((0, 3), dtype=np.int64)
-    return np.concatenate(Vs), np.concatenate(Ts)
+    return out
 
 
 def bvh_of(V, T):
@@ -464,6 +476,9 @@ class PushOut:
                        if o.name.startswith("garment.collider.body_skin")]
         self.closed += [props[n] for n in sorted(props)] + self.caps + list(boxes)
         self.report["colliders"] = {n: [o.name for o in f] for n, f in self.figures.items()}
+        # per character: the other characters' skins (stage A's neighbour fade)
+        self.other_skins = {n: {o for m_ in self.figures if m_ != n for o in self.figures[m_]
+                                if o.name.startswith(("body_skin", "garment.collider.body_skin"))} for n in states}
         self.report["colliders"]["props"] = sorted(props) + [o.name for o in self.caps] + [o.name for o in boxes]
         self.chains = {}
         self._rest()
@@ -677,10 +692,21 @@ class PushOut:
             return done
         bpy = self.bpy
         deps = bpy.context.evaluated_depsgraph_get()
-        tree = bvh_of(*world_triangles(self.colliders, deps))
+        pieces = object_triangles(self.colliders, deps)
+        tree = bvh_of(*concat_pieces([(co, tri) for _o, co, tri in pieces]))
         clearance = float(self.spec["core_radius_m"]) + float(self.spec["margin_m"])
+        fade = [float(x) for x in self.spec["other_skin_fade_m"]]
+        fade = fade if fade[1] > fade[0] else None
         fr = {}
         for n in self.names:
+            skin_tree = []  # lazily: the colliders without the OTHER characters' skins (masked and unmasked)
+
+            def no_skin_tree():
+                if not skin_tree:
+                    keep = [(co, tri) for o, co, tri in pieces
+                            if not (o in self.other_skins.get(n, ()))]
+                    skin_tree.append(bvh_of(*concat_pieces(keep)))
+                return skin_tree[0]
             rig = self.states[n]["rig"]
             W = np.array(rig.matrix_world)
             Wi = np.linalg.inv(W)
@@ -693,6 +719,30 @@ class PushOut:
                 vol = bool(self.spec["lock_volume"])
                 P, info = push_chain(tree, J, c["allow"], clearance, c["rest_enclosed"], bool(self.spec["enclosure"]),
                                      c.get("radius") if vol else None, c.get("rest_volume"))
+                if fade and info["moved"] is not None and self.other_skins.get(n):
+                    # the same chain without the neighbours' skins: an extra move d caused by a neighbour is applied
+                    # in full up to fade[0] and faded out at fade[1] (deep overlap = staging; a big clamp that lets go
+                    # when the neighbour leaves would be a pop)
+                    Q, iq = push_chain(no_skin_tree(), J, c["allow"], clearance, c["rest_enclosed"],
+                                       bool(self.spec["enclosure"]), c.get("radius") if vol else None,
+                                       c.get("rest_volume"))
+                    d = float(np.linalg.norm(P - Q, axis=1).max())
+                    if d > fade[0]:
+                        w = min(1.0, max(0.0, (fade[1] - d) / (fade[1] - fade[0])))
+                        B = Q + w * (P - Q)
+                        P = B.copy()  # back to the segment lengths, from the root (which never moves)
+                        P[0] = J[0]
+                        for k in range(1, len(J)):
+                            u = _unit(B[k] - P[k - 1])
+                            L_ = float(np.linalg.norm(J[k] - J[k - 1]))
+                            P[k] = P[k - 1] + (u if u is not None else _unit(J[k] - J[k - 1])) * L_
+                        info = dict(iq, hits=info["hits"])
+                        ch = np.nonzero(np.linalg.norm(P - J, axis=1) > 1e-9)[0]
+                        info["moved"] = int(ch[0]) if len(ch) else None
+                        if info["moved"] is None:
+                            P = J.copy()
+                        info["max_move_m"] = float(np.linalg.norm(P - J, axis=1).max())
+                        out["neighbour_faded"] = out.get("neighbour_faded", 0) + 1
                 for key in ("hits", "enclosed", "enclosed_left", "blocked", "volume", "volume_left"):
                     out[key] += info[key]
                 if info["moved"] is None:
