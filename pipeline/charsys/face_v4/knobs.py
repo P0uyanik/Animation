@@ -365,7 +365,8 @@ def apply_knobs(C, head, ctx, knobs, resolve, body_below_m=0.04, z_chin=None):
     for k in ks:
         ctx.invalidate()
         for sx, anchor in _instances(k, resolve):
-            tag = f"knob_{k['index']:02d}" + ("" if not k["mirror"] else (".L" if sx > 0 else ".R"))
+            two = k["mirror"] and k["per_side"]
+            tag = f"knob_{k['index']:02d}" + ("" if not two else (".L" if sx > 0 else ".R"))
             co = _coords(head.data) @ np.array(head.matrix_world.to_3x3()).T + np.array(head.matrix_world.translation)
             m, helpers, region = _build(C, head, k, sx, anchor, co, tag)
             try:
