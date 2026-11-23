@@ -67,3 +67,8 @@ Next free ID: T-212.
   (generator writes chain-matched drivers or stop keys, P4), and `face_parity --strict` is part of their acceptance.
   No engine change (would alter released look). Owner sees it via the version sheets.
 - T-215 = P2 auburn fit dispatched (session_01NPjxeKiXU6nDxvHyfXn6k4; existing spec controls only; P3 knobs = later task on the stuck list).
+- T-215 merged (main 19e6b0cb, gate 45088255604) + close-up docs. Pilot sheets relayed to the owner with the question
+  "continue to P3 on auburn (outline/chin), then a combined sheet before any release?" (Supervisor: yes). P3 = next
+  task (T-216): built-in Warp/Hook/Lattice for the T-215 stuck list (docs/evaluation/characters/T-215/stuck.json),
+  baked on neutral skin before rig/masks, knob-free + face_parity acceptance.
+- Follow-up logged: stepped hair edge in front of the ear at ±90° on auburn (released 0.14.0 too; T-215 sheet_face.jpg).
