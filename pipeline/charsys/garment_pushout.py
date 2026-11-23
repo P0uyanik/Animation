@@ -10,14 +10,19 @@ Per garment vertex, at REST (setup, every pose bone at rest):
       garment's edges (a crease of the body does not tear neighbouring vertices apart)
   c0  the rest clearance: the distance along -n from the vertex to the solids' front face, capped at
       `clearance_cap_m` (a vertex that far from the body or farther is "free"); a vertex that is inside the solids at
-      rest (its ray along +n first meets a BACK face) has c0 = -(that distance): it was modelled there
+      rest (its rays along +n and -n both first meet a BACK face) has c0 = -(that distance): it was modelled there
 Two hidden proxies per garment object carry the vertex (base) and the vertex + `reach_m` * n (tip), skinned with the
 vertex's own weights; at frame f, dir = tip - base (normalised) is the rest-outward direction as the body moves.
 
 At frame f (Geometry Nodes, after the garment's Armature modifier, before its body_collision shrinkwraps):
-  s   the signed clearance along dir: a ray from the vertex along +dir that first meets a BACK face of the own solids
-      (within `max_exit_m`) means the vertex is inside, s = -(hit distance); otherwise a ray along -dir up to c0
-      that meets a FRONT face gives s = its distance; else the vertex is free (not moved)
+  s   the signed clearance along dir. Inside: the winding number along +dir over the first `ray_hits` crossings of
+      the own solids (back face +1, front face -1, within `max_exit_m`) is positive; the exit is the first crossing
+      where the count reaches its total, or the nearest surface point when that is nearer and within
+      `nearest_cone_deg` of dir (a limb turned along dir: the seated thigh against the shorts' front panel; the
+      crook of a bend, where an unbent sleeve belongs back towards its own axis); s = -(exit distance). A vertex
+      inside more than `max_winding` parts at once (the posed body overlapping itself: thigh in belly, calf in
+      thigh) is deep and covered and is left as baked. Outside: a ray along -dir up to c0 that meets a FRONT face
+      gives s = its distance; else the vertex is free (not moved)
   g   the target clearance. c0 > margin: a soft clamp, g(s) = s for s >= c0 and m + k * exp((s - c0) / k) below
       (m = `margin_m`, k = c0 - m): continuous with slope 1 at c0, never below m, and monotone in c0, so a layer that
       sat over another at rest (vest over blouse) stays over it when both are pushed. c0 <= margin: hard clamp at c0
@@ -26,7 +31,8 @@ At frame f (Geometry Nodes, after the garment's Armature modifier, before its bo
   move = g - s along dir, faded out between `move_fade_m` [a, b] (a vertex that would have to jump more than b is
       left as baked: a pop is worse than a hidden overlap; such cases are reported by the audit), then optionally
       feathered: the offset field is blurred over the garment's edges `smooth_iterations` times and every vertex
-      takes the longer of its own and the blurred offset.
+      takes the longer of its own and the blurred offset. The step runs `passes` times in a row (a vertex pushed
+      out of one part into an overlapping one leaves it in the next pass).
 
 Solids (the colliders), per character, own body only (other characters are staging, T-191): the unmasked collision
 proxies (`ps_collision_proxy`) plus the rendered body meshes deformed by the rig that have no MASK modifier (hands,
@@ -42,9 +48,11 @@ import numpy as np
 import hair_pushout as HP
 
 PREFIX = "ps_garment_pushout"
+EPS = 1e-5
 DEFAULTS = {"characters": "all", "items": "all", "margin_m": 0.0015, "clearance_cap_m": 0.01, "reach_m": 0.01,
             "max_exit_m": 0.5, "move_fade_m": [0.05, 0.08], "smooth_iterations": 0, "normal_smooth": 2,
-            "nearest_cone_deg": 150.0}
+            "nearest_cone_deg": 150.0, "ray_hits": 4, "passes": 2,
+            "max_winding": 1}
 
 
 def load_spec(arg):
@@ -113,7 +121,21 @@ def smooth_normals(N, edges, iterations):
     return N
 
 
-def rest_frame(tree, P, edges, cap, max_exit, normal_smooth, cone=0.0):
+def winding_exit(tree, p, d, length, hits):
+    """(winding number, exit distance) along the ray p + t d over its first `hits` crossings (the node rule)."""
+    T, r, rec = 0.0, 0, []
+    for _ in range(hits):
+        h = tree.ray_cast(p + d * (T + EPS), d, max(length - T, 0.0))
+        if h[0] is None:
+            break
+        r += 1 if h[1].dot(d) > 0 else -1
+        T = T + EPS + h[3]
+        rec.append((r, T))
+    exit_t = next((Tj for rj, Tj in rec if rj == r), length)
+    return r, exit_t
+
+
+def rest_frame(tree, P, edges, cap, max_exit, normal_smooth, cone=0.0, hits=4):
     """(n, c0) per vertex at rest (module doc). tree: BVH of the own solids (world)."""
     from mathutils import Vector
     nv = len(P)
@@ -127,11 +149,11 @@ def rest_frame(tree, P, edges, cap, max_exit, normal_smooth, cone=0.0):
     c0 = np.full(nv, float(cap))
     for i in range(nv):
         p, d = Vector(P[i]), Vector(N[i])
-        h = tree.ray_cast(p, d, max_exit)
-        if h[0] is not None and np.dot(np.array(h[1]), N[i]) > 0:  # first hit a back face: inside at rest
-            t = float(h[3])
+        w, t = winding_exit(tree, p, d, max_exit, hits)
+        if w > 0:  # inside at rest (the frame rule)
             loc, dist = near[i]
-            if loc is not None and dist < t and np.dot(loc - P[i], N[i]) > cone * max(float(dist), 1e-12):  # the frame rule (exit_of)
+            # the frame rule: the nearest surface point when nearer and within the cone of n
+            if loc is not None and dist < t and np.dot(loc - P[i], N[i]) > cone * max(float(dist), 1e-12):
                 t = float(dist)
             c0[i] = -t
             continue
@@ -184,7 +206,8 @@ class GarmentPushOut:
                     after = after or (m.type == "ARMATURE")
         bpy.context.view_layer.update()
         deps = bpy.context.evaluated_depsgraph_get()
-        cap, mx, reach = float(self.spec["clearance_cap_m"]), float(self.spec["max_exit_m"]), float(self.spec["reach_m"])
+        cap, mx = float(self.spec["clearance_cap_m"]), float(self.spec["max_exit_m"])
+        reach = float(self.spec["reach_m"])
         for n in self.names:
             tree = HP.bvh_of(*HP.world_triangles(self.solids[n], deps))
             rep = {"solids": [o.name for o in self.solids[n]], "objects": 0, "vertices": 0, "inside_at_rest": 0,
@@ -204,7 +227,8 @@ class GarmentPushOut:
                 ed = np.empty(len(o.data.edges) * 2, dtype=np.int64)
                 o.data.edges.foreach_get("vertices", ed)
                 Nw, c0 = rest_frame(tree, P, ed.reshape(-1, 2), cap, mx, int(self.spec["normal_smooth"]),
-                                    math.cos(math.radians(float(self.spec["nearest_cone_deg"]))))
+                                    math.cos(math.radians(float(self.spec["nearest_cone_deg"]))),
+                                    int(self.spec["ray_hits"]))
                 Mi = np.linalg.inv(M)
                 base = P @ Mi[:3, :3].T + Mi[:3, 3]
                 tip = (P + reach * Nw) @ Mi[:3, :3].T + Mi[:3, 3]
@@ -272,7 +296,7 @@ class GarmentPushOut:
             cs.modifiers.new("collect", "NODES").node_group = HP._collector_group(col)
             for o, pb_, pt_ in self.proxies[n]:
                 m = o.modifiers.new(PREFIX, "NODES")
-                m.node_group = _bind_group(group, pb_, pt_, cs, o.name)
+                m.node_group = _bind_group(group, pb_, pt_, cs, o.name, int(self.spec["passes"]))
                 last = max(i for i, mm in enumerate(o.modifiers) if mm.type == "ARMATURE")
                 o.modifiers.move(len(o.modifiers) - 1, last + 1)
         self.report["installed"] = True
@@ -375,7 +399,10 @@ def _push_group(spec):
         L.new(gi.outputs["Solids"], n_.inputs["Target Geometry"])
         L.new(src, n_.inputs["Source Position"])
         L.new(d, n_.inputs["Ray Direction"])
-        n_.inputs["Ray Length"].default_value = length
+        if isinstance(length, (int, float)):
+            n_.inputs["Ray Length"].default_value = length
+        else:
+            L.new(length, n_.inputs["Ray Length"])
         back = cmp("GREATER_THAN", vm("DOT_PRODUCT", n_.outputs["Hit Normal"], d).outputs["Value"], 0.0)
         return n_.outputs["Is Hit"], back, n_.outputs["Hit Distance"]
 
@@ -389,9 +416,29 @@ def _push_group(spec):
     ca.data_type = "FLOAT"
     ca.inputs["Name"].default_value = "ps_rest_clearance"
     c0 = sample(gi.outputs["Base"], ca.outputs["Attribute"], "FLOAT")
-    # s: inside (first hit along +dir is a back face) -> -t; else the front face behind it along -dir within c0
-    hit1, back1, t1 = ray(pw, d, mx)
-    inside = boolean("AND", hit1, back1)
+    # inside: the winding number along +dir over the first `ray_hits` crossings (back face +1, front face -1) is
+    # positive; one first hit alone is fooled where the body mesh passes into itself (seated thighs into the belly,
+    # e912 s010 f70: inside the thigh AND the belly). The exit along dir is the first crossing where the count reaches
+    # its total (from there on the ray is outside every part).
+    T, r, rec = 0.0, 0.0, []
+    for _j in range(int(spec["ray_hits"])):
+        src = vm("ADD", pw, vm("SCALE", d, scale=fm("ADD", T, EPS) if not isinstance(T, float) else T + EPS)
+                 .outputs[0]).outputs[0]
+        hit, back, dist = ray(src, d, fm("MAXIMUM", fm("SUBTRACT", mx, T), 0.0) if not isinstance(T, float) else mx)
+        step = switch("FLOAT", hit, 0.0, switch("FLOAT", back, -1.0, 1.0))
+        r = fm("ADD", r, step) if not isinstance(r, float) else step
+        T = switch("FLOAT", hit, T, fm("ADD", fm("ADD", T, EPS), dist) if not isinstance(T, float) else
+                   fm("ADD", T + EPS, dist))
+        rec.append((hit, r, T))
+    W = r
+    inside = cmp("GREATER_THAN", W, 0.5)
+    # inside more than `max_winding` parts at once (an overlap of the posed body with itself: seated thigh in the
+    # belly, calf in the thigh): deep and covered on every side; a move out of one part ends inside the other
+    deep = cmp("GREATER_THAN", W, float(spec["max_winding"]) + 0.5)
+    t1 = mx
+    for hit, rj, Tj in reversed(rec):
+        at = boolean("AND", hit, cmp("LESS_THAN", fm("ABSOLUTE", fm("SUBTRACT", rj, W)), 0.5))
+        t1 = switch("FLOAT", at, t1, Tj)
     # an inside vertex leaves by the nearest surface point when that is on its outer side (within 90 degrees of
     # dir) and nearer than the exit along dir (a limb turned along dir: seated thigh vs the shorts' front panel)
     px = N.new("GeometryNodeProximity")
@@ -408,7 +455,7 @@ def _push_group(spec):
     behind = boolean("NIMPLY", hit2, back2)  # hit and not a back face: the body's front face behind the vertex
     near = boolean("AND", boolean("NOT", inside), behind)
     s = switch("FLOAT", inside, t2, fm("MULTIPLY", t_in, -1.0))
-    active = boolean("OR", inside, near)
+    active = boolean("AND", boolean("OR", inside, near), boolean("NOT", deep))
     # g(s): soft clamp for c0 > margin, hard clamp at c0 otherwise
     k = fm("SUBTRACT", c0, margin)
     soft = cmp("GREATER_THAN", k, 1e-5)
@@ -470,7 +517,7 @@ def _push_group(spec):
     return ng
 
 
-def _bind_group(push, base, tip, solid_set, name):
+def _bind_group(push, base, tip, solid_set, name, passes=1):
     """Per garment object: wires its two proxies, the solid set and the transforms into the shared push group."""
     import bpy
     ng = bpy.data.node_groups.new(f"{PREFIX}.{name}", "GeometryNodeTree")
@@ -488,13 +535,16 @@ def _bind_group(push, base, tip, solid_set, name):
             n_.inputs["Object"].default_value = obj
         return n_
     me, ob, ot, os_ = info(None), info(base), info(tip), info(solid_set)
-    g = N.new("GeometryNodeGroup")
-    g.node_tree = push
-    L.new(gi.outputs[0], g.inputs["Geometry"])
-    L.new(ob.outputs["Geometry"], g.inputs["Base"])
-    L.new(ot.outputs["Geometry"], g.inputs["Tip"])
-    L.new(os_.outputs["Geometry"], g.inputs["Solids"])
-    L.new(me.outputs["Transform"], g.inputs["Self"])
-    L.new(ob.outputs["Transform"], g.inputs["Proxy Space"])
-    L.new(g.outputs[0], go.inputs[0])
+    prev = gi.outputs[0]
+    for _p in range(max(1, passes)):  # a vertex pushed out of one part into an overlapping one leaves it next pass
+        g = N.new("GeometryNodeGroup")
+        g.node_tree = push
+        L.new(prev, g.inputs["Geometry"])
+        L.new(ob.outputs["Geometry"], g.inputs["Base"])
+        L.new(ot.outputs["Geometry"], g.inputs["Tip"])
+        L.new(os_.outputs["Geometry"], g.inputs["Solids"])
+        L.new(me.outputs["Transform"], g.inputs["Self"])
+        L.new(ob.outputs["Transform"], g.inputs["Proxy Space"])
+        prev = g.outputs[0]
+    L.new(prev, go.inputs[0])
     return ng

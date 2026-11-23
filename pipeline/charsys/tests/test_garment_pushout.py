@@ -213,7 +213,8 @@ def main():
     moved = (np.linalg.norm(after["inner"] - before["inner"], axis=1) > 1e-4) & \
             (np.linalg.norm(after["outer"] - before["outer"], axis=1) > 1e-4)
     bad = int((so[moved] < si[moved] - 1e-4).sum())
-    check(moved.sum() > 50 and bad <= 0.02 * moved.sum(), f"layer order kept on {int(moved.sum())} pushed pairs ({bad} swapped)")
+    check(moved.sum() > 50 and bad <= 0.02 * moved.sum(),
+          f"layer order kept on {int(moved.sum())} pushed pairs ({bad} swapped)")
     # embedded at rest (3 mm inside): never pushed further out than its rest depth
     se = np.array([depth(tree, p) for p in after["embedded"]])
     me_ = np.linalg.norm(after["embedded"] - before["embedded"], axis=1) > 1e-4
