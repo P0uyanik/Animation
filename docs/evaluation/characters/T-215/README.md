@@ -47,6 +47,17 @@ The edit penalty at the best trial is 0.084 of a cost of 0.640.
 neutral face, 448 px tiles shown at 240 px. +45 and +135 have no reference, so the −45 and −135 references are
 mirrored there and labelled. The sheet is for the owner review; it is not part of the score.
 
+**Face close-up and difference overlay** (Supervisor request). At the sheet scale above, the face is about 80 px:
+- [sheet_face.jpg](sheet_face.jpg) has the same render settings with a head-filling frame (target z 0.765, frame
+  0.34 m) at −90, −45, 0, +45 and +90. Rows are reference, before and after. Reference tiles are cropped from the
+  sheet30 annotations (eye and chin landmarks) to the render's eye height and eye-to-chin span. ±45 and −90 use
+  mirrored tiles, labelled. Command: `sheet.py ... --face --px 512`, 6 min 35 s.
+- [diff_front.jpg](diff_front.jpg) shows before (cyan) and after (magenta) on the neutral front and on the scored
+  open-smile front: Workbench class outlines (head silhouette, eyes, mouth, brows, ears, glasses) plus the T-204
+  points (iris span, mouth and ear boxes, chin). From the `measurer.py measure` arrays: `diff.py <before dir>
+  <after dir> <out>`. It shows the higher mouth, the taller and lower ears, the taller and narrower eye openings
+  and the slightly narrower jaw. The head silhouette above the jaw is unchanged.
+
 **face_parity (T-213) on the proposal build, report only:** PASS (Blender 5.3.0+02f0899d78e3).
 - Knob-free: PASS.
 - Core expressions: neutral 0, half-blink 0.00006 mm, smile+blink 0.00009 mm, all within the bound.
@@ -108,7 +119,7 @@ controls with the largest helpful response in z per step:
 | face_parity (with sweep) | — | 2 min 17 s |
 
 Details are in [timings.json](timings.json). Ledger: 68 builds (1 timing + 31 + 6 discarded + 30), 1 proposal
-build, 16 Cycles review frames, 0 CI, no asset or version changes.
+build, 26 Cycles review frames (16 sheet + 10 close-up), 0 CI, no asset or version changes.
 
 ## Replay (repository root)
 
