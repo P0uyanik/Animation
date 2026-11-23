@@ -1,0 +1,17 @@
+{
+ "container": "4-core CPU, 2 trials in parallel",
+ "sensitivity_builds": 31,
+ "sensitivity_wall_s": 1984,
+ "search_builds": 30,
+ "search_wall_s": 1899,
+ "build_s_median": 112.2,
+ "measure_s_median": 13.1,
+ "effective_s_per_trial": 63.7,
+ "proposal_full_measure_s": 23.5,
+ "sheet_s": 224,
+ "face_parity_s": 137,
+ "discarded_first_search": {
+  "builds": 6,
+  "reason": "quadratic band loss let one profile outlier outweigh the front count; restarted with the capped count-oriented loss"
+ }
+}
