@@ -46,14 +46,25 @@ adds > 5 mm to the largest vertex jump (f-2 -> f).
 
 | | off (no push-out) | ON (defaults, `_fin_on`) | OFF (`[0, 0]`, `_nofade_on`) |
 |---|---|---|---|
-| calm frames > 1 mm (144 fr x 2) | 192 / 288 | 149 / 288 | OFF_CALM |
-| max calm | 33.8 mm | 33.8 mm | OFF_MAX |
-| pops > 5 mm | | 3: white +7.2 f109, +6.2 f185, +6.3 f205 | OFF_POPS |
-| new surfaces | | boy fringe 3.3 mm in the auburn skin, 2 fr (shallow edge of the staging overlap) | OFF_NEW |
-| staging (apart) | 77.6 mm, 40 fr | 77.6 mm, 33 fr | OFF_STAGING |
+| calm frames > 1 mm (144 fr x 2) | 192 / 288 | 149 / 288 | 99 / 288 |
+| max calm | 33.8 mm | 33.8 mm | 24.0 mm (auburn cap in own skin, f83) |
+| pops > 5 mm | | 3: white +7.2 f109, +6.2 f185, +6.3 f205 | 17: auburn 14 (+5.0..13.4 mm: f93-105, 129, 151-159, 201-207; static cap / curtain letting go of a fold or of the blouse in one frame), white the same 3 |
+| new surfaces | | boy fringe 3.3 mm in the auburn skin, 2 fr (shallow edge of the staging overlap) | the same (boy fringe 3.3 mm) |
+| cost | | setup 46 s, stage A 3.1 s / frame | setup 22 s, stage A 1.6 s / frame (less load on the machine) |
+| staging (apart) | 77.6 mm, 40 fr | 77.6 mm, 33 fr | 77.6 mm, 33 fr |
 
 Cost of ON against OFF (frames where ON leaves hair deeper by > 1 mm, `tools/compare_runs.py`,
-`results/e912_s020c2_fade_cost_vs_off.json`): COST_TABLE
+`results/e912_s020c2_fade_cost_vs_off.json`): 
+
+| where | frames | max depth with ON | deeper than OFF by |
+|---|---|---|---|
+| **nape / fold**: auburn `hair_cap.001` in own skin | 81 (f35-207) | 33.8 mm | up to 30.2 mm |
+| **nape / fold**: auburn `hair_curtain` in own skin | 72 (f17-207) | 15.4 mm | up to 7.6 mm |
+| nape / fold: auburn `hair_back_sections` in own skin | 2 | 3.5 mm | 3.5 mm |
+| white `hair_back_mass` in her own `ear.L` | 53 (f1-207) | 6.4 mm | 6.4 mm |
+
+So ON trades the 14 auburn release pops for nape hair left inside the neck skin that OFF pushes out (calm 99 -> 149
+of 288). R7 takes ON vs OFF to the owner (Step-1 answer "nape: push out").
 
 Earlier full run before the session 3 fades (`results/e912_s020c2_on.m.json`): calm 99 / 288, max 24.0 mm, 20 pops.
 
