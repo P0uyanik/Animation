@@ -1,0 +1,4089 @@
+{
+ "blend": "/tmp/claude-0/s/full/e912_s020c_on/shot.blend",
+ "frames": [
+  1,
+  208
+ ],
+ "step": 2,
+ "limit_mm": 1.0,
+ "sha256": "28d7bff6885ea889147bf19bd96373cf2f5da10dc1c4f1678de7bb7a3148c074",
+ "seconds": 1921.1,
+ "summary": {
+  "boy_yellow_hoodie": {
+   "frames": 104,
+   "frames_over": 103,
+   "max_mm": 52.29,
+   "surfaces": {
+    "own:body_skin.002": {
+     "frames": 137,
+     "max_mm": 52.29,
+     "max_vertices": 47,
+     "worst_frame": 207,
+     "hair": {
+      "hair_back": 2.65,
+      "hair_cap.002": 52.29
+     }
+    },
+    "own:garment.hoodie.hood.bag": {
+     "frames": 10,
+     "max_mm": 3.52,
+     "max_vertices": 24,
+     "worst_frame": 5,
+     "hair": {
+      "hair_cap.002": 3.52
+     }
+    },
+    "own:garment.hoodie.hood.rim": {
+     "frames": 31,
+     "max_mm": 28.08,
+     "max_vertices": 145,
+     "worst_frame": 43,
+     "hair": {
+      "hair_cap.002": 28.08
+     }
+    },
+    "girl_auburn_bun_glasses:body_skin.001": {
+     "frames": 2,
+     "max_mm": 21.88,
+     "max_vertices": 55,
+     "worst_frame": 81,
+     "hair": {
+      "hair_sides": 21.88,
+      "hair_top_outer": 16.32
+     }
+    }
+   }
+  },
+  "girl_auburn_bun_glasses": {
+   "frames": 104,
+   "frames_over": 104,
+   "max_mm": 77.55,
+   "surfaces": {
+    "girl_auburn_bun_glasses:glasses": {
+     "frames": 111,
+     "max_mm": 1.3,
+     "max_vertices": 6,
+     "worst_frame": 15,
+     "hair": {
+      "hair_cap.001": 1.3,
+      "hair_ringlets_side_r00": 1.1,
+      "hair_ringlets_side_00": 1.25
+     }
+    },
+    "own:body_skin.001": {
+     "frames": 120,
+     "max_mm": 37.56,
+     "max_vertices": 167,
+     "worst_frame": 109,
+     "hair": {
+      "hair_curtain": 37.56,
+      "hair_cap.001": 37.44,
+      "hair_temple_l": 23.32
+     }
+    },
+    "boy_yellow_hoodie:body_skin.002": {
+     "frames": 35,
+     "max_mm": 77.55,
+     "max_vertices": 334,
+     "worst_frame": 79,
+     "hair": {
+      "hair_fringe.001": 77.55,
+      "hair_ringlets_side_00": 11.39,
+      "hair_crown.001": 32.19,
+      "hair_flowers_petals": 26.95
+     }
+    },
+    "own:ear.L.001": {
+     "frames": 8,
+     "max_mm": 19.49,
+     "max_vertices": 22,
+     "worst_frame": 109,
+     "hair": {
+      "hair_cap.001": 19.49,
+      "hair_temple_l": 19.46,
+      "hair_ringlets_side_b": 6.6
+     }
+    },
+    "prop:prop.table_top": {
+     "frames": 1,
+     "max_mm": 1.74,
+     "max_vertices": 2,
+     "worst_frame": 27,
+     "hair": {
+      "hair_fringe.001": 1.74
+     }
+    },
+    "own:ear.R.001": {
+     "frames": 1,
+     "max_mm": 17.35,
+     "max_vertices": 6,
+     "worst_frame": 29,
+     "hair": {
+      "hair_cap.001": 17.35
+     }
+    },
+    "own:garment.blouse.main": {
+     "frames": 33,
+     "max_mm": 25.34,
+     "max_vertices": 52,
+     "worst_frame": 135,
+     "hair": {
+      "hair_curtain": 25.34
+     }
+    },
+    "girl_white_hair_blue_dress:body_skin": {
+     "frames": 1,
+     "max_mm": 28.54,
+     "max_vertices": 104,
+     "worst_frame": 133,
+     "hair": {
+      "hair_fringe.001": 28.54
+     }
+    }
+   }
+  },
+  "girl_white_hair_blue_dress": {
+   "frames": 104,
+   "frames_over": 0,
+   "max_mm": 0.0,
+   "surfaces": {}
+  }
+ },
+ "rows": [
+  {
+   "frame": 1,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.0,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.42
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       24,
+       3.24
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       119,
+       5.82
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 0.0,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       26,
+       13.85
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       9,
+       4.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.0,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 3,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.28,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.45
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       4,
+       36.93
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       18,
+       3.29
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       121,
+       3.94
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 31.76,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       25,
+       13.65
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       5,
+       2.93
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 2.6,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 5,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.31,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.44
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       8,
+       38.22
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       10,
+       3.52
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       101,
+       3.49
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.23,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       24,
+       13.44
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 2.81,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 7,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.55,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.42
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       7,
+       39.37
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       6,
+       3.5
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       69,
+       3.68
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.04,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       23,
+       13.52
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.86,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 9,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 17.79,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.4
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       2,
+       39.73
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       9,
+       3.38
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       60,
+       3.63
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 32.06,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       21,
+       13.72
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 6.43,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 11,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 23.21,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.42
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       7,
+       3.25
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       74,
+       3.89
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 37.5,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_curtain > own:body_skin.001": [
+       24,
+       13.61
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 16.15,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 13,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 32.49,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.45
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       95,
+       4.85
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 40.27,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       17,
+       13.32
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       5,
+       3.16
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 24.25,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 15,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 42.95,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.43
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       38,
+       39.67
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       97,
+       10.36
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 47.88,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.3
+      ],
+      "hair_curtain > own:body_skin.001": [
+       12,
+       10.82
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 33.27,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 17,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 54.12,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.36
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       37,
+       31.43
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       73,
+       3.76
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 68.96,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.07
+      ],
+      "hair_curtain > own:body_skin.001": [
+       5,
+       7.24
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 45.77,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 19,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 62.72,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.32
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       25,
+       29.47
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       68,
+       3.68
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 81.6,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.24
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.21
+      ],
+      "hair_curtain > own:body_skin.001": [
+       14,
+       5.61
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 39.92,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 21,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 59.54,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.35
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       14,
+       27.92
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       61,
+       3.26
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 71.62,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.23
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.22
+      ],
+      "hair_curtain > own:body_skin.001": [
+       16,
+       4.79
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 27.73,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 23,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 47.85,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.39
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       7,
+       40.46
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       63,
+       3.13
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 56.22,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.22
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       2,
+       14.95
+      ],
+      "hair_curtain > own:body_skin.001": [
+       8,
+       6.17
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       3,
+       7.85
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 33.37,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 25,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 36.86,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.34
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       4,
+       26.35
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       87,
+       3.11
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 47.8,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.11
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       3,
+       15.61
+      ],
+      "hair_curtain > own:body_skin.001": [
+       5,
+       6.67
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       7,
+       6.82
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 31.49,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 27,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 29.06,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.37
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       1,
+       26.27
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       55,
+       3.12
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 44.55,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.07
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       3,
+       9.83
+      ],
+      "hair_curtain > own:body_skin.001": [
+       10,
+       8.99
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       8,
+       5.58
+      ],
+      "hair_fringe.001 > prop:prop.table_top": [
+       2,
+       1.74
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       8,
+       5.85
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 31.92,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 29,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 33.2,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.46
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       3,
+       26.75
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       62,
+       3.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 42.74,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_cap.001 > own:ear.R.001": [
+       6,
+       17.35
+      ],
+      "hair_curtain > own:body_skin.001": [
+       8,
+       8.75
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       7,
+       5.55
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       4,
+       6.37
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 23.89,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 31,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 59.35,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.51
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       6,
+       28.16
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       50,
+       2.84
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 82.2,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.23
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.14
+      ],
+      "hair_curtain > own:body_skin.001": [
+       14,
+       6.59
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 35.0,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 33,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 92.88,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.58
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       25,
+       30.57
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       47,
+       4.82
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 100.66,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.35
+      ],
+      "hair_curtain > own:body_skin.001": [
+       28,
+       4.95
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 47.09,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 35,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 100.12,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.5
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       47,
+       42.23
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       71,
+       6.27
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 86.93,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.22
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.39
+      ],
+      "hair_curtain > own:body_skin.001": [
+       30,
+       5.21
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 61.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 37,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 98.53,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.36
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       16,
+       3.38
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       108,
+       3.52
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 52.14,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.44
+      ],
+      "hair_curtain > own:body_skin.001": [
+       35,
+       6.58
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 70.41,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 39,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 70.88,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.29
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       4,
+       1.44
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       145,
+       23.77
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 32.01,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       33,
+       5.7
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 47.17,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 41,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 33.69,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.27
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       3,
+       3.45
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       134,
+       26.01
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.71,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       36,
+       2.06
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 30.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 43,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 25.49,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.29
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       114,
+       28.08
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.17,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       37,
+       1.73
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 20.14,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 45,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 24.95,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.35
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       103,
+       27.72
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 22.3,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       40,
+       1.77
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 11.85,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 47,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.1,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.4
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       97,
+       27.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 37.92,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       38,
+       1.8
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 8.18,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 49,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 4.87,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.43
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       87,
+       27.41
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 37.76,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       40,
+       1.82
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 3.85,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 51,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.59,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.42
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       81,
+       27.32
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.33,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       40,
+       1.84
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 2.27,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 53,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.37,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.41
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       77,
+       27.23
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.01,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       39,
+       1.86
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.67,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 55,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.24,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.39
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       87,
+       27.21
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 12.92,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_curtain > own:body_skin.001": [
+       41,
+       1.87
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.25,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 57,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 23.24,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.39
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       2,
+       15.28
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.bag": [
+       5,
+       1.5
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       104,
+       7.74
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.89,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.53
+      ],
+      "hair_curtain > own:body_skin.001": [
+       39,
+       1.87
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.32,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 59,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 41.83,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.38
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       14,
+       33.93
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       110,
+       6.69
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 16.25,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.53
+      ],
+      "hair_curtain > own:body_skin.001": [
+       38,
+       1.88
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 5.37,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 61,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 48.58,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.34
+      ],
+      "hair_cap.002 > own:garment.hoodie.hood.rim": [
+       54,
+       7.95
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.67,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       2,
+       1.52
+      ],
+      "hair_curtain > own:body_skin.001": [
+       37,
+       1.87
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 19.35,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 63,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 108.88,
+     "surfaces": {}
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.65,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       2,
+       1.52
+      ],
+      "hair_curtain > own:body_skin.001": [
+       38,
+       1.85
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 25.84,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 65,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 100.48,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.25
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.34,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.5
+      ],
+      "hair_curtain > own:body_skin.001": [
+       36,
+       1.79
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       5,
+       5.44
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 18.1,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 67,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 29.87,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.61
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 31.19,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.47
+      ],
+      "hair_curtain > own:body_skin.001": [
+       36,
+       5.9
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       10,
+       6.35
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 12.52,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 69,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 16.57,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.65
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 32.55,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.42
+      ],
+      "hair_curtain > own:body_skin.001": [
+       34,
+       6.71
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       9,
+       6.64
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 6.92,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 71,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 13.72,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.62
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 33.48,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.19
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.36
+      ],
+      "hair_curtain > own:body_skin.001": [
+       34,
+       8.09
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       5,
+       11.55
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 2.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 73,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 9.52,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 36.78,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       28,
+       10.01
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       7,
+       4.01
+      ],
+      "hair_ringlets_side_00 > boy_yellow_hoodie:body_skin.002": [
+       2,
+       2.56
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.8,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 75,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 14.35,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 38.7,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.2
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       2,
+       15.48
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       5,
+       15.18
+      ],
+      "hair_curtain > own:body_skin.001": [
+       22,
+       11.48
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       55,
+       22.79
+      ],
+      "hair_ringlets_side_00 > boy_yellow_hoodie:body_skin.002": [
+       6,
+       3.54
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.27,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 77,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 29.54,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 40.98,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.21
+      ],
+      "hair_curtain > own:body_skin.001": [
+       28,
+       15.71
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       113,
+       45.34
+      ],
+      "hair_ringlets_side_00 > boy_yellow_hoodie:body_skin.002": [
+       13,
+       11.13
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.22,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 79,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 40.39,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.52
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 66.97,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.23
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.16
+      ],
+      "hair_crown.001 > boy_yellow_hoodie:body_skin.002": [
+       260,
+       32.19
+      ],
+      "hair_curtain > own:body_skin.001": [
+       46,
+       19.27
+      ],
+      "hair_flowers_petals > boy_yellow_hoodie:body_skin.002": [
+       19,
+       19.14
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       282,
+       77.55
+      ],
+      "hair_ringlets_side_00 > boy_yellow_hoodie:body_skin.002": [
+       37,
+       11.39
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.2,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 81,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 30.08,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ],
+      "hair_sides > girl_auburn_bun_glasses:body_skin.001": [
+       25,
+       21.88
+      ],
+      "hair_top_outer > girl_auburn_bun_glasses:body_skin.001": [
+       55,
+       16.32
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 150.03,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       40,
+       1.98
+      ],
+      "hair_crown.001 > boy_yellow_hoodie:body_skin.002": [
+       94,
+       28.37
+      ],
+      "hair_curtain > own:body_skin.001": [
+       114,
+       20.62
+      ],
+      "hair_flowers_petals > boy_yellow_hoodie:body_skin.002": [
+       50,
+       26.95
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       334,
+       56.62
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.22,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 83,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 44.92,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.55
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 198.5,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       167,
+       18.29
+      ],
+      "hair_curtain > own:body_skin.001": [
+       5,
+       1.68
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.32,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 85,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.9,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 138.0,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       7,
+       2.78
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 87,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.74,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 75.8,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       7,
+       3.47
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 89,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.68,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 45.55,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       7,
+       3.68
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.46,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 91,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.66,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 15.46,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       7,
+       3.78
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.46,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 93,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.7,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 8.52,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       7,
+       3.88
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 95,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.71,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.41,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       3.98
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.45,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 97,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.77,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 5.17,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       4.05
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.31,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 99,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.85,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.57,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       4.11
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.21,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 101,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.9,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 7.6,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       4.14
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.28,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 103,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.93,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.17,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       4.15
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 105,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.93,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 32.02,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       3.71
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.81,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 107,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.92,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 57.44,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.3
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       8,
+       6.55
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.35,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 109,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.89,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 367.97,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.28
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       30,
+       37.44
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       22,
+       19.49
+      ],
+      "hair_curtain > own:body_skin.001": [
+       14,
+       37.56
+      ],
+      "hair_ringlets_side_r00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.1
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       10,
+       23.32
+      ],
+      "hair_temple_l > own:ear.L.001": [
+       8,
+       19.46
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.4,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 111,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.85,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 321.86,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       9,
+       1.57
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       16.07
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.41,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 113,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.8,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 181.89,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       9,
+       1.09
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.82
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.48,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 115,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.74,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 103.41,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       9,
+       1.19
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.79
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.51,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 117,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.66,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 80.09,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       10,
+       1.42
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.81
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.51,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 119,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.58,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 55.77,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       7,
+       1.67
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.82
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.51,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 121,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.48,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.65,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       6,
+       1.39
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.83
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.66,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 123,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.38,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 21.87,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       7,
+       1.36
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.85
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.81,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 125,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.27,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.31,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       8,
+       1.29
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.86
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.94,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 127,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.17,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 22.24,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       5,
+       1.5
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.87
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.76,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 129,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.08,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 22.96,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.27
+      ],
+      "hair_curtain > own:body_skin.001": [
+       8,
+       1.6
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       15.98
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.14,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 131,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.09,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 38.25,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       2,
+       12.29
+      ],
+      "hair_cap.001 > own:ear.L.001": [
+       7,
+       12.53
+      ],
+      "hair_curtain > own:body_skin.001": [
+       2,
+       1.17
+      ],
+      "hair_temple_l > own:body_skin.001": [
+       1,
+       16.64
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.21,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 133,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.44,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 391.17,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.22
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       6,
+       1.65
+      ],
+      "hair_curtain > own:body_skin.001": [
+       44,
+       19.01
+      ],
+      "hair_fringe.001 > girl_white_hair_blue_dress:body_skin": [
+       104,
+       28.54
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 15.84,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 135,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 16.21,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.57
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 592.77,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.09
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       52,
+       25.34
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 69.61,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 137,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 30.43,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 406.32,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.22
+      ],
+      "hair_curtain > own:body_skin.001": [
+       22,
+       16.29
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       83,
+       38.76
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 17.91,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 139,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 21.09,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 143.83,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_curtain > own:body_skin.001": [
+       32,
+       17.85
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       134,
+       52.9
+      ],
+      "hair_ringlets_side_00 > boy_yellow_hoodie:body_skin.002": [
+       3,
+       3.85
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 23.3,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 141,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 10.41,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 98.34,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.23
+      ],
+      "hair_curtain > own:body_skin.001": [
+       29,
+       17.35
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       107,
+       43.77
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.25
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 21.14,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 143,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 11.45,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.43
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 77.82,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       4,
+       1.24
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       1,
+       1.13
+      ],
+      "hair_curtain > own:body_skin.001": [
+       22,
+       16.84
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       91,
+       37.64
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.12
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 15.16,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 145,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 24.38,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.45
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 68.19,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       4,
+       1.4
+      ],
+      "hair_curtain > own:body_skin.001": [
+       11,
+       16.02
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       70,
+       30.52
+      ],
+      "hair_ringlets_side_b > own:ear.L.001": [
+       1,
+       6.6
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 9.03,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 147,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 34.14,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.57
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       1,
+       33.3
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 89.38,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       10,
+       1.44
+      ],
+      "hair_curtain > own:body_skin.001": [
+       7,
+       12.47
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       54,
+       23.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 4.58,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 149,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 24.87,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.59
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 69.75,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       20,
+       1.49
+      ],
+      "hair_curtain > own:body_skin.001": [
+       4,
+       1.52
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       40,
+       17.51
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       2,
+       1.06
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 2.26,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 151,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 9.48,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.55
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 31.96,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       18,
+       1.55
+      ],
+      "hair_curtain > own:body_skin.001": [
+       4,
+       1.71
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       35,
+       15.38
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.24
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.55,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 153,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 6.26,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.51
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.47,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       20,
+       1.57
+      ],
+      "hair_curtain > own:body_skin.001": [
+       5,
+       1.64
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       31,
+       14.96
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.06
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.56,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 155,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 5.15,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.5
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 19.13,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       20,
+       1.58
+      ],
+      "hair_curtain > own:body_skin.001": [
+       4,
+       1.63
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       31,
+       15.06
+      ],
+      "hair_ringlets_side_00 > girl_auburn_bun_glasses:glasses": [
+       1,
+       1.08
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.51,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 157,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.42,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.51
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 29.47,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.26
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       20,
+       1.59
+      ],
+      "hair_curtain > own:body_skin.001": [
+       4,
+       1.64
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       32,
+       15.3
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.09,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 159,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.33,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 30.75,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       26,
+       1.66
+      ],
+      "hair_curtain > own:body_skin.001": [
+       3,
+       1.62
+      ],
+      "hair_fringe.001 > boy_yellow_hoodie:body_skin.002": [
+       35,
+       18.32
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 161,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 7.78,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 89.05,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       5,
+       1.25
+      ],
+      "hair_cap.001 > own:body_skin.001": [
+       87,
+       5.79
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 163,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.26,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 119.96,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.84,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 165,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.79,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 84.26,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.79,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 167,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.79,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 26.35,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 169,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.5,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 27.47,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       1,
+       2.66
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.72,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 171,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.59,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.53
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 13.62,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       1,
+       2.66
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.7,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 173,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.89,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 25.4,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.66
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.54,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 175,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 4.2,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.55
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 17.36,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.61
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.38,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 177,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 7.32,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.55
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       2,
+       39.55
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 27.16,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.54
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.85,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 179,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 11.07,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.55
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       4,
+       43.64
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 8.7,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.61
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.77,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 181,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 13.96,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.54
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       7,
+       46.93
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 23.84,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.6
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.37,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 183,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 15.48,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.51
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       10,
+       49.56
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 28.83,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.71,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 185,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 14.66,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       14,
+       51.15
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 6.66,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.25
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.42,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 187,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 11.63,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.46
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       19,
+       50.71
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 5.78,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.65
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.39,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 189,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 7.37,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.45
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       20,
+       50.56
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 14.73,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.65
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.23,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 191,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 3.22,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.46
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       21,
+       50.6
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.96,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.66
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.34,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 193,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.55,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.47
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       21,
+       50.77
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 12.81,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.38,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 195,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.42,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       21,
+       50.99
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.11,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.68
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 1.49,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 197,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.46,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       51.22
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 10.22,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.68
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.23,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 199,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.26,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       51.45
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 3.76,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.68
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.33,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 201,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.1,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       51.67
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 5.78,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.44,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 203,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.14,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.49
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       51.89
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.01,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.56,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 205,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 1.11,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       52.1
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.04,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.66,
+     "surfaces": {}
+    }
+   }
+  },
+  {
+   "frame": 207,
+   "chars": {
+    "boy_yellow_hoodie": {
+     "jump_mm": 0.93,
+     "surfaces": {
+      "hair_back > own:body_skin.002": [
+       1,
+       2.48
+      ],
+      "hair_cap.002 > own:body_skin.002": [
+       22,
+       52.29
+      ]
+     }
+    },
+    "girl_auburn_bun_glasses": {
+     "jump_mm": 4.01,
+     "surfaces": {
+      "hair_cap.001 > girl_auburn_bun_glasses:glasses": [
+       6,
+       1.26
+      ],
+      "hair_curtain > own:garment.blouse.main": [
+       2,
+       2.67
+      ]
+     }
+    },
+    "girl_white_hair_blue_dress": {
+     "jump_mm": 0.76,
+     "surfaces": {}
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,397 @@
+"""Hair push-out (T-194, hair_pushout.py) test (headless Blender; no rendering, writes only <out.json>).
+
+    blender -b --factory-startup -P pipeline/charsys/tests/test_hair_pushout.py -- <out.json>
+
+SYNTHETIC scenes only (no character data). Checks:
+  1. push_chain (stage A geometry): a chain through a closed box, an open quad and an inside-out quad ends with no
+     segment crossing anything and every segment length kept (1e-6 m); a chain that goes down through the opening
+     of a hollow box (no face crossed) ends with no joint enclosed; a chain 75 mm deep in a box comes out on the
+     side it came from; a chain that crosses nothing is returned bit for bit; applying it twice = once; the same
+     result on a second run; a root embedded at rest (rest allowance) is not pushed; a root in a narrow tunnel whose
+     slide and normal are blocked leaves at full length along a free FAN direction (never a shortened segment); a lock whose
+     flesh (rest radius) reaches into a hollow box is moved until no lock sample is enclosed, unless it is so at rest.
+  2. Scene (a rig with a head bone, a torso that moves, a fold plate, a four-bone DYN chain with a lock tube around
+     it, a static cap, an open-top cup prop): stage A re-keys the chain bones in the frame where the lock is in the
+     torso and leaves the keys of a free frame exactly as baked; stage B: no hair vertex inside the torso box or
+     behind the fold plate after the push-out (some before); vertices that were outside do not move; the cup gets a
+     closing cap that is a collider and is not rendered; two evaluations give the same hash.
+  3. load_spec: defaults, inline JSON, unknown keys refused.
+Exit code 1 on any failure."""
+import hashlib
+import json
+import os
+import sys
+
+import bpy
+import numpy as np
+from mathutils import Matrix, Vector
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(HERE, ".."))
+import hair_pushout as HP  # noqa: E402
+
+out = sys.argv[sys.argv.index("--") + 1]
+R = {"checks": {}}
+ok = True
+
+
+def check(name, cond, **info):
+    global ok
+    R["checks"][name] = {"ok": bool(cond), **info}
+    ok &= bool(cond)
+    print(("PASS " if cond else "FAIL ") + name, json.dumps(info) if info else "")
+
+
+def tree_of(V, F):
+    from mathutils.bvhtree import BVHTree
+    return BVHTree.FromPolygons([tuple(v) for v in V], F)
+
+
+def box(lo, hi, flip=False):
+    (x0, y0, z0), (x1, y1, z1) = lo, hi
+    V = [(x0, y0, z0), (x1, y0, z0), (x1, y1, z0), (x0, y1, z0), (x0, y0, z1), (x1, y0, z1), (x1, y1, z1), (x0, y1, z1)]
+    F = [(0, 3, 2, 1), (4, 5, 6, 7), (0, 1, 5, 4), (1, 2, 6, 5), (2, 3, 7, 6), (3, 0, 4, 7)]
+    return V, [tuple(reversed(f)) for f in F] if flip else F
+
+
+def crossings(tree, P):
+    n = 0
+    for k in range(1, len(P)):
+        d = P[k] - P[k - 1]
+        L = float(np.linalg.norm(d))
+        if L > 0 and tree.ray_cast(Vector(P[k - 1]), Vector(d / L), L)[0] is not None:
+            n += 1
+    return n
+
+
+def lengths(P):
+    return np.linalg.norm(np.diff(P, axis=0), axis=1)
+
+
+# 1. stage A geometry ----------------------------------------------------------------------------------------------
+J = np.array([[0.0, 0.0, 1.0], [0.0, 0.0, 0.92], [0.0, 0.0, 0.84], [0.0, 0.0, 0.76], [0.0, 0.0, 0.68]])
+CL = 0.014
+cases = {
+    "closed_box": tree_of(*box((-0.1, -0.1, 0.70), (0.1, 0.1, 0.80))),
+    "open_quad": tree_of([(-0.2, -0.2, 0.89), (0.2, -0.2, 0.89), (0.2, 0.2, 0.87), (-0.2, 0.2, 0.87)], [(0, 1, 2, 3)]),
+    "inside_out_quad": tree_of([(-0.2, -0.2, 0.89), (-0.2, 0.2, 0.87), (0.2, 0.2, 0.87), (0.2, -0.2, 0.89)], [(0, 1, 2, 3)]),
+}
+for name, t in cases.items():
+    P, info = HP.push_chain(t, J, [0.0] * 4, CL)
+    P2, info2 = HP.push_chain(t, P, [0.0] * 4, CL)
+    P3, _ = HP.push_chain(t, J, [0.0] * 4, CL)
+    check(f"A.{name}.no_crossing", crossings(t, J) > 0 and crossings(t, P) == 0, before=crossings(t, J), after=crossings(t, P))
+    check(f"A.{name}.lengths", np.abs(lengths(P) - lengths(J)).max() < 1e-6 and info["blocked"] == 0,
+          max_err=float(np.abs(lengths(P) - lengths(J)).max()))
+    check(f"A.{name}.idempotent", info2["moved"] is None and np.array_equal(P2, P))
+    check(f"A.{name}.deterministic", np.array_equal(P3, P))
+# deep: the lock enters a box from above and its tip is 75 mm inside; it must stay above (the side it came from)
+deep = tree_of(*box((-0.3, -0.3, 0.0), (0.3, 0.3, 0.815)))
+P, info = HP.push_chain(deep, J, [0.0] * 4, CL)
+check("A.deep.same_side", crossings(deep, P) == 0 and P[:, 2].min() > 0.815, min_z=float(P[:, 2].min()))
+# opening: a hollow box (no top face, like a blouse over a masked torso); the lock goes down through the opening
+hv, hf = box((-0.1, -0.1, 0.40), (0.1, 0.1, 0.86))
+hollow = tree_of(hv, hf[:1] + hf[2:])  # face 1 is the top
+P, info = HP.push_chain(hollow, J, [0.0] * 4, CL)
+inside_before = sum(HP.enclosed(hollow, j) for j in J[1:])
+inside_after = sum(HP.enclosed(hollow, p) for p in P[1:])
+check("A.opening.enclosed_pushed", inside_before > 0 and inside_after == 0 and info["enclosed"] > 0
+      and np.abs(lengths(P) - lengths(J)).max() < 1e-6, before=int(inside_before), after=int(inside_after),
+      enclosed=info["enclosed"], left=info["enclosed_left"])
+# nothing crossed: bit for bit
+far = tree_of(*box((1.0, 1.0, 0.0), (1.2, 1.2, 0.2)))
+P, info = HP.push_chain(far, J, [0.0] * 4, CL)
+check("A.free_chain_bit_identical", info["moved"] is None and np.array_equal(P, J) and P is not J)
+# root embedded at rest: the head (a box around the root) is crossed by segment 0 at rest; allowed
+head = tree_of(*box((-0.05, -0.05, 0.95), (0.05, 0.05, 1.05)))
+allow = HP.rest_allowance(head, J)
+P, info = HP.push_chain(head, J, allow, CL)
+check("A.rest_allowance", allow[0] > 0.04 and allow[1] == 0.0 and info["moved"] is None, allow=allow)
+
+# no free slide and no free normal (a root in a narrow tunnel, the lock pointing through its floor): the segment keeps
+# its length (the re-key only rotates bones) and leaves along the nearest free direction (FAN); _fan alone too
+tun = tree_of([(-0.3, -0.015, 0.90), (0.3, -0.015, 0.90), (0.3, 0.015, 0.90), (-0.3, 0.015, 0.90),
+               (-0.3, -0.015, 0.94), (0.3, -0.015, 0.94), (0.3, 0.015, 0.94), (-0.3, 0.015, 0.94)],
+              [(0, 1, 2, 3), (4, 5, 6, 7), (0, 1, 5, 4), (3, 2, 6, 7)])
+JT = J - np.array([0.0, 0.0, 0.08])
+P, info = HP.push_chain(tun, JT, [0.0] * 4, CL)
+check("A.tunnel.full_length_free", crossings(tun, P) == 0 and np.abs(lengths(P) - lengths(JT)).max() < 1e-6
+      and info["blocked"] == 0, before=crossings(tun, JT), max_err=float(np.abs(lengths(P) - lengths(JT)).max()))
+fi = {"blocked": 0}
+q = HP._fan(tun, JT[0], np.array([0.0, 0.0, -1.0]), 0.08, 0.0, fi)
+check("A.fan.free_full_length", abs(float(np.linalg.norm(q - JT[0])) - 0.08) < 1e-9 and fi["blocked"] == 0
+      and crossings(tun, np.array([JT[0], q])) == 0, end=q.round(4).tolist())
+
+# lock volume: the centre line runs 15 mm outside the wall of a hollow box (no top), the lock (radius 30 mm) reaches
+# into it; with the radius the chain moves until no lock sample is enclosed, without it nothing moves
+JV = J + np.array([0.115, 0.0, -0.25])
+before = sum(HP.volume_enclosed(hollow, JV[k - 1], JV[k], 0.03) is not None for k in range(1, len(JV)))
+P0, i0 = HP.push_chain(hollow, JV, [0.0] * 4, CL)
+P, info = HP.push_chain(hollow, JV, [0.0] * 4, CL, radius=[0.03] * 4)
+after = sum(HP.volume_enclosed(hollow, P[k - 1], P[k], 0.03) is not None for k in range(1, len(P)))
+check("A.lock_volume.pushed", before > 0 and after == 0 and i0["moved"] is None and info["volume"] > 0
+      and info["volume_left"] == 0 and crossings(hollow, P) == 0 and np.abs(lengths(P) - lengths(JV)).max() < 1e-6,
+      before=int(before), after=int(after), volume=info["volume"])
+P2, _ = HP.push_chain(hollow, JV, [0.0] * 4, CL, radius=[0.03] * 4, rest_volume=[True] * 5)
+check("A.lock_volume.rest_enclosed_kept", np.array_equal(P2, JV))
+
+# 2. scene --------------------------------------------------------------------------------------------------------
+bpy.ops.wm.read_factory_settings(use_empty=True)
+sc = bpy.context.scene
+arm = bpy.data.armatures.new("rig")
+rig = bpy.data.objects.new("rig", arm)
+sc.collection.objects.link(rig)
+bpy.context.view_layer.objects.active = rig
+bpy.ops.object.mode_set(mode="EDIT")
+eb = arm.edit_bones
+hb = eb.new("head")
+hb.head, hb.tail = (0, 0, 1.0), (0, 0, 1.2)
+tb = eb.new("torso")
+tb.head, tb.tail = (0, 0, 0.0), (0, 0, 0.1)
+fb = eb.new("fold")
+fb.head, fb.tail = (0, 0, 0.0), (0, 0, 0.1)
+rb = eb.new("rim")
+rb.head, rb.tail = (0, 0, 0.0), (0, 0, 0.1)
+sb = eb.new("slab")
+sb.head, sb.tail = (0, 0, 0.0), (0, 0, 0.1)
+prev = hb
+names = []
+for k in range(4):
+    b = eb.new(f"DYN-lock.{k}")
+    b.head, b.tail = (0.0, 0.0, 1.0 - 0.08 * k), (0.0, 0.0, 0.92 - 0.08 * k)
+    b.parent = prev
+    b.use_connect = k > 0
+    prev = b
+    names.append(b.name)
+bpy.ops.object.mode_set(mode="OBJECT")
+rig["ps_dynamics"] = json.dumps({"chains": [{"name": "lock", "bones": names}], "colliders": []})
+
+
+def skinned(name, V, F, groups):
+    me = bpy.data.meshes.new(name)
+    me.from_pydata([tuple(v) for v in V], [], F)
+    o = bpy.data.objects.new(name, me)
+    sc.collection.objects.link(o)
+    o.parent = rig
+    for g, (idx, w) in groups.items():
+        vg = o.vertex_groups.get(g) or o.vertex_groups.new(name=g)
+        for i, wi in zip(idx, w):
+            vg.add([int(i)], float(wi), "REPLACE")
+    m = o.modifiers.new("Armature", "ARMATURE")
+    m.object = rig
+    return o
+
+
+# torso: a closed box far below at rest; the "torso" bone lifts it to z 0.70-0.80 in frame 1
+tv, tf = box((-0.1, -0.1, -0.60), (0.1, 0.1, -0.50))
+torso = skinned("body_torso", tv, tf, {"torso": (range(8), [1.0] * 8)})
+# fold: an open plate behind the cap at rest (x = -0.15); the "fold" bone moves it to x = -0.067 in frame 1
+# (the cap row x = -0.065 2 mm behind it: pushed out) and to x = -0.08 in frame 7 (rows 15 / 5 mm behind it: a move of
+# 16.5 mm is left as baked, 6.5 mm is faded to 4.47 mm, static_move_fade_m)
+fv = [(-0.15, -0.1, 1.02), (-0.15, 0.1, 1.02), (-0.15, 0.1, 1.12), (-0.15, -0.1, 1.12)]
+fold = skinned("body_fold", fv, [(0, 3, 2, 1)], {"fold": (range(4), [1.0] * 4)})  # normal -x: outwards, like skin
+# rim: a closed box far below at rest; the "rim" bone lifts it in frame 3 over the cap's static anchors (x -0.095 ..
+# -0.135) but not over the cap (x >= -0.105): the anchors are inside it, the cap is outside (the boy's hood rim)
+rv, rf = box((-0.14, -0.06, -0.60), (-0.108, 0.06, -0.52))
+rimm = skinned("body_rim", rv, rf, {"rim": (range(8), [1.0] * 8)})
+# slab: a thin closed box far below at rest; in frame 4 it lies between some cap vertices and their anchors (both
+# outside it: the anchor ray only passes through a thin part, like the hood rim tube)
+sv, sf = box((-0.092, -0.06, -0.60), (-0.088, 0.06, -0.52))
+slabm = skinned("body_slab", sv, sf, {"slab": (range(8), [1.0] * 8)})
+# lock tube: rings of 8 vertices, radius 20 mm, along the chain; weights on the bone of the ring's segment
+rings, F, wts = [], [], {n: ([], []) for n in names}
+for r in range(17):
+    z = 1.0 - 0.32 * r / 16
+    for s in range(8):
+        a = 2 * np.pi * s / 8
+        rings.append((0.02 * np.cos(a), 0.02 * np.sin(a), z))
+        b = min(3, int((1.0 - z) / 0.08 + 1e-9)) if r > 0 else 0
+        wts[names[b]][0].append(len(rings) - 1)
+        wts[names[b]][1].append(1.0)
+for r in range(16):
+    for s in range(8):
+        a0, a1 = r * 8 + s, r * 8 + (s + 1) % 8
+        F.append((a0, a1, a1 + 8, a0 + 8))
+lock = skinned("hair_lock", rings, F, wts)
+# head: a closed box weighted to the head bone (x -0.06 .. 0.06); cap: a static patch on its back (x -0.065 .. -0.105)
+hv, hf = box((-0.06, -0.08, 0.99), (0.06, 0.08, 1.18))
+headm = skinned("body_head", hv, hf, {"head": (range(8), [1.0] * 8)})
+cv = [(-0.065 - 0.01 * i, -0.04 + 0.02 * j, 1.04 + 0.02 * k) for i in range(5) for j in range(5) for k in range(4)]
+cap = skinned("hair_cap", cv, [], {"head": (range(len(cv)), [1.0] * len(cv))})
+# cup prop: open-top cylinder with a solidify wall
+bpy.ops.mesh.primitive_cylinder_add(radius=0.04, depth=0.1, location=(0.5, 0, 0.05))
+cup = bpy.context.object
+cup.name = "prop.cup"
+import bmesh  # noqa: E402
+bm = bmesh.new()
+bm.from_mesh(cup.data)
+bmesh.ops.delete(bm, geom=[f for f in bm.faces if f.normal.z > 0.9], context="FACES_ONLY")
+bm.to_mesh(cup.data)
+bm.free()
+cup.modifiers.new("wall", "SOLIDIFY").thickness = 0.004
+
+coll = bpy.data.collections.new("ch")
+for o in (rig, torso, fold, lock, cap, headm, rimm, slabm):
+    coll.objects.link(o)
+pbs = {pb.name: pb for pb in rig.pose.bones}
+for pb in pbs.values():
+    pb.rotation_mode = "QUATERNION"
+states = {"ch": {"rig": rig, "bones": [(i, pbs[n]) for i, n in enumerate(["head", "torso", "fold", "rim", "slab"] + names)],
+                 "ov": coll, "head_bone": "head"}}
+# a neighbour: its own rig and an unmasked skin box (x -0.09 .. -0.07) far below at rest, lifted in frame 5 into the
+# cap: the cap rows x = -0.085 are 5 mm in it (clamp move 6.5 mm: faded to 6.5 * (12 - 6.5) / 8 = 4.47 mm), the rows
+# x = -0.075 15 mm (clamp move 16.5 mm: beyond 12 mm, left as baked = staging)
+arm2 = bpy.data.armatures.new("rig2")
+rig2 = bpy.data.objects.new("rig2", arm2)
+sc.collection.objects.link(rig2)
+bpy.context.view_layer.objects.active = rig2
+bpy.ops.object.mode_set(mode="EDIT")
+nb_ = arm2.edit_bones.new("nb")
+nb_.head, nb_.tail = (0, 0, 0.0), (0, 0, 0.1)
+bpy.ops.object.mode_set(mode="OBJECT")
+nv_, nf_ = box((-0.09, -0.06, -0.60), (-0.07, 0.06, -0.52))
+nbm = bpy.data.meshes.new("garment.collider.body_skin.nb")
+nbm.from_pydata([tuple(v) for v in nv_], [], nf_)
+nbo = bpy.data.objects.new("garment.collider.body_skin.nb", nbm)
+sc.collection.objects.link(nbo)
+nbo.parent = rig2
+nbo.vertex_groups.new(name="nb").add(list(range(8)), 1.0, "REPLACE")
+nbo.modifiers.new("Armature", "ARMATURE").object = rig2
+coll2 = bpy.data.collections.new("nb")
+for o in (rig2, nbo):
+    coll2.objects.link(o)
+pb_nb = rig2.pose.bones["nb"]
+pb_nb.rotation_mode = "QUATERNION"
+states["nb"] = {"rig": rig2, "bones": [(0, pb_nb)], "ov": coll2, "head_bone": None}
+
+
+def key_bone(pb, P, Pp, frame):  # as shot_render._key_bone
+    if pb.parent is None:
+        basis = pb.bone.matrix_local.inverted() @ P
+    else:
+        basis = (pb.parent.bone.matrix_local.inverted() @ pb.bone.matrix_local).inverted() @ Pp.inverted() @ P
+    loc, rot, sca = basis.decompose()
+    pb.location, pb.rotation_quaternion, pb.scale = loc, rot, sca
+    for path in ("location", "rotation_quaternion", "scale"):
+        pb.keyframe_insert(path, frame=frame, group=pb.name)
+
+
+po = HP.PushOut(sc, HP.load_spec("on"), states, {"cup": cup}, [])
+check("B.cup_cap", len(po.caps) == 1 and po.caps[0].hide_render and po.caps[0] in po.colliders,
+      caps=[c.name for c in po.caps])
+# frame 1: torso up into the lock, fold onto the cap; frame 2: everything at rest; frame 3: the rim over the anchors
+for f, (tz, fx, rz, sz) in ((1, (1.30, 0.083, 0.0, 0.0)), (7, (0.0, 0.07, 0.0, 0.0)), (2, (0.0, 0.0, 0.0, 0.0)), (3, (0.0, 0.0, 1.63, 0.0)),
+                            (4, (0.0, 0.0, 0.0, 1.63)), (5, (0.0, 0.0, 0.0, 0.0)), (6, (0.0, 0.0, 0.0, 0.0))):
+    # frame 6: the neighbour's box across the lock chain (x -0.01 .. 0.01, z 0.83 .. 0.91, joint 2 inside: a push of
+    # more than 12 mm): stage A leaves the chain as baked (staging)
+    pb_nb.location = {5: (0, 1.63, 0), 6: (0.08, 1.43, 0)}.get(f, (0, 0.0, 0))
+    for path in ("location", "rotation_quaternion", "scale"):
+        pb_nb.keyframe_insert(path, frame=f)
+    for pb in pbs.values():
+        pb.location, pb.rotation_quaternion, pb.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
+    pbs["torso"].location = (0, tz, 0)  # bone local Y = world Z for a bone pointing up
+    pbs["fold"].location = (fx, 0, 0)  # bone local X = world X
+    pbs["rim"].location = (0, rz, 0)
+    pbs["slab"].location = (0, sz, 0)
+    for pb in pbs.values():
+        for path in ("location", "rotation_quaternion", "scale"):
+            pb.keyframe_insert(path, frame=f)
+baked = {}
+before = {}
+for f in (1, 2, 3, 4, 5, 6, 7):
+    sc.frame_set(f)
+    dg = bpy.context.evaluated_depsgraph_get()
+    e = lock.evaluated_get(dg)
+    before[f] = np.array([e.matrix_world @ v.co for v in e.to_mesh().vertices])
+    e.to_mesh_clear()
+    baked[f] = {n: tuple(pbs[n].rotation_quaternion) for n in names}
+    rk = po.frame(f, key_bone)
+    if f == 1:
+        check("A.scene.rekeyed_in_contact", len(rk) > 0 and po.report["frames"][1]["ch"]["chains_pushed"] == 1,
+              report=po.report["frames"][1]["ch"])
+    elif f == 6:
+        after = {n: tuple(pbs[n].rotation_quaternion) for n in names}
+        check("A.scene.neighbour_deep_left_as_baked", len(rk) == 0 and after == baked[6]
+              and po.report["frames"][6]["ch"].get("neighbour_faded", 0) == 1, report=po.report["frames"][6]["ch"])
+    elif f == 2:
+        sc.frame_set(2)
+        after = {n: tuple(pbs[n].rotation_quaternion) for n in names}
+        check("A.scene.free_frame_untouched", len(rk) == 0 and after == baked[2])
+po.install()
+check("B.installed", all(any(m.type == "NODES" for m in o.modifiers) for o in (lock, cap))
+      and all(px.hide_render for _o, px in states["ch"]["proxies"]))
+
+
+def eval_points(o, f):
+    sc.frame_set(f)
+    dg = bpy.context.evaluated_depsgraph_get()
+    e = o.evaluated_get(dg)
+    me = e.to_mesh()
+    P = np.array([e.matrix_world @ v.co for v in me.vertices])
+    e.to_mesh_clear()
+    return P
+
+
+def inside_box(P, lo, hi, m=0.0):
+    return int(np.all((P > np.array(lo) + m) & (P < np.array(hi) - m), axis=1).sum())
+
+
+TLO, THI = (-0.1, -0.1, 0.70), (0.1, 0.1, 0.80)
+L1 = eval_points(lock, 1)
+C1 = eval_points(cap, 1)
+cap_rest = np.array([tuple(v) for v in cv])
+check("B.lock_out_of_torso", inside_box(before[1], TLO, THI) > 0 and inside_box(L1, TLO, THI, -0.0005) == 0,
+      before=inside_box(before[1], TLO, THI), after=inside_box(L1, TLO, THI, -0.0005))
+behind = lambda P: int(((P[:, 0] > -0.0675) & (P[:, 0] < -0.06) & (np.abs(P[:, 1]) < 0.1) & (P[:, 2] > 1.02) & (P[:, 2] < 1.12)).sum())  # noqa: E731
+check("B.cap_out_of_fold", behind(cap_rest) > 0 and behind(C1) == 0, before=behind(cap_rest), after=behind(C1))
+C7 = eval_points(cap, 7)
+mv7 = np.linalg.norm(C7 - cap_rest, axis=1)
+r65 = np.abs(cap_rest[:, 0] + 0.065) < 1e-6
+r75b = np.abs(cap_rest[:, 0] + 0.075) < 1e-6
+check("B.deep_fold_faded", mv7[r65].max() < 1e-6 and np.abs(mv7[r75b] - 0.00447).max() < 2e-4
+      and mv7[~(r65 | r75b)].max() < 1e-6, moved_15mm=float(mv7[r65].max()), moved_5mm=float(mv7[r75b].max()))
+C2 = eval_points(cap, 2)
+L2 = eval_points(lock, 2)
+check("B.outside_untouched", np.allclose(C2, cap_rest, atol=1e-6) and np.allclose(L2, before[2], atol=1e-6),
+      cap_max=float(np.abs(C2 - cap_rest).max()), lock_max=float(np.abs(L2 - before[2]).max()))
+C3 = eval_points(cap, 3)
+in_rim = lambda P: inside_box(P, (-0.14, -0.06, 1.03), (-0.108, 0.06, 1.11))  # noqa: E731
+anchors_in = sum(1 for v in cap_rest if -0.14 < v[0] - 0.03 < -0.108 and abs(v[1]) < 0.06 and 1.03 < v[2] < 1.11)
+check("B.static_anchor_inside_kept", anchors_in > 0 and in_rim(cap_rest) == 0 and in_rim(C3) == 0
+      and np.allclose(C3, cap_rest, atol=1e-6), anchors_in=anchors_in, in_rim=in_rim(C3),
+      cap_max=float(np.abs(C3 - cap_rest).max()))
+C4 = eval_points(cap, 4)
+crossing = sum(1 for v in cap_rest if v[0] > -0.088 and v[0] - 0.03 < -0.092 and abs(v[1]) < 0.06 and 1.03 < v[2] < 1.11)
+check("B.static_outside_thin_part_kept", crossing > 0 and np.allclose(C4, cap_rest, atol=1e-6), crossing=crossing,
+      cap_max=float(np.abs(C4 - cap_rest).max()))
+C5 = eval_points(cap, 5)
+r85 = np.abs(cap_rest[:, 0] + 0.085) < 1e-6
+r75 = np.abs(cap_rest[:, 0] + 0.075) < 1e-6
+inb = (np.abs(cap_rest[:, 1]) < 0.06) & (cap_rest[:, 2] > 1.03) & (cap_rest[:, 2] < 1.11)
+mv5 = np.linalg.norm(C5 - cap_rest, axis=1)
+check("B.neighbour_skin_faded", r85[inb].sum() > 0 and np.abs(mv5[r85 & inb] - 0.00447).max() < 2e-4
+      and mv5[r75 & inb].max() < 1e-6 and mv5[~(r85 & inb)].max() < 1e-6,
+      moved_5mm_deep=float(mv5[r85 & inb].max()), moved_15mm_deep=float(mv5[r75 & inb].max()))
+h1 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()
+eval_points(lock, 2)
+h2 = hashlib.sha256(np.round(eval_points(lock, 1), 7).tobytes() + np.round(eval_points(cap, 1), 7).tobytes()).hexdigest()
+check("B.deterministic", h1 == h2, sha256=h1)
+
+# 3. spec ---------------------------------------------------------------------------------------------------------
+check("spec.defaults", HP.load_spec("on") == HP.DEFAULTS and HP.load_spec(None) == HP.DEFAULTS)
+check("spec.inline", HP.load_spec('{"margin_m": 0.004}')["margin_m"] == 0.004)
+try:
+    HP.load_spec('{"margin": 1}')
+    check("spec.unknown_refused", False)
+except ValueError:
+    check("spec.unknown_refused", True)
+try:
+    HP.load_spec('{"static_inside": "x"}')
+    check("spec.static_inside_refused", False)
+except ValueError:
+    check("spec.static_inside_refused", True)
+
+R["ok"] = ok
+json.dump(R, open(out, "w"), indent=1)
+print("hair push-out test:", "OK" if ok else "FAILED")
+sys.exit(0 if ok else 1)

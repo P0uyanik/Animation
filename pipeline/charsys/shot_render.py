@@ -3,7 +3,7 @@ animation (TD-42). Read-only on every character master.
 
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
         [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
-        [--engine cycles|eevee] [--blend-only] [--profile final720|review|legacy128]
+        [--engine cycles|eevee] [--blend-only] [--profile final720|review|legacy128] [--hair-pushout [on|spec.json|{json}]]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
 cast.json: {"<character name in the scene>": {"master": <master .blend>, "character_id": <root collection>,
@@ -24,6 +24,9 @@ Per character (any rig whose deform bones the package lists; nothing character-s
   * eye sockets (T-030): on every frame, as Blender evaluates the applied bake, each eye's centre (sphere fit of its
     evaluated eyeball, any mesh bound only to an "eye.*" role bone and without shape keys) is compared with its
     socket (the rest centre carried by the head bone); the largest distance per character is reported.
+  * hair push-out (T-194, opt-in, --hair-pushout): after the bake is keyed, hair is kept out of the real evaluated
+    meshes (own body and garments, the other characters, props, box objects): chain bones re-keyed per frame and a
+    per-vertex Geometry Nodes clamp on every hair object (hair_pushout.py). Without the flag nothing of it runs.
 Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error, eye sockets)."""
 import argparse
 import json
@@ -39,6 +42,7 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
+import hair_pushout  # noqa: E402
 import render_engine  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
 
@@ -62,6 +66,8 @@ def parse():
     ap.add_argument("--light-scale", type=float, default=1.0)
     ap.add_argument("--engine", choices=("cycles", "eevee"), default="cycles")
     ap.add_argument("--blend-only", action="store_true")
+    ap.add_argument("--hair-pushout", nargs="?", const="on", default=None,
+                    help="T-194: push hair out of the real meshes (on, a spec JSON file or inline JSON; hair_pushout.py)")
     ap.add_argument("--profile", default=None,
                     help="render profile from render_profiles.json (T-166: default final720; legacy128 = the previous "
                          "128 spp / 0.01 preset); sets resolution/samples unless given")
@@ -109,7 +115,7 @@ def setup_character(ch, cast, scene):
     unmapped = [m for m in ch["morphs"] if f"face_{m}" not in rig.keys() and "@" not in m]
     return {"rig": rig, "bones": bones, "controls": controls, "unmapped_morphs": unmapped,
             "skipped_driven_bones": sorted(driven & set(src.values())), "master": info["master"],
-            "eyes": eye_sockets(ov, rig, src)}
+            "eyes": eye_sockets(ov, rig, src), "ov": ov, "head_bone": src.get("head")}
 
 
 def sphere_centre(points):
@@ -209,7 +215,7 @@ def fix_late(st, target, late, frame):
         _key_bone(pb, target[pb.name], pb.parent.matrix, frame)
 
 
-def setup_world(bake, scene, light_scale):
+def setup_world(bake, scene, light_scale, boxes=None):
     """Lights, sky and box props from the bake (approximate radiometric translation, calibrated by light_scale)."""
     rep = {"lights": 0, "objects": 0}
     world = scene.world or bpy.data.worlds.new("shot_world")
@@ -256,6 +262,8 @@ def setup_world(bake, scene, light_scale):
         m.node_tree.nodes.get("Principled BSDF").inputs["Base Color"].default_value = (*o.get("baseColor", (0.6, 0.6, 0.6)), 1)
         m.node_tree.nodes.get("Principled BSDF").inputs["Roughness"].default_value = 0.9
         cube.data.materials.append(m)
+        if boxes is not None:
+            boxes.append(cube)
         rep["objects"] += 1
     return rep
 
@@ -405,8 +413,14 @@ def main():
         if ch["name"] not in cast:
             raise SystemExit(f"cast has no master for character {ch['name']}")
         states[ch["name"]] = setup_character(ch, cast, scene)
-    rep["world"] = setup_world(bake, scene, a.light_scale)
+    boxes = []
+    rep["world"] = setup_world(bake, scene, a.light_scale, boxes)
     props, rep["props"] = setup_props(bake, scene)
+    pushout = None
+    if a.hair_pushout is not None:
+        tp = time.time()
+        pushout = hair_pushout.PushOut(scene, hair_pushout.load_spec(a.hair_pushout), states, props, boxes)
+        pushout_s = {"setup_s": round(time.time() - tp, 2), "chains_s": 0.0}
     cam = bpy.data.objects.new("shot_camera", bpy.data.cameras.new("shot_camera"))
     scene.collection.objects.link(cam)
     scene.camera = cam
@@ -422,22 +436,39 @@ def main():
             scene.frame_set(f)
             for n, (target, late) in done.items():
                 fix_late(states[n], target, late, f)
+        evaluated = False
         if any(st["eyes"] for st in states.values()):  # eye-socket alignment on every frame, as Blender evaluates it
             scene.frame_set(f)
+            evaluated = True
             deps = bpy.context.evaluated_depsgraph_get()
             for n, st in states.items():
                 if st["eyes"]:
                     d = measure_eyes(st, deps)
                     if d >= eyes[n][0]:
                         eyes[n] = [d, f]
+        rekeyed = set()
+        if pushout is not None:  # after the eye check: it reuses that evaluation (eyes do not depend on hair bones)
+            tp = time.time()
+            if not evaluated:
+                scene.frame_set(f)
+            rekeyed = pushout.frame(f, _key_bone)
+            pushout_s["chains_s"] += time.time() - tp
         for n, st in states.items():
             target = done[n][0]
             if f in (fa, (fa + fb) // 2, fb):  # check the reconstruction: evaluated bone poses == baked poses
                 scene.frame_set(f)
                 for pb_name, P in target.items():
+                    if (n, pb_name) in rekeyed:  # moved on purpose by the hair push-out
+                        continue
                     E = st["rig"].pose.bones[pb_name].matrix
                     err[n][0] = max(err[n][0], (E.translation - P.translation).length)
                     err[n][1] = max(err[n][1], math.degrees(E.to_quaternion().rotation_difference(P.to_quaternion()).angle))
+    if pushout is not None:
+        tp = time.time()
+        pushout.install()
+        pushout_s["install_s"] = round(time.time() - tp, 2)
+        pushout_s["chains_s"] = round(pushout_s["chains_s"], 2)
+        rep["hair_pushout"] = {**pushout.report, "timing": pushout_s}
     for n, st in states.items():
         rep["characters"][n] = {"master": st["master"], "baked_bones": len(st["bones"]), "facial_controls": len(st["controls"]),
                                 "unmapped_morphs": st["unmapped_morphs"], "bones_left_to_drivers": st["skipped_driven_bones"],

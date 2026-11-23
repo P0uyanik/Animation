@@ -1,0 +1,1096 @@
+{
+ "name": "e912_s030_cand2",
+ "snap_frames": [
+  93
+ ],
+ "off": {
+  "all": {
+   "frames": 249,
+   "over": 173,
+   "max_mm": 40.73,
+   "worst": "f67 girl_a hair_curtain > own:garment.blouse.main"
+  },
+  "calm": {
+   "frames": 246,
+   "over": 171,
+   "max_mm": 40.73,
+   "worst": "f67 girl_a hair_curtain > own:garment.blouse.main"
+  },
+  "snap": {
+   "frames": 3,
+   "over": 2,
+   "max_mm": 11.31,
+   "worst": "f93 girl_a hair_ringlets_side_b > own:ear.R.001"
+  }
+ },
+ "on": {
+  "all": {
+   "frames": 249,
+   "over": 121,
+   "max_mm": 40.73,
+   "worst": "f67 girl_a hair_curtain > own:garment.blouse.main"
+  },
+  "calm": {
+   "frames": 246,
+   "over": 121,
+   "max_mm": 40.73,
+   "worst": "f67 girl_a hair_curtain > own:garment.blouse.main"
+  },
+  "snap": {
+   "frames": 3,
+   "over": 0,
+   "max_mm": 0.0,
+   "worst": null
+  }
+ },
+ "apart_off": {
+  "staging": {
+   "frames": 30,
+   "max_mm": 86.99,
+   "list": [
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.49
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.75
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     65.94
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.59
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     63.35
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.67
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.37
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     64.49
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.71
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     61.41
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.03
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.39
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     63.21
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.72
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     60.02
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     31.94
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.92
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     62.71
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.25
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     59.4
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     32.42
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     86.99
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     64.4
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     62.01
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     62.12
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     29.72
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     86.05
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     65.54
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     60.58
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     67.91
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     18.07
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     64.2
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     69.29
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     51.86
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     74.37
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     4.46
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     73.18
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     21.14
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     71.11
+    ],
+    [
+     17,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     69.82
+    ],
+    [
+     17,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     27.57
+    ],
+    [
+     19,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     76.51
+    ],
+    [
+     19,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     33.02
+    ],
+    [
+     21,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     81.74
+    ],
+    [
+     21,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     20.33
+    ],
+    [
+     23,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     57.52
+    ],
+    [
+     25,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     41.06
+    ],
+    [
+     27,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     27.15
+    ],
+    [
+     29,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     37.99
+    ],
+    [
+     31,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     26.88
+    ],
+    [
+     33,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     13.43
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     29.02
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     11.85
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     28.01
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     14.35
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     28.86
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     49.75
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     34.43
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     56.4
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     19.68
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     57.35
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     16.1
+    ],
+    [
+     41,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     69.4
+    ],
+    [
+     41,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     59.69
+    ],
+    [
+     43,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     74.46
+    ],
+    [
+     43,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     38.47
+    ],
+    [
+     45,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     83.99
+    ],
+    [
+     45,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     31.87
+    ],
+    [
+     47,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     81.45
+    ],
+    [
+     47,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     30.14
+    ],
+    [
+     49,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.63
+    ],
+    [
+     49,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     29.88
+    ],
+    [
+     51,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     80.26
+    ],
+    [
+     51,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     29.71
+    ],
+    [
+     53,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     81.44
+    ],
+    [
+     53,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     28.32
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     78.16
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     13.78
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     23.3
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     67.29
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     74.61
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     52.05
+    ],
+    [
+     59,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     6.33
+    ],
+    [
+     59,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     14.99
+    ]
+   ]
+  },
+  "glasses": {
+   "frames": 98,
+   "max_mm": 1.4,
+   "list": []
+  },
+  "boy_head": {
+   "frames": 63,
+   "max_mm": 47.02,
+   "list": []
+  }
+ },
+ "apart_on": {
+  "staging": {
+   "frames": 30,
+   "max_mm": 86.99,
+   "list": [
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.49
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.75
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     65.94
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.59
+    ],
+    [
+     1,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     63.35
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.67
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.37
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     64.49
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.71
+    ],
+    [
+     3,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     61.41
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     33.03
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.39
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     63.21
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.72
+    ],
+    [
+     5,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     60.02
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     31.94
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.92
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     62.71
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     61.25
+    ],
+    [
+     7,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     59.4
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     32.42
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     86.99
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     64.4
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     62.01
+    ],
+    [
+     9,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     62.12
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     29.72
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     86.05
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     65.54
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     60.58
+    ],
+    [
+     11,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     67.91
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     18.07
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     64.2
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     69.29
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     51.86
+    ],
+    [
+     13,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     74.37
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_base > girl_auburn_bun_glasses:body_skin.001",
+     4.46
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     73.18
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     21.14
+    ],
+    [
+     15,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     71.11
+    ],
+    [
+     17,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     69.82
+    ],
+    [
+     17,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     27.57
+    ],
+    [
+     19,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     76.51
+    ],
+    [
+     19,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     33.02
+    ],
+    [
+     21,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     81.74
+    ],
+    [
+     21,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     20.33
+    ],
+    [
+     23,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     57.52
+    ],
+    [
+     25,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     41.06
+    ],
+    [
+     27,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     27.15
+    ],
+    [
+     29,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     37.99
+    ],
+    [
+     31,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     26.88
+    ],
+    [
+     33,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     9.22
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     29.02
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     11.85
+    ],
+    [
+     35,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     28.01
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     11.27
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     28.86
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     49.75
+    ],
+    [
+     37,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     34.43
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     56.4
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_sides > girl_auburn_bun_glasses:body_skin.001",
+     19.68
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     57.35
+    ],
+    [
+     39,
+     "boy_yellow_hoodie",
+     "hair_top_outer > girl_auburn_bun_glasses:body_skin.001",
+     16.1
+    ],
+    [
+     41,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     69.4
+    ],
+    [
+     41,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     59.69
+    ],
+    [
+     43,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     74.46
+    ],
+    [
+     43,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     38.47
+    ],
+    [
+     45,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     83.99
+    ],
+    [
+     45,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     31.87
+    ],
+    [
+     47,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     81.45
+    ],
+    [
+     47,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     30.14
+    ],
+    [
+     49,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     82.63
+    ],
+    [
+     49,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     29.88
+    ],
+    [
+     51,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     80.26
+    ],
+    [
+     51,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     29.71
+    ],
+    [
+     53,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     81.44
+    ],
+    [
+     53,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     28.32
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     78.16
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     13.78
+    ],
+    [
+     55,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     23.3
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_fringe.002 > girl_auburn_bun_glasses:body_skin.001",
+     67.29
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     74.61
+    ],
+    [
+     57,
+     "boy_yellow_hoodie",
+     "hair_top > girl_auburn_bun_glasses:body_skin.001",
+     52.05
+    ],
+    [
+     59,
+     "boy_yellow_hoodie",
+     "hair_fringe_centre > girl_auburn_bun_glasses:body_skin.001",
+     14.99
+    ]
+   ]
+  },
+  "glasses": {
+   "frames": 98,
+   "max_mm": 1.4,
+   "list": []
+  },
+  "boy_head": {
+   "frames": 63,
+   "max_mm": 47.02,
+   "list": []
+  }
+ },
+ "pops": {
+  "frames_over_5mm": 0,
+  "max_added_mm": 2.5,
+  "where": "f7 boy_ye"
+ },
+ "cost": {
+  "setup_s": 45.72,
+  "stage_a_s_per_frame": 4.0
+ },
+ "sha256_on": "766e7939d2dd70aa4f9250390fdafc5ef2bab113a9d24aca33b4d78eb61228d1",
+ "step": 2,
+ "new_surfaces_on": {}
+}
