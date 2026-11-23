@@ -324,19 +324,25 @@ def run_audit(a):
             o = os.path.join(tmp, f"part{k}.json")
             warm = ch[0] - a.step if k > 0 else None  # the previous measured frame: vertex moves across chunks
             procs.append((o, _blender_part(a, blend, bake, o, frames=ch, warm=warm, wait=False)))
-        rows = []
+        rows, cost = [], {}
         for o, p in procs:
             if p.wait() != 0:
                 raise SystemExit(f"audit part failed: {o}.log")
-            rows += json.load(open(o))["rows"]
+            part = json.load(open(o))
+            rows += part["rows"]
+            for k, v in part["seconds"].items():
+                cost[k] = round(cost.get(k, 0.0) + v, 1)
     rows.sort(key=lambda r: r["frame"])
     h = hashlib.sha256("".join(r["sha256"] for r in rows).encode()).hexdigest()
     doc = {"format": FORMAT, "blend": blend, "bake": bake, "frames": [lo, hi], "step": a.step, "limit_mm": a.limit_mm,
            "pop_mm": a.pop_mm, "staging_mm": a.staging_mm, "known": os.path.abspath(a.known) if a.known else None,
            "characters": meta["characters"], "roles": meta["roles"],
-           "snap_frames": snap_frames(bake) if bake and os.path.isfile(bake) else [], "sha256": h}
+           "snap_frames": ([int(x) for x in a.snap_frames.split(",") if x] if a.snap_frames is not None
+                           else snap_frames(bake) if bake and os.path.isfile(bake) else []),
+           "snap_frames_from": "--snap-frames" if a.snap_frames is not None else "bake", "sha256": h}
     doc["summary"] = summarise({**doc, "rows": rows}, known, a.staging_mm, a.pop_mm)
     doc["seconds"] = round(time.time() - t0, 1)
+    doc["seconds_by_step"] = cost  # summed over the parts (CPU-side wall time per step, all frames)
     doc["rows"] = rows
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     json.dump(doc, open(a.out, "w"), indent=1, sort_keys=False)
@@ -449,23 +455,32 @@ def points(objs, deps):
     return out
 
 
+def scene_objects(bpy):
+    """The objects of the shot: in the scene and not linked library data (a shot links each master and works on
+    library overrides; the linked originals keep the master's rest state and must not be measured)."""
+    return [o for o in bpy.context.scene.objects if o.library is None]
+
+
 def characters(bpy, profile):
     """{name: roles} from object metadata (see the module doc)."""
     prof = json.load(open(profile)).get("roles", {})
     hand_roots = [prof[k] for k in ("hand.L", "hand.R") if k in prof]
     out = {}
-    rigs = [o for o in bpy.data.objects if o.type == "ARMATURE"]
+    objs = scene_objects(bpy)
+    rigs = [o for o in objs if o.type == "ARMATURE"]
     for rig in sorted(rigs, key=lambda o: o.name):
-        kids = sorted((o for o in bpy.data.objects if o.type == "MESH" and any(
+        kids = sorted((o for o in objs if o.type == "MESH" and any(
             m.type == "ARMATURE" and m.object == rig for m in o.modifiers)), key=lambda o: o.name)
         if not kids:
             continue
         name = rig.name[4:] if rig.name.startswith("rig_") else rig.name
+        if name in out:
+            raise SystemExit(f"two rigs named {rig.name} in the scene")
         proxy = [o for o in kids if o.get("ps_collision_proxy")]
         rendered = [o for o in kids if not o.hide_render and not o.name.startswith(("WGT-", HP.PREFIX))]
         hair = [o for o in rendered if HP.is_hair(o)]
         garment = [o for o in rendered if o not in hair and "ps_garment_item" in o.keys()]
-        glasses = sorted((o for o in bpy.data.objects if o.type == "MESH" and fnmatch.fnmatchcase(o.name, "glasses*")
+        glasses = sorted((o for o in objs if o.type == "MESH" and fnmatch.fnmatchcase(o.name, "glasses*")
                           and (o.parent == rig or o in kids) and not o.hide_render), key=lambda o: o.name)
         body = [o for o in rendered if o not in hair and o not in garment
                 and not any(fnmatch.fnmatchcase(o.name, p) for p in HP.SKIP)]
@@ -543,7 +558,7 @@ def blender_part(args):
     bake = json.load(open(args.bake)) if args.bake and os.path.isfile(args.bake) else {"objects": []}
     box_names = {f"prop.{o['name']}" for o in bake.get("objects", [])}
     rigged = {o.name for c in C.values() for k in ("hair", "figure", "solid", "glasses") for o in c[k]}
-    meshes = sorted((o for o in bpy.data.objects if o.type == "MESH" and not o.hide_render and o.name not in rigged
+    meshes = sorted((o for o in scene_objects(bpy) if o.type == "MESH" and not o.hide_render and o.name not in rigged
                      and not any(m.type == "ARMATURE" for m in o.modifiers)), key=lambda o: o.name)
     boxes = [o for o in meshes if o.name in box_names]
     props = [o for o in meshes if o.name.startswith("prop.") and o.name not in box_names]
@@ -561,11 +576,19 @@ def blender_part(args):
     own_surf = {"hair": lambda c: [(_role_of(c, o), o) for o in c["figure"]],
                 "garment": lambda c: [("body", o) for o in c["solid"]]}
     queries = [q for q, cl in (("hair", "hair_own"), ("garment", "garment_body")) if cl in want or q == "hair"]
+    cost = {}
+    t = time.time()
     rest = rest_depths(bpy, C, names, queries, lambda c, role: own_surf[role](c))
+    cost["rest"] = time.time() - t
+
+    def tick(k, t0):
+        cost[k] = cost.get(k, 0.0) + time.time() - t0
+        return time.time()
     frames = [int(x) for x in args.frame_list.split(",")]
     todo = ([args.warm] if args.warm is not None else []) + frames
     rows, prev = [], {}
     for f in todo:
+        t = time.time()
         sc.frame_set(f)
         deps = bpy.context.evaluated_depsgraph_get()
         pts = {n: {role: points(C[n][role], deps) for role in ("hair", "garment", "solid", "body")} for n in names}
@@ -578,6 +601,7 @@ def blender_part(args):
                                                zip(P, prev[(n, role)]) if len(x) and len(x) == len(y)),
                                               default=0.0) * 1e3, 2)
                 prev[(n, role)] = P
+        t = tick("evaluate", t)
         if f == args.warm:
             continue
         h = hashlib.sha256()
@@ -620,6 +644,7 @@ def blender_part(args):
                     d, lb, _sd = G.depth(P[i])
                     if d > limit:
                         add("glasses", n, f"{o.name} > {lb.replace(n + ':', 'own:', 1)}", d * 1e3)
+        t = tick("hair", t)
         solid = {n: Surfaces([(f"{n}:body:{o.name}", o) for o in C[n]["solid"]], deps) for n in names}
         if "garment_body" in want:
             for n in names:
@@ -637,6 +662,7 @@ def blender_part(args):
                             if d <= limit:
                                 continue
                         add("garment_body", n, f"{o.name} > own:{lb.split(':', 1)[1]}", d * 1e3)
+        t = tick("garment_body", t)
         if "body_body" in want:
             for n in names:
                 for m in names:
@@ -647,6 +673,7 @@ def blender_part(args):
                             d, lb, _sd = solid[m].depth(P[i])
                             if d > limit and lb is not None:
                                 add("body_body", n, f"{o.name} > {lb}", d * 1e3)
+        t = tick("body_body", t)
         if "hand_prop" in want and props:
             PS = Surfaces([(f"prop::{o.name}", o) for o in props], deps)
             for n in names:
@@ -660,6 +687,7 @@ def blender_part(args):
                         d, lb, _sd = PS.depth(P[i])
                         if d > limit and lb is not None:
                             add("hand_prop", n, f"{o.name} > {lb}", d * 1e3)
+        t = tick("hand_prop", t)
         if "body_set" in want and boxes:
             bx = [(o.name, Q.min(0), Q.max(0)) for o, Q in zip(boxes, points(boxes, deps)) if len(Q)]
             for n in names:
@@ -673,13 +701,14 @@ def blender_part(args):
                                 e = res["body_set"].setdefault(n, {}).setdefault(f"{o.name} > set::{bn}", [0, 0.0])
                                 e[0] += int(len(d))
                                 e[1] = max(e[1], float(d.max()) * 1e3)
+        t = tick("body_set", t)
         row = {"frame": f, "sha256": h.hexdigest(), "jump_mm": jump,
                "classes": {c: {n: {k: [v[0], round(v[1], 2)] for k, v in sorted(e.items())}
                                for n, e in sorted(res[c].items())} for c in res if res[c]}}
         rows.append(row)
         print(f"[contact_audit] f{f}", json.dumps({c: sum(len(e) for e in v.values()) for c, v in row["classes"].items()}),
               flush=True)
-    json.dump({"rows": rows}, open(args.out, "w"))
+    json.dump({"rows": rows, "seconds": {k: round(v, 1) for k, v in cost.items()}}, open(args.out, "w"))
 
 
 # ===================================================================================================== CLI ====
@@ -707,12 +736,14 @@ def main(argv):
     au.add_argument("--work")
     au.add_argument("--blender", default=os.environ.get("BLENDER", "blender"))
     au.add_argument("--profile", default=PROFILE)
+    au.add_argument("--snap-frames", help="comma list replacing the bake's snap frames (e.g. an earlier bake's)")
     cp = sub.add_parser("compare")
     cp.add_argument("a")
     cp.add_argument("b")
     cp.add_argument("--md")
     cp.add_argument("--json")
     cp.add_argument("--pop-mm", type=float, default=5.0)
+    cp.add_argument("--snap-frames", help="comma list: re-summarise both audits with these snap frames")
     pt = sub.add_parser("part")  # internal: one Blender process
     pt.add_argument("--blend", required=True)
     pt.add_argument("--out", required=True)
@@ -730,6 +761,10 @@ def main(argv):
         run_audit(a)
     elif a.cmd == "compare":
         A, B = json.load(open(a.a)), json.load(open(a.b))
+        if a.snap_frames is not None:
+            for d in (A, B):
+                d["snap_frames"] = [int(x) for x in a.snap_frames.split(",") if x]
+                d["summary"] = summarise(d, load_known(d.get("known")), d["staging_mm"], d["pop_mm"])
         res = compare(A, B, a.pop_mm)
         if a.json:
             json.dump(res, open(a.json, "w"), indent=1)
