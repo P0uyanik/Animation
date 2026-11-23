@@ -5,7 +5,7 @@ Standing rules: SUPERVISOR_HANDOVER_R7.md ("R7 log"), R6, R5, R4; OWNER_DECISION
 2026-11-22 ~22:40 CET — T-212 changes, auburn pilot first, D2 equal views, D4 matched smile, D6 face/hair ship apart).
 No Fable (Opus default, Sonnet mechanical); P2 visual budget; one owner per file; T-178 release rule; T-182 test
 registration; P13 clone profiles (dispatch FULL, depth 1, for character/render/test work). Next free task ID: **T-219**
-(T-216 reserved for P3 auburn).
+.
 
 ## State
 main = staging = 0a20253f + (T-217 if its gate went green: integration/t-217 eaabda6e — promote with
@@ -34,14 +34,13 @@ OWNERSHIP row, tell session_01NPjxeLxepAyFoUf6uzmqgm to stop). Gate wait: scratc
 | T-218 Q1 contact audit tool | session_01NPjxeNefPKq6DNksLkwLjk (Opus) | t-218-claude-contact-audit | STATUS after e912 validation, then READY; register its test (Blender unit if bpy). |
 
 ## Waiting for the owner (via the liaison; all relayed)
-1. T-194 hair push-out `static_move_fade` ON (Supervisor rec; no pops, auburn nape cap left inside up to 34 mm, hidden
-   from the shot camera) or OFF (nape pushed, 14 auburn pops +5..13 mm). Default in code = ON. Optional follow-up:
-   rate-limited push-out (needs a stateful design).
-2. Go for P3 on auburn (T-216): Warp/Hook/Lattice for the T-215 stuck list (docs/evaluation/characters/T-215/stuck.json:
+(Owner ~06:55 CET 23 Nov: T-194 static_move_fade ON stays default, rate-limit follow-up NOT started; P3 GO → T-216 running.)
+1. Hair look (T-207) + compositor look (T-199): the liaison is confirming picks with the owner.
+2. T-216 P3 on auburn (running): Warp/Hook/Lattice for the T-215 stuck list (docs/evaluation/characters/T-215/stuck.json:
    eye-to-chin, front cheek/jaw width, side cheek, eye opening), baked on neutral skin before rig/masks; acceptance =
    T-214 measurer within T-204 tolerance + held-out 3/4 + T-213 face_parity (incl. `--strict` sweep: fix the in-between
    chain gap via chain-matched drivers or stop keys) + knob-free; then a combined sheet. Supervisor rec: yes.
-3. T-207 hair look per character; T-199 compositor look (plush_soft / plush_strong / none); world plan start. Voices on hold.
+3. World plan start. Voices on hold.
 
 ## Queued (owner-approved, dispatch in order, one owner per file)
 - Q4 lighting setups in Blender set files (touches shot_render.py → after T-217).
