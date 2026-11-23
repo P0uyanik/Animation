@@ -60,3 +60,5 @@ local test_hair_v3_r3_weights.py 'needs Blender; local run (not in the gate befo
 local test_skin_material.py 'needs Blender; local run (not in the gate before T-182)'
 run test_face_parity.py                      # T-213 face export parity (plain; --blender unit: face-parity)
 run test_face_generic_v4.py                 # T-216 face_generic/4 (plain; --blender unit: face-v4)
+run test_set_lights.py                      # T-221 set light rigs (plain)
+blender test_set_lights_blender.py set-lights

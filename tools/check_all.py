@@ -1197,6 +1197,8 @@ BLENDER_UNITS: list[tuple[str, object, bool]] = [
     ("face-v4", t077_unit("face_generic/4 knobs + chains (T-216)", lambda c: [  # synthetic meshes, ~10 s, no assets
         sys.executable, str(ROOT / "pipeline/charsys/tests/test_face_generic_v4.py"), "--blender", c.executable]), False),
     ("hair-pushout", unit_hair_pushout, False),  # T-194
+    ("set-lights", t077_unit("set light rigs (T-221)", lambda c: [c.executable, "-b", "--factory-startup", "-P",  # headless, no render, seconds
+        str(ROOT / "pipeline/charsys/tests/test_set_lights_blender.py")]), False),
 ]
 BLENDER_UNIT_IDS = [unit_id for unit_id, _, _ in BLENDER_UNITS]
 BLENDER_UNIT_DEPENDS = {"face": "charsys"}  # unit -> the unit whose output it reads (same shard, same run)
