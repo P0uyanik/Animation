@@ -1136,3 +1136,13 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   only after the owner approves their sheets.
 - **T-199 compositor:** **plush_soft becomes the DEFAULT final profile** (owner approves the final-render default
   change); previews unchanged.
+
+## 2026-11-23 ~20:05 CET (via the liaison; owner verbatim)
+"P3 looks the best to me, but I honestly couldn't notice much difference between P2 and P3. I don't want the proposed
+follow-up task. I don't want any new tasks at all for now. Don't create or assign any more tasks. Merge everything that's
+currently ready to be merged, and don't start any additional work for now."
+- **T-216:** option (c) — P3 accepted as the auburn face base. No collar follow-up (a), no head-outline round (b).
+- **Hair push-out no-pop fix:** not queued.
+- **FREEZE:** no new tasks, dispatches, Codex assignments, implementer restarts or handovers. Merge only what is READY.
+- **T-222 (L1):** paused at a clean checkpoint, WIP pushed, not merged; may resume later if the owner wants.
+- **T-219 CURRENT** (auburn 0.15.0 / white 0.2.0): still NOT approved; CURRENT unchanged.
