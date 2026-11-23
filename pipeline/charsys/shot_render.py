@@ -4,6 +4,7 @@ animation (TD-42). Read-only on every character master.
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
         [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
         [--engine cycles|eevee] [--blend-only] [--profile final720|review|legacy128] [--hair-pushout [on|spec.json|{json}]]
+        [--garment-pushout [on|spec.json|{json}]]
         [--light-rig <rig id>|<file.light_rig.json>|engine]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
@@ -31,6 +32,9 @@ Per character (any rig whose deform bones the package lists; nothing character-s
   * hair push-out (T-194, opt-in, --hair-pushout): after the bake is keyed, hair is kept out of the real evaluated
     meshes (own body and garments, the other characters, props, box objects): chain bones re-keyed per frame and a
     per-vertex Geometry Nodes clamp on every hair object (hair_pushout.py). Without the flag nothing of it runs.
+  * garment push-out (T-222, opt-in, --garment-pushout): garment vertices that end up inside their own character's
+    posed body are moved back out by a per-vertex Geometry Nodes step on every garment object (garment_pushout.py).
+    Without the flag nothing of it runs.
 Writes shot.blend (masters stay linked), frame_####.png, shot_render.json (timings, reconstruction error, eye sockets)."""
 import argparse
 import json
@@ -46,6 +50,7 @@ from mathutils import Matrix, Vector
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
+import garment_pushout  # noqa: E402
 import hair_pushout  # noqa: E402
 import render_engine  # noqa: E402
 import set_lights  # noqa: E402
@@ -75,6 +80,9 @@ def parse():
     ap.add_argument("--blend-only", action="store_true")
     ap.add_argument("--hair-pushout", nargs="?", const="on", default=None,
                     help="T-194: push hair out of the real meshes (on, a spec JSON file or inline JSON; hair_pushout.py)")
+    ap.add_argument("--garment-pushout", nargs="?", const="on", default=None,
+                    help="T-222: push garments out of the own posed body (on, a spec JSON file or inline JSON; "
+                         "garment_pushout.py)")
     ap.add_argument("--light-rig", default=None,
                     help="T-221: Blender light rig (id in content/sets/rigs, a .light_rig.json path, or 'engine' for the "
                          "engine-light translation); default: the scene's x_light_rig, else its set's rig, else none")
@@ -443,6 +451,11 @@ def main():
         tp = time.time()
         pushout = hair_pushout.PushOut(scene, hair_pushout.load_spec(a.hair_pushout), states, props, boxes)
         pushout_s = {"setup_s": round(time.time() - tp, 2), "chains_s": 0.0}
+    gpush = None
+    if a.garment_pushout is not None:  # rest data before any frame is keyed
+        tp = time.time()
+        gpush = garment_pushout.GarmentPushOut(scene, garment_pushout.load_spec(a.garment_pushout), states)
+        gpush_s = {"setup_s": round(time.time() - tp, 2)}
     cam = bpy.data.objects.new("shot_camera", bpy.data.cameras.new("shot_camera"))
     scene.collection.objects.link(cam)
     scene.camera = cam
@@ -491,6 +504,11 @@ def main():
         pushout_s["install_s"] = round(time.time() - tp, 2)
         pushout_s["chains_s"] = round(pushout_s["chains_s"], 2)
         rep["hair_pushout"] = {**pushout.report, "timing": pushout_s}
+    if gpush is not None:
+        tp = time.time()
+        gpush.install()
+        gpush_s["install_s"] = round(time.time() - tp, 2)
+        rep["garment_pushout"] = {**gpush.report, "timing": gpush_s}
     for n, st in states.items():
         rep["characters"][n] = {"master": st["master"], "baked_bones": len(st["bones"]), "facial_controls": len(st["controls"]),
                                 "unmapped_morphs": st["unmapped_morphs"], "bones_left_to_drivers": st["skipped_driven_bones"],

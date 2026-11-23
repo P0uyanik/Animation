@@ -53,6 +53,7 @@ PROFILES_REL = "code/pipeline/charsys/render_profiles.json"
 # list honest: every pipeline/charsys module imported by a listed file must be listed.
 RENDER_CODE = ["pipeline/charsys/shot_render.py", "pipeline/charsys/episode.py", "pipeline/charsys/render_engine.py",
                "pipeline/charsys/geom.py", "pipeline/charsys/render_profiles.json", "pipeline/charsys/hair_pushout.py",
+               "pipeline/charsys/garment_pushout.py",
                "pipeline/charsys/materials/__init__.py",
                "pipeline/charsys/materials/builder.py", "pipeline/charsys/set_lights.py",
                "pipeline/charsys/set_lights_blender.py"]
