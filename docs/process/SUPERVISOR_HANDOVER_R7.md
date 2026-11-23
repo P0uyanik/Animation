@@ -77,4 +77,4 @@ Next free ID: T-212.
   hair-pushout (shard 3). Owner asked ON/OFF for static_move_fade (Supervisor: ON). shot_render.py / run_shot.py are
   free now → T-201 engine-key follow-up, then Q1 contact audit / Q4 Blender set lighting / L1 garment push-out
   (all shot_render.py, sequence them) + H2 hair volume. Optional follow-up: rate-limited push-out (stateful design).
-- Dispatched T-217 (Sonnet, profile engine key in shot_render/run_shot) and T-218 (Opus, Q1 contact audit tool). T-216 reserved for P3 auburn (owner go). Q4 after T-217 (shot_render.py), L1 after T-218.
+- Dispatched T-217 (Sonnet, session_01NPjxeLxepAyFoUf6uzmqgm, profile engine key in shot_render/run_shot) and T-218 (Opus, session_01NPjxeNefPKq6DNksLkwLjk, Q1 contact audit tool). T-216 reserved for P3 auburn (owner go). Q4 after T-217 (shot_render.py), L1 after T-218.
