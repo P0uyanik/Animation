@@ -1,0 +1,254 @@
+{
+ "a": "/tmp/claude-0/-home-user-Animation/15a27a21-6955-5320-9cdc-49395ea7ce80/scratchpad/w/b/cand_off/shot.blend",
+ "b": "/tmp/claude-0/-home-user-Animation/15a27a21-6955-5320-9cdc-49395ea7ce80/scratchpad/w/b/cand_on/shot.blend",
+ "classes": {
+  "body_body": {
+   "a": {
+    "calm_over": 36,
+    "calm_entries": 288,
+    "all_over": 38,
+    "max_calm_mm": 58.03,
+    "max_mm": 58.03,
+    "frames_over": 19
+   },
+   "b": {
+    "calm_over": 36,
+    "calm_entries": 288,
+    "all_over": 38,
+    "max_calm_mm": 58.03,
+    "max_mm": 58.03,
+    "frames_over": 19
+   }
+  },
+  "body_set": {
+   "a": {
+    "calm_over": 288,
+    "calm_entries": 288,
+    "all_over": 312,
+    "max_calm_mm": 62.57,
+    "max_mm": 62.57,
+    "frames_over": 104
+   },
+   "b": {
+    "calm_over": 288,
+    "calm_entries": 288,
+    "all_over": 312,
+    "max_calm_mm": 62.57,
+    "max_mm": 62.57,
+    "frames_over": 104
+   }
+  },
+  "garment_body": {
+   "a": {
+    "calm_over": 287,
+    "calm_entries": 288,
+    "all_over": 311,
+    "max_calm_mm": 40.91,
+    "max_mm": 40.91,
+    "frames_over": 104
+   },
+   "b": {
+    "calm_over": 287,
+    "calm_entries": 288,
+    "all_over": 311,
+    "max_calm_mm": 40.91,
+    "max_mm": 40.91,
+    "frames_over": 104
+   }
+  },
+  "glasses": {
+   "a": {
+    "calm_over": 96,
+    "calm_entries": 288,
+    "all_over": 104,
+    "max_calm_mm": 1.3,
+    "max_mm": 1.3,
+    "frames_over": 104
+   },
+   "b": {
+    "calm_over": 96,
+    "calm_entries": 288,
+    "all_over": 104,
+    "max_calm_mm": 1.3,
+    "max_mm": 1.3,
+    "frames_over": 104
+   }
+  },
+  "hair": {
+   "a": {
+    "calm_over": 192,
+    "calm_entries": 288,
+    "all_over": 207,
+    "max_calm_mm": 33.81,
+    "max_mm": 33.81,
+    "frames_over": 104
+   },
+   "b": {
+    "calm_over": 151,
+    "calm_entries": 288,
+    "all_over": 158,
+    "max_calm_mm": 33.81,
+    "max_mm": 33.81,
+    "frames_over": 101
+   }
+  },
+  "hair_other": {
+   "a": {
+    "calm_over": 4,
+    "calm_entries": 288,
+    "all_over": 5,
+    "max_calm_mm": 3.16,
+    "max_mm": 3.82,
+    "frames_over": 5
+   },
+   "b": {
+    "calm_over": 9,
+    "calm_entries": 288,
+    "all_over": 10,
+    "max_calm_mm": 3.42,
+    "max_mm": 3.82,
+    "frames_over": 10
+   }
+  },
+  "hair_own": {
+   "a": {
+    "calm_over": 192,
+    "calm_entries": 288,
+    "all_over": 207,
+    "max_calm_mm": 33.81,
+    "max_mm": 33.81,
+    "frames_over": 104
+   },
+   "b": {
+    "calm_over": 147,
+    "calm_entries": 288,
+    "all_over": 154,
+    "max_calm_mm": 33.81,
+    "max_mm": 33.81,
+    "frames_over": 101
+   }
+  },
+  "hair_prop": {
+   "a": {
+    "calm_over": 0,
+    "calm_entries": 288,
+    "all_over": 1,
+    "max_calm_mm": 0.0,
+    "max_mm": 2.56,
+    "frames_over": 1
+   },
+   "b": {
+    "calm_over": 0,
+    "calm_entries": 288,
+    "all_over": 0,
+    "max_calm_mm": 0.0,
+    "max_mm": 0.0,
+    "frames_over": 0
+   }
+  },
+  "hair_set": {
+   "a": {
+    "calm_over": 0,
+    "calm_entries": 288,
+    "all_over": 0,
+    "max_calm_mm": 0.0,
+    "max_mm": 0.0,
+    "frames_over": 0
+   },
+   "b": {
+    "calm_over": 0,
+    "calm_entries": 288,
+    "all_over": 0,
+    "max_calm_mm": 0.0,
+    "max_mm": 0.0,
+    "frames_over": 0
+   }
+  },
+  "hand_prop": {
+   "a": {
+    "calm_over": 60,
+    "calm_entries": 288,
+    "all_over": 66,
+    "max_calm_mm": 20.41,
+    "max_mm": 20.41,
+    "frames_over": 66
+   },
+   "b": {
+    "calm_over": 60,
+    "calm_entries": 288,
+    "all_over": 66,
+    "max_calm_mm": 20.41,
+    "max_mm": 20.41,
+    "frames_over": 66
+   }
+  },
+  "known:rigid hair in own head (T-191)": {
+   "a": {
+    "calm_over": 43,
+    "calm_entries": 288,
+    "all_over": 45,
+    "max_calm_mm": 52.29,
+    "max_mm": 52.29,
+    "frames_over": 45
+   },
+   "b": {
+    "calm_over": 42,
+    "calm_entries": 288,
+    "all_over": 44,
+    "max_calm_mm": 52.29,
+    "max_mm": 52.29,
+    "frames_over": 44
+   }
+  },
+  "staging_hair": {
+   "a": {
+    "calm_over": 35,
+    "calm_entries": 288,
+    "all_over": 39,
+    "max_calm_mm": 77.55,
+    "max_mm": 77.55,
+    "frames_over": 23
+   },
+   "b": {
+    "calm_over": 27,
+    "calm_entries": 288,
+    "all_over": 31,
+    "max_calm_mm": 77.55,
+    "max_mm": 77.55,
+    "frames_over": 20
+   }
+  }
+ },
+ "pops_b_vs_a": {
+  "count": 4,
+  "max_added_mm": 7.21,
+  "list": [
+   {
+    "frame": 109,
+    "character": "girl_white_hair_blue_dress",
+    "added_mm": 7.21
+   },
+   {
+    "frame": 139,
+    "character": "girl_white_hair_blue_dress",
+    "added_mm": 6.28
+   },
+   {
+    "frame": 185,
+    "character": "girl_white_hair_blue_dress",
+    "added_mm": 6.25
+   },
+   {
+    "frame": 205,
+    "character": "girl_white_hair_blue_dress",
+    "added_mm": 6.31
+   }
+  ]
+ },
+ "new_keys_b": {
+  "hair_other": [
+   "boy_yellow_hoodie hair_fringe.002 > girl_auburn_bun_glasses:body:body_skin.001",
+   "girl_auburn_bun_glasses hair_ringlets_side_00 > boy_yellow_hoodie:body:body_skin.002"
+  ]
+ }
+}

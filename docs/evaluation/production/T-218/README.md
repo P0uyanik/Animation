@@ -11,7 +11,7 @@ bake or engine file. Method and roles: the module docstring.
 On the released chain (`rel_*`) the push-out makes the hair jump: **117 frame x character entries where the push-out
 adds > 5 mm to the largest frame-to-frame hair vertex move, largest +237.7 mm (auburn, f47)**. 111 are calm; 6 fall
 in a T-194 snap window (f45, f47, f111 auburn; f45, f47, f135 white).
-On the T-183 candidate (`cand_*`) the same push-out adds __CAND_POPS__.
+On the T-183 candidate (`cand_*`) the same push-out adds 4 pops, all white, at most +7.2 mm (section 2).
 
 | character | pop frames | median added | max added |
 |---|---|---|---|
@@ -45,13 +45,13 @@ calm = not a snap frame +-1, boy's rigid hair (T-191, `known_e912.json`), glasse
 
 | | T-194 off | T-218 off | T-194 on | T-218 on |
 |---|---|---|---|---|
-| calm entries > 1 mm | 192 / 288 | 192 / 288 | 149 / 288 | __CAND_ON_CALM__ |
-| max calm | 33.81 (f115 auburn `hair_cap.001` in own skin) | 33.81 (same) | 33.81 | __CAND_ON_MAX__ |
-| all entries > 1 mm | 208 / 312 | 208 / 312 | 159 / 312 | __CAND_ON_ALL__ |
-| pops > 5 mm | | | 3: white f109 +7.2, f185 +6.2, f205 +6.3 | __CAND_ON_POPS__ |
-| boy head (apart) | 45 fr, 52.29 | 45, 52.29 | | |
-| staging (apart) | 40 fr, 77.55 | 39, 77.55 | 33 fr, 77.55 | __CAND_ON_STAGING__ |
-| glasses (apart) | 104 fr, 1.4 | 104, 1.30 | | |
+| calm entries > 1 mm | 192 / 288 | 192 / 288 | 149 / 288 | 151 / 288 |
+| max calm | 33.81 (f115 auburn `hair_cap.001` in own skin) | 33.81 (same) | 33.81 | 33.81 (same) |
+| all entries > 1 mm | 208 / 312 | 208 / 312 | 159 / 312 | 158 / 312 |
+| pops > 5 mm | | | 3: white f109 +7.2, f185 +6.2, f205 +6.3 | 4: white f109 +7.21, f139 +6.28, f185 +6.25, f205 +6.31 |
+| boy head (apart, entries) | 45, 52.29 | 45, 52.29 | | 44, 52.29 |
+| staging (apart, entries) | 40, 77.55 | 39, 77.55 | 33, 77.55 | 31, 77.55 |
+| glasses (apart, entries) | 104, 1.4 | 104, 1.30 | | 104, 1.30 |
 
 Per frame (T-194 `results/e912_s020c2_off.m.json` against `cand_off`, worst hair depth per frame and girl, staging
 and glasses apart): 201 of 208 agree within 0.1 mm. The 7 that differ are all around the two body snaps, f105-113
@@ -62,6 +62,11 @@ were built at different times by shot_render (T-194's in its own session), and a
 across the snap (largest move f107 -> f109: 368 mm in T-194, 167 mm here; the move differs on most auburn
 frames from f105 on, while the depths agree). The calm counts and the calm max are the same, and snap frames are not
 in the calm columns. This is noted, not resolved: T-218 does not rebuild T-194's blend.
+
+ON vs OFF on the candidate reproduces T-194: calm 192 -> 151 (T-194 149), the same three white pops (to T-194's
+0.1 mm) plus f139 +6.28, inside the f138 snap window (+-1), where the two blends' hair differs (above). The
+push-out leaves new shallow contacts in hair_other (boy fringe in auburn's skin, auburn ringlet in the boy's
+skin, <= 3.4 mm).
 
 ### 3. The other classes (same in all four runs: the push-out moves hair only)
 
@@ -91,7 +96,7 @@ in the calm columns. This is noted, not resolved: T-218 does not rebuild T-194's
 | released off | 5091 s | 655 | 1896 | 1811 | 599 | 49 | 27 | 24 |
 | released on | 4882 s | 871 | 1482 | 1803 | 581 | 59 | 26 | 23 |
 | candidate off | 4491 s | 679 | 1293 | 1782 | 599 | 47 | 27 | 23 |
-| candidate on | __CAND_ON_T__ |
+| candidate on (alone) | 3976 s | 570 | 1156 | 1620 | 528 | 38 | 24 | 22 |
 
 About 45-50 s a measured frame with three audits sharing the machine. `--jobs N` splits the frames into N Blender
 processes (each warms up on the frame before its chunk); `--step`, `--frames` and `--classes` cut the cost (hair only:
