@@ -641,7 +641,11 @@ def _rate_limit(ng, g0, g1, step):
 
     def lookup(cloud):
         """The `off` of this vertex in a state cloud (zero when it has no point)."""
-        ni = node("GeometryNodeSampleNearest")
+        pv = N.new("GeometryNodePointsToVertices")  # Sample Nearest on the point cloud itself crashed Blender 5.3
+        # (segfault within 40 frames of e912 s010); on a vertex-only mesh it does not
+        L.new(cloud, pv.inputs["Points"])
+        cloud = pv.outputs["Mesh"]
+        ni = node("GeometryNodeSampleNearest", domain="POINT")
         L.new(cloud, ni.inputs["Geometry"])
         L.new(key.outputs[0], ni.inputs["Sample Position"])
         sp = node("ShaderNodeSeparateXYZ")
@@ -689,7 +693,29 @@ def _rate_limit(ng, g0, g1, step):
     L.new(st.outputs[0], mp.inputs["Mesh"])
     L.new(nz.outputs[0], mp.inputs["Selection"])
     L.new(key.outputs[0], mp.inputs["Position"])
-    L.new(mp.outputs[0], so.inputs["Geometry"])
+    # a fresh cloud with only position and `off` (Mesh to Points carries every vertex attribute of the garment)
+    ds = node("GeometryNodeAttributeDomainSize", component="POINTCLOUD")
+    L.new(mp.outputs[0], ds.inputs[0])
+    pts = N.new("GeometryNodePoints")
+    L.new(ds.outputs["Point Count"], pts.inputs["Count"])
+    L.new(sample(mp.outputs[0], pos.outputs[0], idx.outputs[0], "FLOAT_VECTOR"), pts.inputs["Position"])
+    pts.inputs["Radius"].default_value = 0.0
+    st2 = node("GeometryNodeStoreNamedAttribute", data_type="FLOAT_VECTOR", domain="POINT")
+    st2.inputs["Name"].default_value = "off"
+    L.new(pts.outputs[0], st2.inputs["Geometry"])
+    L.new(sample(mp.outputs[0], off_attr.outputs["Attribute"], idx.outputs[0], "FLOAT_VECTOR"), st2.inputs["Value"])
+    # plus one sentinel point at x = -1 (no vertex has that index): the state is never empty
+    sent = N.new("GeometryNodePoints")
+    sent.inputs["Count"].default_value = 1
+    sent.inputs["Position"].default_value = (-1.0, 0.0, 0.0)
+    sent.inputs["Radius"].default_value = 0.0
+    st3 = node("GeometryNodeStoreNamedAttribute", data_type="FLOAT_VECTOR", domain="POINT")
+    st3.inputs["Name"].default_value = "off"
+    L.new(sent.outputs[0], st3.inputs["Geometry"])
+    jg = N.new("GeometryNodeJoinGeometry")
+    L.new(st3.outputs[0], jg.inputs[0])
+    L.new(st2.outputs[0], jg.inputs[0])
+    L.new(jg.outputs[0], so.inputs["Geometry"])
     spos = N.new("GeometryNodeSetPosition")
     L.new(g0, spos.inputs["Geometry"])
     L.new(lookup(so.outputs["Geometry"]), spos.inputs["Offset"])
