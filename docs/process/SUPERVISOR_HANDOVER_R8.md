@@ -31,6 +31,7 @@ OWNERSHIP row, tell session_01NPjxeLxepAyFoUf6uzmqgm to stop). Gate wait: scratc
 | Task | Session (model) | Branch | Next |
 |---|---|---|---|
 | T-217 profile engine key | session_01NPjxeLxepAyFoUf6uzmqgm (Sonnet) | t-217-claude-profile-engine | in gate (integration/t-217 eaabda6e) → promote, close. |
+| T-216 auburn face P3 (owner GO) | session_01NPjxeNkz9QaQntYYhFp3SF (Opus) | t-216-claude-auburn-p3 | STATUS after knob design, then READY with combined sheet → liaison (owner review before any release). |
 | T-218 Q1 contact audit tool | session_01NPjxeNefPKq6DNksLkwLjk (Opus) | t-218-claude-contact-audit | STATUS after e912 validation, then READY; register its test (Blender unit if bpy). |
 
 ## Waiting for the owner (via the liaison; all relayed)
