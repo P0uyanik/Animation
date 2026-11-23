@@ -32,7 +32,7 @@ front / 3/4 / side / back equal weights. Ratios are render / reference.
 
 ## Stair-step
 Cause: hair.scalp_cap deletes whole head faces under the hairline / face_cut, so the cap border follows the head's
-faces. Fix (opt-in `hair.cap_contour`, groom/cap_contour.py): the head surface is clipped along the zero line of the
+faces. Fix (opt-in `hair.cap_contour`, cap_contour section of groom_r6.py): the head surface is clipped along the zero line of the
 same hairline/face_cut field (edges split at the bisected root, faces split, no slivers). Present in released auburn
 0.14.0 at the forehead and both ears, and in white 0.1.0 at both ears (her fringe hides the forehead); gone in both
 candidates (sheets/*_crops_100.jpg).
@@ -48,7 +48,7 @@ the stored 0.14.0 master); not hair.
   sheets/auburn_strict.jpg, sheets/white_strict.jpg; 100 % crops (768 px head renders): sheets/*_crops_100.jpg.
 
 ## Push-out (step 6) — pushout.json, pushout_compare.py
-e912 s030 copies in shots/ with the girls cast explicitly (current = version_dir 0.14.0 / 0.1.0; candidate = the
+e912 s030 copies (written by make_pushout_shots.py into a scratch folder, not committed: they pin non-current versions on purpose and check_cast cannot resolve the white girl, who has no fidelity_baseline current entry) with the girls cast explicitly (current = version_dir 0.14.0 / 0.1.0; candidate = the
 T-219 candidate specs, built by run_shot), boy current 2.3.0; frames 1-80, measured every 2nd frame with T-194
 tools/measure_eval.py. ON = run_shot with hair push-out (T-194 defaults, static_move_fade on); OFF = shot_render on the
 same bake without --hair-pushout. Pops = frames where push-out adds > 5 mm to the largest hair-vertex jump (T-194 rule).

@@ -25,7 +25,6 @@ ROOT = os.path.abspath(os.path.join(CHARSYS, "..", ".."))
 MODULE = os.path.join(CHARSYS, "groom", "flock.py")
 OPTIONS = os.path.join(ROOT, "docs", "evaluation", "characters", "T-207", "options")
 GROOM_R6 = os.path.join(CHARSYS, "groom_r6.py")
-CAP_MODULE = os.path.join(CHARSYS, "groom", "cap_contour.py")
 V1 = os.path.join(OPTIONS, "V1.json")
 T219 = {"girl_auburn_bun_glasses": "0.15.0", "girl_white_hair_blue_dress": "0.2.0"}  # T-219 candidates (V1 flock)
 TAG = "[test_hair_flock]"
@@ -64,10 +63,10 @@ def plain():
 
 # ---------------------------------------------------------------------------------------------- Blender checks
 def load_cap():
-    spec = importlib.util.spec_from_file_location("ps_hair_cap_contour", CAP_MODULE)
-    mod = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(mod)
-    return mod
+    """The T-219 cap_contour functions (groom_r6.py section)."""
+    sys.path.insert(0, CHARSYS)
+    import groom_r6
+    return groom_r6._cap_contour()
 
 
 def hook():
