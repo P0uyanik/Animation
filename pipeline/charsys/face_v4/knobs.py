@@ -15,8 +15,8 @@ of the row on one side: the profile outline off the midline, e.g. a cheek pad), 
 the midline).
 `offset_m` shifts the anchor; on a per-side anchor x points outward. `move_m` / `scale` move / scale the Warp target
 or the Hook empty about the anchor (x outward per side). `mirror` (default: true for per-side anchors) builds the
-knob on both sides, mirrored. `floor_m` limits the knob to skin above anchor z - floor_m (a smooth fade of
-floor_fade_m below), e.g. to keep the neck still. LATTICE: a box of size_m centred on the anchor with nu x nv x nw
+knob on both sides, mirrored. `floor_m` (any type) limits the knob to skin above anchor z - floor_m (a
+smooth fade of floor_fade_m below), e.g. to keep the neck and everything a garment wraps onto still. LATTICE: a box of size_m centred on the anchor with nu x nv x nw
 points (linear interpolation); `offsets` moves points by index "i_j_k" (i along x, j along y, k along z); its
 border points stay fixed, so the skin outside the box is unchanged; mirrored offsets go to index nu-1-i, x negated
 (per-side anchor: a second lattice on the other side; midline anchor: the same lattice, its points made symmetric).
@@ -279,7 +279,10 @@ def _build(C, head, k, sx, anchor, co, tag):
         p.co_deform = p.co + Vector((d[0] / size[0], d[1] / size[1], d[2] / size[2]))
     half = size / 2
     inside = np.all(np.abs(co - np.array(anchor)) <= half * 1.0001, axis=1)
-    group = _add_group(head, f"{tag}_w", inside.astype(float))
+    w = inside.astype(float)
+    if k.get("floor_m") is not None:
+        w = w * _floor_weights(co, anchor[2], float(k["floor_m"]), float(k.get("floor_fade_m", 0.01)))
+    group = _add_group(head, f"{tag}_w", w)
     helpers.append(("group", group.name))
     m = head.modifiers.new(tag, "LATTICE")
     m.object = lo
