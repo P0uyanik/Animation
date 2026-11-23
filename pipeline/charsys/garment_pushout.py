@@ -15,8 +15,9 @@ Two hidden proxies per garment object carry the vertex (base) and the vertex + `
 vertex's own weights; at frame f, dir = tip - base (normalised) is the rest-outward direction as the body moves.
 
 At frame f (Geometry Nodes, after the garment's Armature modifier, before its body_collision shrinkwraps):
-  s   the signed clearance along dir. Inside: the winding number along +dir over the first `ray_hits` crossings of
-      the own solids (back face +1, front face -1, within `max_exit_m`) is positive; the exit is the first crossing
+  s   the signed clearance along dir. Inside: the winding numbers along +dir and along -dir over the first
+      `ray_hits` crossings of the own solids (back face +1, front face -1, within `max_exit_m`) are both positive (a
+      ray leaking out through a wrist or neck opening disagrees with its opposite one); the exit is the first crossing
       where the count reaches its total, or the nearest surface point when that is nearer and within
       `nearest_cone_deg` of dir (a limb turned along dir: the seated thigh against the shorts' front panel; the
       crook of a bend, where an unbent sleeve belongs back towards its own axis); s = -(exit distance). A vertex
@@ -50,7 +51,7 @@ import hair_pushout as HP
 PREFIX = "ps_garment_pushout"
 EPS = 1e-5
 DEFAULTS = {"characters": "all", "items": "all", "margin_m": 0.0015, "clearance_cap_m": 0.01, "reach_m": 0.01,
-            "max_exit_m": 0.5, "move_fade_m": [0.05, 0.08], "smooth_iterations": 0, "normal_smooth": 2,
+            "max_exit_m": 0.5, "move_fade_m": [0.02, 0.03], "smooth_iterations": 0, "normal_smooth": 2,
             "nearest_cone_deg": 150.0, "ray_hits": 4, "passes": 2,
             "max_winding": 1}
 
@@ -150,7 +151,8 @@ def rest_frame(tree, P, edges, cap, max_exit, normal_smooth, cone=0.0, hits=4):
     for i in range(nv):
         p, d = Vector(P[i]), Vector(N[i])
         w, t = winding_exit(tree, p, d, max_exit, hits)
-        if w > 0:  # inside at rest (the frame rule)
+        wb, _tb = winding_exit(tree, p, -d, max_exit, hits)
+        if w > 0 and wb > 0:  # inside at rest (the frame rule)
             loc, dist = near[i]
             # the frame rule: the nearest surface point when nearer and within the cone of n
             if loc is not None and dist < t and np.dot(loc - P[i], N[i]) > cone * max(float(dist), 1e-12):
@@ -420,21 +422,28 @@ def _push_group(spec):
     # positive; one first hit alone is fooled where the body mesh passes into itself (seated thighs into the belly,
     # e912 s010 f70: inside the thigh AND the belly). The exit along dir is the first crossing where the count reaches
     # its total (from there on the ray is outside every part).
-    T, r, rec = 0.0, 0.0, []
-    for _j in range(int(spec["ray_hits"])):
-        src = vm("ADD", pw, vm("SCALE", d, scale=fm("ADD", T, EPS) if not isinstance(T, float) else T + EPS)
-                 .outputs[0]).outputs[0]
-        hit, back, dist = ray(src, d, fm("MAXIMUM", fm("SUBTRACT", mx, T), 0.0) if not isinstance(T, float) else mx)
-        step = switch("FLOAT", hit, 0.0, switch("FLOAT", back, -1.0, 1.0))
-        r = fm("ADD", r, step) if not isinstance(r, float) else step
-        T = switch("FLOAT", hit, T, fm("ADD", fm("ADD", T, EPS), dist) if not isinstance(T, float) else
-                   fm("ADD", T + EPS, dist))
-        rec.append((hit, r, T))
-    W = r
-    inside = cmp("GREATER_THAN", W, 0.5)
+    def walk(dv):
+        """(winding number, [(hit, running count, distance)]) along dv over the first `ray_hits` crossings."""
+        T, r, rec = 0.0, 0.0, []
+        for _j in range(int(spec["ray_hits"])):
+            src = vm("ADD", pw, vm("SCALE", dv, scale=fm("ADD", T, EPS) if not isinstance(T, float) else T + EPS)
+                     .outputs[0]).outputs[0]
+            hit, back, dist = ray(src, dv, fm("MAXIMUM", fm("SUBTRACT", mx, T), 0.0) if not isinstance(T, float)
+                                  else mx)
+            step = switch("FLOAT", hit, 0.0, switch("FLOAT", back, -1.0, 1.0))
+            r = fm("ADD", r, step) if not isinstance(r, float) else step
+            T = switch("FLOAT", hit, T, fm("ADD", fm("ADD", T, EPS), dist) if not isinstance(T, float) else
+                       fm("ADD", T + EPS, dist))
+            rec.append((hit, r, T))
+        return r, rec
+    W, rec = walk(d)
+    Wb, _recb = walk(nd)
+    # inside along both +dir and -dir (a ray that leaks out through an opening of the body, a wrist or the neck,
+    # disagrees with its opposite one: isolated spikes of 50-70 mm, e912 s010 f3-4)
+    inside = boolean("AND", cmp("GREATER_THAN", W, 0.5), cmp("GREATER_THAN", Wb, 0.5))
     # inside more than `max_winding` parts at once (an overlap of the posed body with itself: seated thigh in the
     # belly, calf in the thigh): deep and covered on every side; a move out of one part ends inside the other
-    deep = cmp("GREATER_THAN", W, float(spec["max_winding"]) + 0.5)
+    deep = cmp("GREATER_THAN", fm("MAXIMUM", W, Wb), float(spec["max_winding"]) + 0.5)
     t1 = mx
     for hit, rj, Tj in reversed(rec):
         at = boolean("AND", hit, cmp("LESS_THAN", fm("ABSOLUTE", fm("SUBTRACT", rj, W)), 0.5))
