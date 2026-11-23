@@ -26,7 +26,6 @@ split.
 
 | Task | Lane | Branch | Write-set | Depends on | Versions bumped |
 | --- | --- | --- | --- | --- | --- |
-| T-219 | C | t-219-claude-hair-release | `pipeline/charsys/groom_r6.py`, `pipeline/charsys/groom/**`, `pipeline/charsys/tests/test_hair_flock.py`, `pipeline/charsys/release_rule.py`, `pipeline/charsys/release_manifest.json`, `pipeline/charsys/tests/test_release_rule.py`, `assets/characters/girl_auburn_bun_glasses/versions/**`, `assets/characters/girl_white_hair_blue_dress/versions/**`, `assets/characters/girl_auburn_bun_glasses/spec/candidates/T-219/**`, `assets/characters/girl_white_hair_blue_dress/spec/candidates/T-219/**`, `docs/evaluation/characters/T-219/**` | `pipeline/charsys/versions.py` (stable), `pipeline/charsys/build_character.py` (stable) | — |
 | T-218 | P | t-218-claude-contact-audit | `pipeline/production/contact_audit.py`, `pipeline/production/tests/test_contact_audit.py`, `docs/evaluation/production/T-218/**` | `pipeline/charsys/hair_pushout.py` (stable), `docs/evaluation/characters/T-194/**` (stable), `docs/evaluation/characters/T-183/**` (stable) | — |
 
 Supervisor-only files: docs/process/TASK_LOG.md, docs/ROADMAP.md, docs/process/OWNER_DECISIONS.md, docs/tasks/**.
