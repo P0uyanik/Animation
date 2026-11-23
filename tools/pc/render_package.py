@@ -2,7 +2,7 @@
 change to any system setting.
 
     python tools/pc/render_package.py <package.zip | unpacked package folder>
-        [--profile final720 | preview_eevee | review | legacy128] [--blender <blender.exe>] [--frames A-B]
+        [--profile final720_look (default) | final720 | preview_eevee | review | legacy128] [--blender <blender.exe>] [--frames A-B]
         [--resolution W H] [--samples N] [--out <folder>] [--video] [--verify-only]
 
 A bake package (plush.bake_package/1) is made in the cloud by pipeline/production/bake_package.py: the engine's
@@ -195,7 +195,7 @@ def render_command(folder, man, profiles, a, blender, out):
 def main(argv=None):
     ap = argparse.ArgumentParser(description="Verify and render a T-205 bake package with Blender (no engine).")
     ap.add_argument("package", help="the bake package .zip (or an unpacked package folder)")
-    ap.add_argument("--profile", help="render profile (default: the package's default, final720)")
+    ap.add_argument("--profile", help="render profile (default: the package's default_profile, final720_look = plush_soft look; final720 = no look)")
     ap.add_argument("--blender")
     ap.add_argument("--frames", default="", help="A-B (default: every baked frame)")
     ap.add_argument("--resolution", type=int, nargs=2)

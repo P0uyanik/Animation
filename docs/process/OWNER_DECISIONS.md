@@ -1118,3 +1118,21 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
   refs scored against a matched smile expression; D6 face and hair ship independently. Standing: no CURRENT change
   without the owner's OK; every new character version needs the owner's sheet approval; P2 budget per session. The
   liaison wants the auburn pilot sheet (all angles, before/after/reference) when ready.
+
+## 2026-11-23 ~06:55 CET (via the liaison; owner: "With All four open decisions i agree")
+- **T-194 hair push-out:** `static_move_fade` ON stays the default (no pops; auburn nape cap left inside, hidden from
+  the shot camera). The rate-limited push-out follow-up is NOT started; optional, only on the owner's request.
+- **Auburn face: GO for P3** (Warp/Hook/Lattice for outline and chin on the T-215 stuck list), then a combined sheet
+  before any release decision.
+- Hair look (T-207) and compositor look (T-199) picks: the liaison confirms them with the owner separately.
+
+## 2026-11-23 ~06:58 CET (via the liaison; owner question dialog)
+- **T-207 hair look:** auburn girl **V1**, white-haired girl **V1**, boy keeps his current fleece. Needs new character
+  versions (CURRENT changes): each one comes to the owner as a sheet for approval before it goes CURRENT. Bundling with
+  the face releases is the Supervisor's call (not a priority for the owner). Fix the girl's forehead stair-step with H2
+  as planned.
+  Supervisor note (R8, ledger only, no new approval): T-219 publishes these as CANDIDATES
+  girl_auburn_bun_glasses **0.15.0** and girl_white_hair_blue_dress **0.2.0** (opt-ins hair_flock, cap_contour); CURRENT
+  only after the owner approves their sheets.
+- **T-199 compositor:** **plush_soft becomes the DEFAULT final profile** (owner approves the final-render default
+  change); previews unchanged.

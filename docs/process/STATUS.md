@@ -2,7 +2,7 @@
 
 Updated by the Supervisor in the same commit as every merge or dispatch. Sources: [TASK_LOG](TASK_LOG.md),
 [OWNERSHIP](OWNERSHIP.md), [OWNER_DECISIONS](OWNER_DECISIONS.md). As of 2026-11-22 ~19:50Z (R7 Supervisor
-session_01NPjxeKJV7E1M9rnLTkzJoo; SUPERVISOR_HANDOVER_R7.md). Merged: T-207 + T-199 (main 0f3787e). Merged: T-211 (docs), T-210 (a96602c). Merged: T-201 (33b440a). Merged: T-213 (027f528c), T-214 (7fbf3c6f). Merged: T-215 (19e6b0cb), T-194 (2a9e3551). Running: T-217 (profile engine key), T-218 (Q1 contact audit). Waiting for owner: P3 go on auburn; T-194 static_move_fade ON/OFF. Queued: Q4 (after T-217), L1 (after T-218), H2 hair volume; T-216 = P3 auburn (owner go). Merged: T-204 (Codex docs).
+session_01NPjxeKJV7E1M9rnLTkzJoo; SUPERVISOR_HANDOVER_R7.md). Merged: T-207 + T-199 (main 0f3787e). Merged: T-211 (docs), T-210 (a96602c). Merged: T-201 (33b440a). Merged: T-213 (027f528c), T-214 (7fbf3c6f). Merged: T-215 (19e6b0cb), T-194 (2a9e3551). Merged: T-217, T-220 (main c1c8f509; finals use plush_soft). R8 Supervisor session_01NPjxeNFfmkruSmnvcb3uSH. Running: T-216 (auburn P3), T-218 (Q1 contact audit), T-219 hair release (V1 auburn + white). Waiting for owner: P3 go on auburn; T-194 static_move_fade ON/OFF. Queued: Q4 (after T-217), L1 (after T-218), H2 hair volume; T-216 = P3 auburn (owner go). Merged: T-204 (Codex docs).
 Queued: Q1/Q4/L1 (after T-194). Merged: T-208, T-212 (Codex docs). Codex: T-204. Waiting for owner: hair look pick, compositor look
 pick, world plan start. Face plan approved (auburn pilot first).
 Rows below this line are R4 history; TASK_LOG is authoritative.
