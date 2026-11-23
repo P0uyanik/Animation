@@ -64,6 +64,7 @@ import fnmatch
 import hashlib
 import json
 import os
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -240,7 +241,7 @@ def markdown(doc):
         lines.append(f"| {c} | {v['cols']['all']['over']} / {v['cols']['all']['entries']} | "
                      f"{v['cols']['calm']['over']} / {v['cols']['calm']['entries']} | {v['max_mm']} | {ws} | "
                      f"{v['pops']['count']} (max {v['pops']['max_mm']}) |")
-    lines += ["", "`hair` = the worst of hair_own / hair_other / hair_prop / hair_set per frame and character (the T-194 "
+    lines += ["", "`hair` = the worst of hair_own / hair_other / hair_prop / hair_set per frame and character (T-194 "
               "headline); staging_hair, glasses and known:* are apart.", ""]
     return "\n".join(lines)
 
@@ -272,7 +273,8 @@ def compare_markdown(cmp):
         lines.append(f"| {c} | {v['a']['calm_over']} / {v['a']['calm_entries']} | {v['a']['max_calm_mm']} | "
                      f"{v['b']['calm_over']} / {v['b']['calm_entries']} | {v['b']['max_calm_mm']} |")
     p = cmp["pops_b_vs_a"]
-    lines += ["", f"Pops (B adds > 5 mm to the largest hair vertex move): {p['count']}, largest +{p['max_added_mm']} mm.",
+    lines += ["", f"Pops (B adds > 5 mm to the largest hair vertex move): {p['count']}, "
+              f"largest +{p['max_added_mm']} mm.",
               f"New keys in B: {json.dumps(cmp['new_keys_b'])}", ""]
     return "\n".join(lines)
 
@@ -298,8 +300,8 @@ def resolve_inputs(a):
 
 def build_blend(a, bake, cast, cwd, work):
     os.makedirs(work, exist_ok=True)
-    cmd = [a.blender, "-b", "--factory-startup", "-P", os.path.join(ROOT, "pipeline", "charsys", "shot_render.py"),
-           "--", "--bake", bake, "--cast", cast, "--out", work, "--blend-only"]
+    cmd = shlex.split(a.blender) + ["-b", "--factory-startup", "-P",
+                                    os.path.join(ROOT, "pipeline", "charsys", "shot_render.py"), "--", "--bake", bake, "--cast", cast, "--out", work, "--blend-only"]
     if a.hair_pushout:
         cmd += ["--hair-pushout", a.hair_pushout]
     with open(os.path.join(work, "shot_render.log"), "w") as log:
@@ -356,8 +358,8 @@ def run_audit(a):
 
 
 def _blender_part(a, blend, bake, out, frames, warm=None, wait=True):
-    cmd = [a.blender, "-b", "--factory-startup", "-P", os.path.abspath(__file__), "--", "part", "--blend", blend,
-           "--out", out, "--limit-mm", str(a.limit_mm), "--classes", a.classes, "--profile", a.profile]
+    cmd = shlex.split(a.blender) + ["-b", "--factory-startup", "-P", os.path.abspath(__file__), "--", "part",
+                                    "--blend", blend, "--out", out, "--limit-mm", str(a.limit_mm), "--classes", a.classes, "--profile", a.profile]
     if bake:
         cmd += ["--bake", bake]
     if frames is None:
@@ -712,8 +714,8 @@ def blender_part(args):
                "classes": {c: {n: {k: [v[0], round(v[1], 2)] for k, v in sorted(e.items())}
                                for n, e in sorted(res[c].items())} for c in res if res[c]}}
         rows.append(row)
-        print(f"[contact_audit] f{f}", json.dumps({c: sum(len(e) for e in v.values()) for c, v in row["classes"].items()}),
-              flush=True)
+        counts = {c: sum(len(e) for e in v.values()) for c, v in row["classes"].items()}
+        print(f"[contact_audit] f{f}", json.dumps(counts), flush=True)
     json.dump({"rows": rows, "seconds": {k: round(v, 1) for k, v in cost.items()}}, open(args.out, "w"))
 
 
@@ -740,7 +742,8 @@ def main(argv):
     au.add_argument("--classes", default="all")
     au.add_argument("--hair-pushout")
     au.add_argument("--work")
-    au.add_argument("--blender", default=os.environ.get("BLENDER", "blender"))
+    au.add_argument("--blender", default=os.environ.get("BLENDER", "blender"),
+                    help="Blender executable or command, e.g. 'python3 tools/bpy_blender.py' (the bpy module)")
     au.add_argument("--profile", default=PROFILE)
     au.add_argument("--snap-frames", help="comma list replacing the bake's snap frames (e.g. an earlier bake's)")
     cp = sub.add_parser("compare")

@@ -5,14 +5,15 @@ character data, no assets, no engine); writes only into a temporary folder.
 
 Scene: two rigged "characters" (a, b) of boxes, a prop box and a floor box, frames 1-3.
   a: body box; a hair triangle above it that is keyed 0 / 20 / 3 mm into the body; a garment triangle keyed 10 mm
-     into the body at f2; a hand box off the body axis (hand bone + a finger bone below it) keyed 8 mm into the prop at f2; glasses.
+     into the body at f2; a hand box off the body axis (hand bone + a finger bone below it) keyed 8 mm into the prop
+     at f2; glasses.
   b: a masked rendered body plus a hidden collision proxy (the solid); b's body overlaps a's by 50 mm and goes 5 mm
      into the floor at every frame.
 Checks:
   1. Roles from metadata: hair, garment, body, solid (proxy, not the masked body), glasses, hand vertices (the hand
      bone and its child), props and set boxes (from the bake's objects).
-  2. Depths per class and frame (0.1 mm): hair_own 20 / 3, garment_body 10 (a lining inside a closed hollow cage, outside
-     the solid but with no free direction, is not counted: closed-solid rule), hand_prop 8, body_body 50 (a in b only),
+  2. Depths per class and frame (0.1 mm): hair_own 20 / 3, garment_body 10 (a lining inside a closed hollow cage,
+     outside the solid but with no free direction, is not counted: closed-solid rule), hand_prop 8, body_body 50 (a in b only),
      body_set 5 (b only); nothing in frames where nothing is inside; depth pops of hair_own = 2 (0 -> 20 -> 3).
   3. The largest hair vertex move per frame (70 / 17 mm) and `compare` (jump pops of a run against itself = 0).
   4. Determinism: two runs give the same rows and SHA-256; --jobs 2 (frame chunks with a warm-up frame) gives the
@@ -192,8 +193,8 @@ def blender_exe():
     exe = os.environ.get("BLENDER")
     if exe:
         return exe
-    if os.path.basename(sys.executable).startswith("python"):  # the bpy module: tools/bpy_blender.py adapter
-        return "blender"
+    if os.path.basename(sys.executable).startswith("python"):  # the bpy module: the same adapter the gate uses
+        return f"{sys.executable} {os.path.join(ROOT, 'tools', 'bpy_blender.py')}"
     return bpy.app.binary_path or "blender"
 
 
@@ -207,8 +208,10 @@ build(blend, bake)
 d1 = audit(blend, bake, os.path.join(tmp, "a1.json"))
 if d1:
     R = d1["roles"]
-    check(R["a"]["hair"] == ["hair_a"] and R["a"]["garment"] == ["garment.lining", "garment.shirt"], "roles: hair and garment")
-    check(sorted(R["a"]["body"]) == ["arm.cage", "body_skin", "hand.L"], f"roles: a's body = skin, cage, hand ({R['a']['body']})")
+    check(R["a"]["hair"] == ["hair_a"] and R["a"]["garment"] == ["garment.lining", "garment.shirt"],
+          "roles: hair and garment")
+    check(sorted(R["a"]["body"]) == ["arm.cage", "body_skin", "hand.L"],
+          f"roles: a's body = skin, cage, hand ({R['a']['body']})")
     check(R["b"]["solid"] == ["garment.collider.body_skin"] and R["b"]["body"] == ["body_skin.001"],
           f"roles: b's solid is the hidden proxy, the masked skin is body only ({R['b']['solid']}, {R['b']['body']})")
     check(R["a"]["glasses"] == ["glasses"] and "glasses" not in R["a"]["body"], "roles: glasses apart from the body")
@@ -241,7 +244,8 @@ if d1:
     check(j[1] is None and near(j[2], 70.0) and near(j[3], 17.0), f"largest hair vertex move 70 / 17 mm ({j})")
     cmp = CA.compare(d1, d1)
     check(cmp["pops_b_vs_a"]["count"] == 0 and cmp["new_keys_b"] == {}, "compare: a run against itself")
-    check(os.path.isfile(os.path.join(tmp, "a1.json.md")) and "| hair_own |" in open(os.path.join(tmp, "a1.json.md")).read(),
+    md = os.path.join(tmp, "a1.json.md")
+    check(os.path.isfile(md) and "| hair_own |" in open(md).read(),
           "markdown summary written")
 
     d2 = audit(blend, bake, os.path.join(tmp, "a2.json"))
