@@ -179,6 +179,55 @@ try:
 except ValueError:
     check("T-201: unknown eevee setting refused", True)
 
+# --- T-217: shot_render and run_shot honour the profile's "engine" key (as render_package does)
+for prof_name, engine_arg, want in (("preview_eevee", None, "eevee"), ("preview_eevee", "cycles", "cycles"),
+                                    ("review", None, "cycles"), ("final720", None, "cycles"),
+                                    ("review", "eevee", "eevee")):
+    a = shot_render_parse(base + ["--profile", prof_name] + (["--engine", engine_arg] if engine_arg else []))
+    check(f"T-217: shot_render {prof_name} (--engine {engine_arg}) -> {want}", a.engine == want, str(a.engine))
+check("T-217: shot_render with no profile -> cycles", shot_render_parse(base).engine == "cycles")
+
+
+def run_shot_parse(argv):
+    """run_shot.main()'s argument handling, stopped right after parsing (sys.exit sentinel from a patched Status)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("run_shot_t217", os.path.join(ROOT, "pipeline", "production", "run_shot.py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    got = {}
+
+    class Stop(Exception):
+        pass
+
+    class FakeStatus:
+        def __init__(self, path, d):
+            got.update(d)
+            raise Stop
+
+    m.Status = FakeStatus
+    old = sys.argv
+    with tempfile.TemporaryDirectory() as t:
+        shot = os.path.join(t, "shot.json")
+        json.dump({"frameStart": 1, "frameEnd": 2}, open(shot, "w"))
+        sys.argv = ["run_shot.py", "--shot", shot, "--blender", "b", "--stages", "render"] + argv
+        try:
+            m.main()
+        except Stop:
+            pass
+        finally:
+            sys.argv = old
+    return got
+
+
+for prof_name, engine_arg, want in (("preview_eevee", None, "eevee"), ("preview_eevee", "cycles", "cycles"),
+                                    ("review", None, "cycles"), ("final720", None, "cycles"),
+                                    ("review", "eevee", "eevee")):
+    st = run_shot_parse(["--profile", prof_name] + (["--engine", engine_arg] if engine_arg else []))
+    check(f"T-217: run_shot {prof_name} (--engine {engine_arg}) -> {want}", st.get("engine") == want, str(st))
+src = open(os.path.join(ROOT, "pipeline", "production", "run_shot.py")).read()
+check("T-217: run_shot passes the effective engine to shot_render and records it in its report",
+      'cmd += ["--engine", a.engine]' in src and '"engine": a.engine}' in src)
+
 sys.path.insert(0, os.path.join(ROOT, "tools", "pc"))
 import render_package  # noqa: E402
 man = {"render_entry": "code/pipeline/charsys/shot_render.py", "bake": "bake.json", "cast": "cast.json",
