@@ -18,48 +18,6 @@
     ]
    },
    {
-    "name": "cheek",
-    "type": "HOOK",
-    "at": {
-     "front": 0.5
-    },
-    "radius_m": 0.035,
-    "falloff": "SMOOTH",
-    "move_m": [
-     0.004,
-     0,
-     0
-    ]
-   },
-   {
-    "name": "jaw",
-    "type": "HOOK",
-    "at": {
-     "front": 0.8
-    },
-    "radius_m": 0.035,
-    "falloff": "SMOOTH",
-    "move_m": [
-     0.006,
-     0,
-     0
-    ]
-   },
-   {
-    "name": "cheek_pad",
-    "type": "WARP",
-    "at": {
-     "cheek": 0.5
-    },
-    "radius_m": 0.035,
-    "falloff": "SMOOTH",
-    "move_m": [
-     0,
-     0.004,
-     0
-    ]
-   },
-   {
     "name": "bridge",
     "type": "WARP",
     "at": {
@@ -69,9 +27,47 @@
     "falloff": "SMOOTH",
     "move_m": [
      0,
-     -0.002,
+     -0.003,
      0
     ]
+   },
+   {
+    "name": "lower_face",
+    "type": "LATTICE",
+    "at": "chin",
+    "offset_m": [
+     0,
+     0.02,
+     0.035
+    ],
+    "size_m": [
+     0.32,
+     0.14,
+     0.16
+    ],
+    "points": [
+     5,
+     3,
+     5
+    ],
+    "mirror": true,
+    "offsets": {
+     "3_1_1": [
+      0.01,
+      0,
+      0
+     ],
+     "3_1_2": [
+      0.006,
+      0,
+      0
+     ],
+     "3_1_3": [
+      0.0,
+      0,
+      0
+     ]
+    }
    }
   ]
  }

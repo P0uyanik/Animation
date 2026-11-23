@@ -18,7 +18,8 @@ or the Hook empty about the anchor (x outward per side). `mirror` (default: true
 knob on both sides, mirrored. `floor_m` limits the knob to skin above anchor z - floor_m (a smooth fade of
 floor_fade_m below), e.g. to keep the neck still. LATTICE: a box of size_m centred on the anchor with nu x nv x nw
 points (linear interpolation); `offsets` moves points by index "i_j_k" (i along x, j along y, k along z); its
-border points stay fixed, so the skin outside the box is unchanged; mirrored offsets go to index nu-1-i, x negated.
+border points stay fixed, so the skin outside the box is unchanged; mirrored offsets go to index nu-1-i, x negated
+(per-side anchor: a second lattice on the other side; midline anchor: the same lattice, its points made symmetric).
 
 apply_knobs() builds the modifiers, applies each one as a shape key (modifier_apply_as_shapekey) and folds that key
 into Basis: every key block moves by the same offset, so keys built before stay relative and unchanged, and every
@@ -61,8 +62,9 @@ def validate(knobs):
         side = per_side(at)
         n = dict(k, index=i, per_side=side, mirror=bool(k.get("mirror", side)),
                  offset_m=_vec3(k.get("offset_m"), f"face.knobs.{i}.offset_m"))
-        if n["mirror"] and not side:
-            raise KnobError(f"face.knobs.{i}: mirror needs a per-side anchor (eye / front)")
+        if n["mirror"] and not side and t != "LATTICE":
+            raise KnobError(f"face.knobs.{i}: mirror needs a per-side anchor (eye / front / cheek) or a LATTICE")
+        n["mirror_points"] = bool(n["mirror"] and not side)  # a midline lattice mirrors its own offsets
         if t in ("WARP", "HOOK"):
             r = float(k.get("radius_m", 0.0))
             if not r > 0:
@@ -183,7 +185,7 @@ def _floor_weights(co, z0, floor, fade):
 
 
 def _instances(k, resolve):
-    sides = (1, -1) if k["mirror"] else (1,)
+    sides = (1, -1) if k["mirror"] and k["per_side"] else (1,)
     out = []
     for sx in sides:
         a = resolve(k["at"], sx)
@@ -265,9 +267,14 @@ def _build(C, head, k, sx, anchor, co, tag):
     helpers.append(("lattice", lat.name))
     lo.matrix_world = Matrix.Translation(A) @ Matrix.Diagonal((*size, 1.0))
     nu, nv, nw = k["points"]
+    moves = {}
     for (i, j, l), d in k["offsets"].items():
         if k["per_side"] and sx < 0:  # mirror: index along x and the x offset
             i, d = nu - 1 - i, (-d[0], d[1], d[2])
+        moves[(i, j, l)] = d
+        if k.get("mirror_points") and (nu - 1 - i, j, l) not in k["offsets"]:  # midline lattice: symmetric points
+            moves[(nu - 1 - i, j, l)] = (-d[0], d[1], d[2]) if nu - 1 - i != i else (0.0, d[1], d[2])
+    for (i, j, l), d in sorted(moves.items()):
         p = lat.points[i + nu * (j + nv * l)]
         p.co_deform = p.co + Vector((d[0] / size[0], d[1] / size[1], d[2] / size[2]))
     half = size / 2

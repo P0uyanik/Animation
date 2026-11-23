@@ -60,6 +60,9 @@ def plain():
                      {"type": "HOOK", "at": {"front": 0.5}, "radius_m": 0.04, "move_m": [0.004, 0, 0]},
                      {"type": "LATTICE", "at": {"profile": 0.5}, "size_m": [0.1, 0.1, 0.1], "points": [3, 3, 3],
                       "offsets": {"1_1_1": [0, 0.004, 0]}}])
+    ml = K.validate([{"type": "LATTICE", "at": "chin", "size_m": [.1, .1, .1], "points": [5, 3, 3], "mirror": True,
+                      "offsets": {"3_1_1": [0.004, 0, 0]}}])[0]
+    check("a midline LATTICE may mirror its own points", ml["mirror_points"] and ml["mirror"])
     check("valid knobs accepted; per-side anchors mirror by default",
           [k["mirror"] for k in ok] == [False, True, False] and ok[2]["offsets"] == {(1, 1, 1): (0.0, 0.004, 0.0)})
     bad = [
@@ -67,7 +70,7 @@ def plain():
         ("unknown anchor", [{"type": "WARP", "at": "forehead", "radius_m": 0.05}]),
         ("zero radius", [{"type": "WARP", "at": "chin", "radius_m": 0}]),
         ("bad scale", [{"type": "HOOK", "at": "chin", "radius_m": 0.05, "scale": [1, 0, 1]}]),
-        ("mirror on midline", [{"type": "WARP", "at": "chin", "radius_m": 0.05, "mirror": True}]),
+        ("mirror on midline (Warp)", [{"type": "WARP", "at": "chin", "radius_m": 0.05, "mirror": True}]),
         ("bad falloff", [{"type": "WARP", "at": "chin", "radius_m": 0.05, "falloff": "WOBBLE"}]),
         ("lattice border moved", [{"type": "LATTICE", "at": "chin", "size_m": [.1, .1, .1], "points": [3, 3, 3],
                                    "offsets": {"0_1_1": [0, 0, 0.01]}}]),
@@ -125,8 +128,8 @@ out["front_anchor"] = list(res({"front": 0.5}, 1)); out["cheek_anchor"] = list(r
 knobs = [{"type": "WARP", "at": "chin", "radius_m": 0.04, "move_m": [0, 0, -0.01], "scale": [1.2, 1, 1]},
          {"type": "HOOK", "at": {"front": 0.5}, "radius_m": 0.03, "move_m": [0.005, 0, 0]},
          {"type": "WARP", "at": {"cheek": 0.6}, "radius_m": 0.02, "move_m": [0, 0.003, 0], "mirror": False},
-         {"type": "LATTICE", "at": {"profile": 0.3}, "size_m": [0.08, 0.06, 0.06], "points": [3, 3, 3],
-          "offsets": {"1_1_1": [0, -0.006, 0]}}]
+         {"type": "LATTICE", "at": {"profile": 0.3}, "size_m": [0.12, 0.06, 0.06], "points": [5, 3, 3],
+          "offsets": {"3_1_1": [0.005, -0.006, 0]}, "mirror": True}]
 rep = K.apply_knobs(C, head, ctx, knobs, res, z_chin=zc)
 out["report"] = rep
 kb = head.data.shape_keys.key_blocks
@@ -137,6 +140,10 @@ out["basis_eq_mesh"] = float(np.abs(b - m).max())
 out["moved_max"] = float(np.linalg.norm(m.reshape(-1, 3) - co0, axis=1).max())
 L = [e for e in rep["knobs"] if e["tag"].endswith(".L")][0]; R = [e for e in rep["knobs"] if e["tag"].endswith(".R")][0]
 out["mirror"] = [L["anchor_m"][0] + R["anchor_m"][0], L["max_mm"] - R["max_mm"], L["moved_vertices"] - R["moved_vertices"]]
+sym = m.reshape(-1, 3) - co0  # the mirrored lattice: x displacement antisymmetric about x = 0 near the profile anchor
+box = (np.abs(co0[:, 0]) < 0.06) & (co0[:, 1] < -0.1) & (np.abs(co0[:, 2] + 0.8 - 0.784) < 0.03)  # object at z 0.8
+out["lattice_sym"] = float(np.abs(sym[box, 0].sum())) / max(1, int(box.sum())) if box.any() else None
+out["lattice_dx"] = float(np.abs(sym[box, 0]).max()) if box.any() else None
 out["left"] = {"modifiers": [md.type for md in head.modifiers], "groups": len(head.vertex_groups),
                "objects": sorted(o.name for o in bpy.data.objects if o is not head), "lattices": len(bpy.data.lattices),
                "keys": [k.name for k in kb]}
@@ -194,6 +201,8 @@ def blender(exe):
     check("Basis equals the mesh after the fold", o["basis_eq_mesh"] < 1e-9, o["basis_eq_mesh"])
     check("mirrored knob is symmetric", abs(o["mirror"][0]) < 1e-6 and abs(o["mirror"][1]) < 0.1
           and abs(o["mirror"][2]) <= 4, o["mirror"])  # UV-sphere vertices at the falloff edge: float noise
+    check("midline lattice: symmetric outward motion", o["lattice_dx"] and o["lattice_dx"] > 5e-4
+          and o["lattice_sym"] < 2e-5, (o["lattice_dx"], o["lattice_sym"]))
     lf = o["left"]
     check("knob-free: no modifier, vertex group, empty or lattice left; keys unchanged",
           lf["modifiers"] == [] and lf["groups"] == 0 and lf["objects"] == [] and lf["lattices"] == 0
