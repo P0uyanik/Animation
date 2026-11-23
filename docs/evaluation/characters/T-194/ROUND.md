@@ -287,3 +287,25 @@ collider) on s020 cand2:
 
 `/tmp/claude-0/s/full/run3.sh`: s020 cand2 full (1-208, step 2) off / on / on + keep_outside all; then
 `summarise.py` (T183_ROOT=/home/user/t183c2), STATUS, s030 pair, cost, determinism, identity, sheet, READY.
+
+## CHECKPOINT (session 3, near READY)
+
+Defaults now (hair_pushout.DEFAULTS): static_inside keep, static_fade_m [0.002, 0.01], keep_outside all,
+other_skin_fade_m [0.004, 0.012] (stage B per vertex AND stage A per chain: chain solved with / without the other
+characters' skins, blended by the extra move), static_move_fade_m [0.004, 0.012] (R7: ON pending the owner).
+Unit test 37/37, <1 s here, no assets.
+
+Final measures on T-183 pin c7b3cee2 (cand2 bakes), every 2nd frame, committed in `results/`:
+- s030 (`e912_s030c2_*`): calm > 1 mm off 171/246 -> on 121/246, max 40.7 both (auburn curtain in blouse f67),
+  pops 0 (max +2.5 mm), no new surface; apart: staging 87.0 mm 30 fr, boy head 47.0, glasses 1.4.
+- s020 (`e912_s020c2_off`, `_fin_on`, sum `e912_s020c2.sum.json`): calm 192/288 -> 149/288, max 33.8 both; pops 3
+  (white +7.2 f109, +6.2 f185, +6.3 f205, from keep_outside all); new surface only the boy fringe 3.3 mm in the auburn
+  skin (2 fr). Fade cost vs the earlier run without it (`e912_s020c2_fade_cost.json`, tools/compare_runs.py): auburn
+  cap.001 in own skin 81 fr up to 33.8 mm (+30.2), curtain 72 fr 15.4 (+7.6), ringlets_outer_00 f109 16.9; white
+  back_mass in ear.L 53 fr 6.4 mm. R7 takes ON vs OFF to the owner; the rate-limit option was declined (needs state).
+- Earlier full run without the static fades / stage-A fade (`e912_s020c2_on`): calm 99/288, max 24.0, pops 20.
+
+Running when this was written (scratch, lost with the container): `/tmp/claude-0/s/fin/s020_nofade` (OFF column:
+static_move_fade_m [0, 0]) and `/tmp/claude-0/s/fin/ident.sh` (main vs ours without flag on f100-112, two on-blends
+f100-112 + single f110 for determinism, hash_eval --time for stage B). Then README (`T-194/README.md`), sheet
+(<= 1024 px crops: s020 hood f45, nape f115, boy/auburn f79 staging), READY. s010 / e909 not run (time).
