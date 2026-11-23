@@ -14,7 +14,7 @@ Per garment vertex, at REST (setup, every pose bone at rest):
 Two hidden proxies per garment object carry the vertex (base) and the vertex + `reach_m` * n (tip), skinned with the
 vertex's own weights; at frame f, dir = tip - base (normalised) is the rest-outward direction as the body moves.
 
-At frame f (Geometry Nodes, after the garment's Armature modifier, before its body_collision shrinkwraps):
+At frame f (Geometry Nodes, the last modifier of the garment, after its body_collision shrinkwraps):
   s   the signed clearance along dir. Inside: the winding numbers along +dir and along -dir over the first
       `ray_hits` crossings of the own solids (back face +1, front face -1, within `max_exit_m`) are both positive (a
       ray leaking out through a wrist or neck opening disagrees with its opposite one); the exit is the first crossing
@@ -187,7 +187,7 @@ class GarmentPushOut:
 
     def _rest(self):
         bpy = self.bpy
-        saved, muted, actions = {}, [], {}
+        saved, actions = {}, {}
         for n in self.names:
             rig = self.states[n]["rig"]
             ad = rig.animation_data
@@ -199,13 +199,6 @@ class GarmentPushOut:
                                        pb.scale.copy())
                 pb.location, pb.rotation_quaternion, pb.scale = (0, 0, 0), (1, 0, 0, 0), (1, 1, 1)
                 pb.rotation_euler = (0, 0, 0)
-            for o in self.garments[n]:  # the input of the push-out is the skinned mesh (before the shrinkwraps)
-                after = False
-                for m in o.modifiers:
-                    if after and m.show_viewport:
-                        m.show_viewport = False
-                        muted.append(m)
-                    after = after or (m.type == "ARMATURE")
         bpy.context.view_layer.update()
         deps = bpy.context.evaluated_depsgraph_get()
         cap, mx = float(self.spec["clearance_cap_m"]), float(self.spec["max_exit_m"])
@@ -244,8 +237,6 @@ class GarmentPushOut:
                 rep["inside_at_rest"] += int((c0 < 0).sum())
                 rep["near_at_rest"] += int(((c0 >= 0) & (c0 < cap)).sum())
             self.report["characters"][n] = rep
-        for m in muted:
-            m.show_viewport = True
         for n in self.names:
             for pb in self.states[n]["rig"].pose.bones:
                 pb.location, pb.rotation_quaternion, pb.rotation_euler, pb.scale = saved[(n, pb.name)]
@@ -300,8 +291,8 @@ class GarmentPushOut:
                 m = o.modifiers.new(PREFIX, "NODES")
                 m.node_group = _bind_group(group, pb_, pt_, cs, o.name, int(self.spec["passes"]),
                                            float(self.spec["max_step_m"]))
-                last = max(i for i, mm in enumerate(o.modifiers) if mm.type == "ARMATURE")
-                o.modifiers.move(len(o.modifiers) - 1, last + 1)
+                # last in the stack (after the body_collision shrinkwraps): the rate limit then holds for the final
+                # position (before them, a shrinkwrap re-projecting a pushed vertex jumped 17 mm, e912 s010 f22)
                 if float(self.spec["max_step_m"]) > 0:
                     m.bake_target = "PACKED"  # the rate limit's state is baked into the shot.blend (bake())
         self.report["installed"] = True

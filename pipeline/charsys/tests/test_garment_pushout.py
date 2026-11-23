@@ -236,7 +236,7 @@ def main():
     check(rep["objects"] == 3 and rep["inside_at_rest"] > 0, f"report: 3 objects, embedded vertices found ({rep})")
     for k in names:
         mods = [m.type for m in sc[k].modifiers]
-        check(mods == ["ARMATURE", "NODES", "SHRINKWRAP"], f"{k}: push-out after the armature, before the shrinkwrap")
+        check(mods == ["ARMATURE", "SHRINKWRAP", "NODES"], f"{k}: push-out last in the stack")
 
     bpy.context.view_layer.update()
     for k in names:
