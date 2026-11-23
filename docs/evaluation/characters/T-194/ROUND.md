@@ -141,7 +141,7 @@ for now (this session used `c775d69`; re-bake with the final pin). Before READY:
   Missing case: the exit test (needs a closed `garment.collider.body_skin`-named solid in the scene).
 - `tools/measure_eval.py`: the evaluated hair of a `shot.blend` against all colliders + glasses line, T-183 rules,
   per frame per surface, frame-to-frame jump, SHA-256. About 33 s per frame for three characters (use `--jobs`).
-- Shot copies: `shots/e912/{s010,s020,s030}`, `shots/e909/s010` (+ `shots/e912/content/assets`). Released s020 baked
+- Shot copies: `shots/e912/{s010,s020,s030}`, `shots/e909/s010` (+ `shots/e912/content/assets`). Released s020 baked (Supervisor at merge: the three e912 shot.scene.json copies were byte-identical to episodes/e912_paper_boat/shots/s0x0 and failed the T-178 new-evidence-shot cast rule — the white girl has no CURRENT — so they were removed; use the episode files.)
   (`shots/e912/s020/build/runs/rel1`, ignored). Candidate s020 baked in a T-183 worktree at `c775d69`
   (`/home/user/t183wt`, gone with the container).
 
