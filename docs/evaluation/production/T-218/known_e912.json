@@ -1,0 +1,7 @@
+{
+ "apart": [
+  {"label": "rigid hair in own head (T-191)", "class": "hair_own", "character": "boy_yellow_hoodie",
+   "surface": "own:body:body_skin*",
+   "note": "T-194 summarise.py apart rule: the boy's rigid hair inside his own head skin is staging of T-191, not a contact"}
+ ]
+}
