@@ -1125,3 +1125,11 @@ hard depends-on (read) overlaps were conflicts → T-181b makes them warnings. R
 - **Auburn face: GO for P3** (Warp/Hook/Lattice for outline and chin on the T-215 stuck list), then a combined sheet
   before any release decision.
 - Hair look (T-207) and compositor look (T-199) picks: the liaison confirms them with the owner separately.
+
+## 2026-11-23 ~06:58 CET (via the liaison; owner question dialog)
+- **T-207 hair look:** auburn girl **V1**, white-haired girl **V1**, boy keeps his current fleece. Needs new character
+  versions (CURRENT changes): each one comes to the owner as a sheet for approval before it goes CURRENT. Bundling with
+  the face releases is the Supervisor's call (not a priority for the owner). Fix the girl's forehead stair-step with H2
+  as planned.
+- **T-199 compositor:** **plush_soft becomes the DEFAULT final profile** (owner approves the final-render default
+  change); previews unchanged.
