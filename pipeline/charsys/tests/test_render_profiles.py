@@ -40,7 +40,8 @@ def shot_render_parse(argv):
 base = ["--bake", "b", "--cast", "c", "--out", "o"]
 
 # --- profiles
-check("default profile is final720", P["default_profile"] == "final720")
+check("T-220: default profile is final720_look (plush_soft); final720 (no look) still selectable",
+      P["default_profile"] == "final720_look" and "final720" in prof and "compositor" not in prof["final720"])
 f = prof["final720"]
 check("final720 = 1280x720, 128 spp, adaptive 0.05, persistent data",
       f["resolution"] == [1280, 720] and f["samples"] == 128 and f["cycles"] == {"adaptive_threshold": 0.05}
@@ -52,7 +53,7 @@ check("review profile unchanged", prof["review"]["samples"] == 16 and prof["revi
 
 # --- shot_render.parse
 a = shot_render_parse(base)
-check("shot_render default -> final720", a.profile == "final720" and a.resolution == [1280, 720] and a.samples == 128
+check("shot_render default -> final720_look", a.profile == "final720_look" and "compositor" in a.profile_data and a.resolution == [1280, 720] and a.samples == 128
       and a.profile_data["cycles"]["adaptive_threshold"] == 0.05)
 a = shot_render_parse(base + ["--profile", "legacy128"])
 check("shot_render --profile legacy128 -> 128 spp, 0.01, resolution from the bake",
@@ -103,9 +104,9 @@ sys.path.insert(0, CHARSYS)
 import render_engine  # noqa: E402
 check("existing profiles carry no compositor block", all("compositor" not in prof[k] for k in ("final720", "review", "legacy128")))
 look = prof["final720_look"]
-check("final720_look = final720 render settings + compositor block, not the default",
+check("final720_look = final720 render settings + compositor block, the default (T-220)",
       {k: v for k, v in look.items() if k not in ("description", "compositor")} == {k: v for k, v in f.items() if k != "description"}
-      and P["default_profile"] == "final720")
+      and P["default_profile"] == "final720_look" and "DEFAULT" in look["description"] and "OPT-IN" not in look["description"])
 cfg = look["compositor"]
 check("compositor block is explicit: look, glow, grade, vignette with exactly the known keys",
       cfg["look"] == "plush_soft" and set(cfg["glow"]) == render_engine._LOOK_KEYS["glow"]
@@ -142,9 +143,21 @@ old = json.loads(_sp.run(["git", "show", "0f3787e:pipeline/charsys/render_profil
 if old is None:
     print("SKIP byte-identical check: commit 0f3787e not in this checkout")
 else:
-    check("T-201: every pre-T-201 profile, default_profile and encode table unchanged",
-          all(prof[k] == v for k, v in old["profiles"].items()) and P["default_profile"] == old["default_profile"]
-          and P["encode"] == old["encode"] and set(prof) - set(old["profiles"]) == {"preview_eevee"})
+    check("T-201: every pre-T-201 profile and the encode table unchanged (default_profile moved by T-220)",
+          all(prof[k] == v for k, v in old["profiles"].items() if k != "final720_look") and P["encode"] == old["encode"]
+          and set(prof) - set(old["profiles"]) == {"preview_eevee", "final720_look"} - set(old["profiles"]))
+# --- T-220: default_profile = final720_look; every non-default profile and the encode table identical to main (0a20253f)
+main = json.loads(_sp.run(["git", "show", "0a20253f:pipeline/charsys/render_profiles.json"], cwd=ROOT,
+                          capture_output=True, text=True).stdout or "null")
+if main is None:
+    print("SKIP T-220 vs-main check: commit 0a20253f not in this checkout")
+else:
+    check("T-220: every non-default profile and the encode table identical to main; same profile set",
+          set(prof) == set(main["profiles"]) and all(prof[k] == v for k, v in main["profiles"].items() if k != "final720_look")
+          and P["encode"] == main["encode"] and main["default_profile"] == "final720")
+    check("T-220: final720_look differs from main only in its description",
+          {k: v for k, v in prof["final720_look"].items() if k != "description"}
+          == {k: v for k, v in main["profiles"]["final720_look"].items() if k != "description"})
 check("T-201: no Cycles profile names an engine or an eevee block",
       all("engine" not in v and "eevee" not in v for k, v in prof.items() if k != "preview_eevee"))
 pe = prof["preview_eevee"]
