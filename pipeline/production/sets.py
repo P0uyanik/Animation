@@ -16,6 +16,10 @@ A set holds (all in one file, every key checked; unknown keys are refused):
   camera      one preset {name, framing: "keep", fStop, focus: "target" | [x, y, z]}: the shot's camera position,
               target and lens are kept; depth of field is added, focused at the camera target (or a point).
   render      optional {exposureEV}.
+  blender_light_rig  optional (T-221): the id of the set's Blender light rig (content/sets/rigs/<id>.light_rig.json,
+              pipeline/charsys/set_lights.py). apply records it as x_set.light_rig; the Blender render then lights the
+              shot with the rig instead of translating the set's engine lights (which stay for engine previews). A shot
+              picks another rig with the top-level scene key "x_light_rig" (<id> or "engine"). Absent = as before.
 Only what pipeline/charsys/shot_render.py already translates (boxes with a base colour, sun/rect/sky lights, camera
 depth of field). Characters, props, actions, frames and the production block of the shot are copied unchanged.
 Output is deterministic: same set + same shot -> byte-identical file (records both inputs' sha256 under "x_set")."""
@@ -28,7 +32,7 @@ import os
 import sys
 
 SET_KEYS = {"format", "version", "id", "description", "convention", "keep_objects", "materials", "objects", "lights",
-            "camera", "render"}
+            "camera", "render", "blender_light_rig"}
 SET_REQUIRED = {"format", "version", "id", "materials", "objects", "lights", "camera"}
 MATERIAL_KEYS = {"name", "type", "baseColor", "roughness", "specular"}
 OBJECT_KEYS = {"name", "group", "min", "max", "material"}
@@ -157,6 +161,10 @@ def validate(s):
     _num("set.camera.fStop", c["fStop"], 0.1, 64.0)
     if c["focus"] != "target":
         _vec("set.camera.focus", c["focus"])
+    if "blender_light_rig" in s:
+        r = _name("set.blender_light_rig", s["blender_light_rig"])
+        if "/" in r or "\\" in r or r == "engine":
+            raise SetError("set.blender_light_rig: a rig id (no path, not 'engine')")
     if "render" in s:
         _keys("set.render", s["render"], RENDER_KEYS, set())
         if "exposureEV" in s["render"]:
@@ -263,6 +271,8 @@ def apply(s, shot):
                     "lights": [l["name"] for l in s["lights"]],
                     "camera_preset": {"name": s["camera"]["name"], "fStop": cam["fStop"],
                                       "focusDistance": cam["focusDistance"]}}
+    if "blender_light_rig" in s:  # (no key without a rig: outputs of rig-less sets stay byte-identical)
+        out["x_set"]["light_rig"] = s["blender_light_rig"]
     return out
 
 

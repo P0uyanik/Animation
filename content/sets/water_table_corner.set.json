@@ -590,5 +590,6 @@
  },
  "render": {
   "exposureEV": -0.3
- }
+ },
+ "blender_light_rig": "water_table_corner_window"
 }

@@ -140,6 +140,47 @@ bones, Blender camera, frames, settings and pixels, all identical.
   (`production.render.light_scale`).
 - **Report:** the bone pose reconstruction error at the first, middle and last frame.
 
+## Lighting: set light rigs (T-221, T-196 Q4)
+Final renders can light a shot with a **Blender light rig** (lights + optional world colour or HDRI) instead of the
+approximate engine-light translation. The engine's lights stay in the shot for engine previews only. Opt-in: a shot
+without a rig renders exactly as before (same Blender scene, same pixels).
+
+- **Where rigs live:** `content/sets/rigs/<id>.light_rig.json` (`plush.light_rig/1`, `pipeline/charsys/set_lights.py`).
+  Blender world axes (+Z up, metres) and Blender units, so a rig lit in Blender is saved as-is.
+- **Who picks the rig** (first that applies): `shot_render.py --light-rig <id | file | engine>`; the scene's top-level
+  `"x_light_rig": "<id>"` (`"engine"` = no rig); the set's `"blender_light_rig": "<id>"` (recorded by
+  `sets.py apply` as `x_set.light_rig`); none. An unknown id stops the render and lists the available rigs.
+- **With a rig:** the rig's lights and world are built (objects `rig.<name>`); the bake's sun/rect/sky lights and
+  `light_scale` are not used. Box objects, props, camera, exposure and the render profile are unchanged.
+  `shot_render.json` gets a `light_rig` block (id, source, file, lights, world); without a rig it has no such key.
+- **File format** (unknown keys are refused):
+
+```json
+{"format": "plush.light_rig", "version": 1, "id": "<id = file name>", "description": "...",
+ "lights": [
+  {"name": "key", "type": "area", "location": [x, y, z], "aim": [x, y, z],
+   "shape": "RECTANGLE", "size": [w, h], "energy": 75.0, "color": [1, 0.88, 0.72]},
+  {"name": "sun", "type": "sun", "direction": [x, y, z], "strength": 3.6, "angle_deg": 3, "color": [1, 0.9, 0.75]},
+  {"name": "bulb", "type": "point", "location": [x, y, z], "radius": 0.1, "energy": 20, "color": [1, 1, 1]},
+  {"name": "spot", "type": "spot", "location": [x, y, z], "rotation_deg": [rx, ry, rz], "spot_size_deg": 40,
+   "spot_blend": 0.15, "energy": 50, "color": [1, 1, 1], "cast_shadow": false}],
+ "world": {"color": [0.96, 0.92, 0.84], "strength": 2.0}}
+```
+  - Orientation: area and spot take `aim` (a point) or `rotation_deg` (XYZ Euler); sun takes `direction` (where
+    the light travels) or `rotation_deg`. Lights emit along their local -Z.
+  - Units: `energy` in W (area, point, spot); sun `strength` in W/m². `shape` RECTANGLE/ELLIPSE take `size: [w, h]`,
+    SQUARE/DISK take `[s]`. `cast_shadow` is optional (default true).
+  - `world` (optional, absent = black): `{"color", "strength"}` or `{"hdri": "<path relative to the rig file>",
+    "strength", "rotation_deg"}`.
+- **Saving a rig from Blender:** `blender -b --factory-startup -P pipeline/charsys/set_lights_blender.py -- dump
+  --blend <file.blend> --id <id> --out content/sets/rigs/<id>.light_rig.json` writes every light of the scene and its
+  world (Background colour, or an Environment Texture as `hdri`). A build followed by a dump gives the file back.
+- **Starting rig:** `water_table_corner_window` (named by `content/sets/water_table_corner.set.json`) is today's
+  translated window key / wool rim / fill / window sun and the window sky, saved with `dump` at `light_scale` 1.0.
+  It renders the same frame as the translation (e907 s010 f48: 99 % of pixels identical, max difference 1/255).
+- **Evidence and tests:** `docs/evaluation/rendering/T-221/`; `pipeline/charsys/tests/test_set_lights.py`,
+  `pipeline/charsys/tests/test_set_lights_blender.py`, `pipeline/production/tests/test_sets.py`.
+
 ## Verified (pilot shot e000/s010, 120 frames, published boy 1.0.0 + unpublished girl M3.1)
 - **Bone reconstruction:** at most 0.0003 mm and 0.0° for both characters.
 - **Mapping:** every morph maps to a facial control.
@@ -213,7 +254,8 @@ in an action always win.
 ## Not covered yet
 - **Props:** SDF props, water and paper boats are not baked (listed as `objects_not_baked`).
 - **Engine-only characters** (SDF) cannot be rendered in Blender.
-- **Lights** are matched only approximately, not radiometrically.
+- **Lights:** the engine-light translation is approximate, not radiometric. Final renders can use a Blender light
+  rig instead (see "Lighting: set light rigs"); shots without a rig still use the translation.
 - **No episode layer:** each shot is run on its own; there is no sequence assembly or audio.
 - **Plush Studio** drives the pipeline (T-001), but it has no episode/sequence view, and the cast is edited at its sources, not in Studio.
 - **Arms:** imported characters stand in the engine's default A-pose arms (no relaxed idle pose for them).

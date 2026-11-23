@@ -4,6 +4,7 @@ animation (TD-42). Read-only on every character master.
     blender -b --factory-startup -P pipeline/charsys/shot_render.py -- --bake bake.json --cast cast.json --out <dir>
         [--frames A-B] [--resolution W H] [--samples N] [--light-scale X]
         [--engine cycles|eevee] [--blend-only] [--profile final720|review|legacy128] [--hair-pushout [on|spec.json|{json}]]
+        [--light-rig <rig id>|<file.light_rig.json>|engine]
 
 bake.json: the engine's shot bake (plush.shot_bake/1, `plush-render shot.scene.json --bake bake.json`).
 cast.json: {"<character name in the scene>": {"master": <master .blend>, "character_id": <root collection>,
@@ -17,6 +18,9 @@ Per character (any rig whose deform bones the package lists; nothing character-s
   * morphs: the rig's facial controls face_<morph> are keyed from the baked control weights (the master's drivers
     then produce every shape key, in-between and jaw rotation exactly as in Blender);
   * camera, lights (sun, rect, sky) and box objects are translated from the bake;
+  * set light rigs (T-221, opt-in): when the shot picks a Blender light rig (--light-rig, the scene's "x_light_rig",
+    or its set's "blender_light_rig"; set_lights.py), the rig's lights and world light the render and the bake's
+    engine lights are not translated (they stay for engine previews). Without a pick nothing changes;
   * scene props (plush.asset/1, T-017/T-022): each prop in the bake's per-frame "props" block gets its asset's
     primitive mesh (box / sphere centred; cylinder standing on its base along +Y, optionally "open_top" with a "wall"
     thickness) and its first material preset from the shared library (pipeline/charsys/materials); the object is
@@ -44,6 +48,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import episode  # noqa: E402
 import hair_pushout  # noqa: E402
 import render_engine  # noqa: E402
+import set_lights  # noqa: E402
+import set_lights_blender  # noqa: E402
 from materials import builder as MATERIALS  # noqa: E402
 
 C = Matrix(((1, 0, 0, 0), (0, 0, 1, 0), (0, -1, 0, 0), (0, 0, 0, 1)))  # Blender -> engine axes
@@ -69,6 +75,9 @@ def parse():
     ap.add_argument("--blend-only", action="store_true")
     ap.add_argument("--hair-pushout", nargs="?", const="on", default=None,
                     help="T-194: push hair out of the real meshes (on, a spec JSON file or inline JSON; hair_pushout.py)")
+    ap.add_argument("--light-rig", default=None,
+                    help="T-221: Blender light rig (id in content/sets/rigs, a .light_rig.json path, or 'engine' for the "
+                         "engine-light translation); default: the scene's x_light_rig, else its set's rig, else none")
     ap.add_argument("--profile", default=None,
                     help="render profile from render_profiles.json (T-166: default final720; legacy128 = the previous "
                          "128 spp / 0.01 preset); sets resolution/samples unless given")
@@ -217,15 +226,20 @@ def fix_late(st, target, late, frame):
         _key_bone(pb, target[pb.name], pb.parent.matrix, frame)
 
 
-def setup_world(bake, scene, light_scale, boxes=None):
-    """Lights, sky and box props from the bake (approximate radiometric translation, calibrated by light_scale)."""
+def setup_world(bake, scene, light_scale, boxes=None, rig=None):
+    """Lights, sky and box props from the bake (approximate radiometric translation, calibrated by light_scale).
+    With a set light rig (T-221) the rig's lights and world are built instead of the bake's lights."""
     rep = {"lights": 0, "objects": 0}
-    world = scene.world or bpy.data.worlds.new("shot_world")
-    scene.world = world
-    world.use_nodes = True
-    bg = world.node_tree.nodes.get("Background")
-    bg.inputs["Strength"].default_value = 0.0
-    for i, l in enumerate(bake["lights"]):
+    if rig is not None:
+        rep["light_rig"] = set_lights_blender.build(rig, scene)
+        rep["lights"] = rep["light_rig"]["lights"]
+    else:
+        world = scene.world or bpy.data.worlds.new("shot_world")
+        scene.world = world
+        world.use_nodes = True
+        bg = world.node_tree.nodes.get("Background")
+        bg.inputs["Strength"].default_value = 0.0
+    for i, l in enumerate(bake["lights"] if rig is None else ()):
         col = tuple(l["color"])
         if l["type"] == "sky":
             bg.inputs["Color"].default_value = (*col, 1)
@@ -407,6 +421,12 @@ def main():
     scene.render.fps, scene.render.fps_base = num, den
     scene.frame_start, scene.frame_end = fa, fb
     rep = {"bake": os.path.abspath(a.bake), "frames": [fa, fb], "characters": {}, "not_rendered": []}
+    try:
+        rig, rig_rep = set_lights.resolve(bake.get("scene_path"), a.light_rig)
+    except set_lights.RigError as e:
+        raise SystemExit(f"light rig: {e}")
+    if rig is not None:  # (no key at all without a rig: the report stays as before T-221)
+        rep["light_rig"] = rig_rep
     states = {}
     for ch in bake["characters"]:
         if not ch["supported"]:
@@ -416,7 +436,7 @@ def main():
             raise SystemExit(f"cast has no master for character {ch['name']}")
         states[ch["name"]] = setup_character(ch, cast, scene)
     boxes = []
-    rep["world"] = setup_world(bake, scene, a.light_scale, boxes)
+    rep["world"] = setup_world(bake, scene, a.light_scale, boxes, rig)
     props, rep["props"] = setup_props(bake, scene)
     pushout = None
     if a.hair_pushout is not None:
