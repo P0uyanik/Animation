@@ -13,7 +13,8 @@ Checks:
   1. Roles from metadata: hair, garment, body, solid (proxy, not the masked body), glasses, hand vertices (the hand
      bone and its child), props and set boxes (from the bake's objects).
   2. Depths per class and frame (0.1 mm): hair_own 20 / 3, garment_body 10 (a lining inside a closed hollow cage,
-     outside the solid but with no free direction, is not counted: closed-solid rule), hand_prop 8, body_body 50 (a in b only),
+     outside the solid but with no free direction, is not counted: closed-solid rule), hand_prop 8,
+     body_body 50 (a in b only),
      body_set 5 (b only); nothing in frames where nothing is inside; depth pops of hair_own = 2 (0 -> 20 -> 3).
   3. The largest hair vertex move per frame (70 / 17 mm) and `compare` (jump pops of a run against itself = 0).
   4. Determinism: two runs give the same rows and SHA-256; --jobs 2 (frame chunks with a warm-up frame) gives the

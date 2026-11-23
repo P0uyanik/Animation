@@ -301,7 +301,8 @@ def resolve_inputs(a):
 def build_blend(a, bake, cast, cwd, work):
     os.makedirs(work, exist_ok=True)
     cmd = shlex.split(a.blender) + ["-b", "--factory-startup", "-P",
-                                    os.path.join(ROOT, "pipeline", "charsys", "shot_render.py"), "--", "--bake", bake, "--cast", cast, "--out", work, "--blend-only"]
+                                    os.path.join(ROOT, "pipeline", "charsys", "shot_render.py"), "--", "--bake", bake,
+                                    "--cast", cast, "--out", work, "--blend-only"]
     if a.hair_pushout:
         cmd += ["--hair-pushout", a.hair_pushout]
     with open(os.path.join(work, "shot_render.log"), "w") as log:
@@ -359,7 +360,8 @@ def run_audit(a):
 
 def _blender_part(a, blend, bake, out, frames, warm=None, wait=True):
     cmd = shlex.split(a.blender) + ["-b", "--factory-startup", "-P", os.path.abspath(__file__), "--", "part",
-                                    "--blend", blend, "--out", out, "--limit-mm", str(a.limit_mm), "--classes", a.classes, "--profile", a.profile]
+                                    "--blend", blend, "--out", out, "--limit-mm", str(a.limit_mm), "--classes", a.classes,
+                                    "--profile", a.profile]
     if bake:
         cmd += ["--bake", bake]
     if frames is None:
